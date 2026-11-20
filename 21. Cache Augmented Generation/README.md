@@ -23,8 +23,8 @@ When the knowledge base is small enough to fit in a long context window, CAG ski
 
 ```mermaid
 flowchart LR
-    D[All documents] --> PC[Precompute KV cache / prompt cache]
-    Q[Query] --> L[LLM with cached context]
+    D[All documents] --> PC[Precompute KV cache<br/>/ prompt cache]
+    Q[Query] --> L[LLM with cached<br/>context]
     PC --> L --> A[Answer]
 ```
 
@@ -54,7 +54,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="48" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="844" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="48" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="217" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Don't Do RAG: When Cache-Augmented Generation is All You Need for Knowledge Tasks</td><td>2024</td><td>WWW 2025 Companion</td><td><a href="https://arxiv.org/abs/2412.15605">2412.15605</a></td><td><a href="papers/2412.15605_CAG.pdf">PDF</a></td></tr>
 </tbody>

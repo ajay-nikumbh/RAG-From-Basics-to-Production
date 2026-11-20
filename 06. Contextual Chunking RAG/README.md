@@ -23,11 +23,11 @@ Retrieval quality depends on what is indexed. This architecture changes the inde
 
 ```mermaid
 flowchart LR
-    D[Document] --> P[Propositions / small chunks]
-    D --> CX[LLM adds document context to each chunk]
+    D[Document] --> P[Propositions / small<br/>chunks]
+    D --> CX[LLM adds document<br/>context to each<br/>chunk]
     P --> V[(Vector + BM25 index)]
     CX --> V
-    Q[Query] --> R[Retrieve small unit] --> PR[Expand to parent chunk] --> L[LLM] --> A[Answer]
+    Q[Query] --> R[Retrieve small unit] --> PR[Expand to parent<br/>chunk] --> L[LLM] --> A[Answer]
 ```
 
 ## How It Works
@@ -57,7 +57,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="56" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="848" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="56" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="155" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="141" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="141" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Dense X Retrieval: What Retrieval Granularity Should We Use?</td><td>2023</td><td>EMNLP 2024</td><td><a href="https://arxiv.org/abs/2312.06648">2312.06648</a></td><td><a href="papers/2312.06648_Dense-X-Propositions.pdf">PDF</a></td></tr>
 </tbody>

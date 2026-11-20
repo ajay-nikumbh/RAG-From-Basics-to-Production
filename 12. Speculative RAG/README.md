@@ -24,10 +24,10 @@ Speculative RAG splits retrieved documents into diverse subsets. A small, fast d
 ```mermaid
 flowchart LR
     Q[Query] --> R[Retrieve] --> S[Cluster into subsets]
-    S --> D1[Small drafter: draft 1]
-    S --> D2[Small drafter: draft 2]
-    S --> D3[Small drafter: draft N]
-    D1 --> V[Large verifier LLM scores drafts]
+    S --> D1[Small drafter: draft<br/>1]
+    S --> D2[Small drafter: draft<br/>2]
+    S --> D3[Small drafter: draft<br/>N]
+    D1 --> V[Large verifier LLM<br/>scores drafts]
     D2 --> V
     D3 --> V --> A[Best answer]
 ```
@@ -57,7 +57,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="48" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="844" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="48" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="217" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Speculative RAG: Enhancing Retrieval Augmented Generation through Drafting</td><td>2024</td><td>ICLR 2025 (Google)</td><td><a href="https://arxiv.org/abs/2407.08223">2407.08223</a></td><td><a href="papers/2407.08223_Speculative-RAG.pdf">PDF</a></td></tr>
 </tbody>

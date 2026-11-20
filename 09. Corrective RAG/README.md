@@ -25,7 +25,7 @@ CRAG adds a lightweight retrieval evaluator after retrieval. Each document is gr
 flowchart TB
     Q[Query] --> R[Retrieve] --> E{Retrieval evaluator}
     E -- Correct --> K[Knowledge refinement]
-    E -- Incorrect --> W[Rewrite query + web search]
+    E -- Incorrect --> W[Rewrite query + web<br/>search]
     E -- Ambiguous --> K
     E -- Ambiguous --> W
     K --> G[Generate]
@@ -61,7 +61,7 @@ flowchart TB
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="62" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="637" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="62" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="326" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="155" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="155" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Corrective Retrieval Augmented Generation</td><td>2024</td><td>arXiv (USTC / Google)</td><td><a href="https://arxiv.org/abs/2401.15884">2401.15884</a></td><td><a href="papers/2401.15884_Corrective-RAG.pdf">PDF</a></td></tr>
 </tbody>

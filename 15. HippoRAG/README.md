@@ -24,7 +24,7 @@ HippoRAG models long-term memory after the hippocampal indexing theory. An LLM b
 ```mermaid
 flowchart LR
     D[Passages] --> OIE[LLM open IE triples] --> KG[(Schemaless KG)]
-    Q[Query] --> NE[Extract query entities] --> PPR[Personalized PageRank]
+    Q[Query] --> NE[Extract query<br/>entities] --> PPR[Personalized<br/>PageRank]
     KG --> PPR --> RP[Rank passages] --> L[LLM] --> A[Answer]
 ```
 
@@ -53,7 +53,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="51" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="803" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="51" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="233" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="129" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="129" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>HippoRAG: Neurobiologically Inspired Long-Term Memory for LLMs</td><td>2024</td><td>NeurIPS 2024 (OSU)</td><td><a href="https://arxiv.org/abs/2405.14831">2405.14831</a></td><td><a href="papers/2405.14831_HippoRAG.pdf">PDF</a></td></tr>
 </tbody>

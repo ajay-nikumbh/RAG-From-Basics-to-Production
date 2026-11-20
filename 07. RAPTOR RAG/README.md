@@ -29,7 +29,7 @@ flowchart TB
     C4[Chunk] --> S2
     S1 --> R[Root summary]
     S2 --> R
-    Q[Query] -. search .-> S1
+    Q[Query] -.search.-> S1
     Q -.-> C3
     Q -.-> R
 ```
@@ -61,7 +61,7 @@ flowchart TB
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="47" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="825" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="47" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="239" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="119" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="119" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval</td><td>2024</td><td>ICLR 2024 (Stanford)</td><td><a href="https://arxiv.org/abs/2401.18059">2401.18059</a></td><td><a href="papers/2401.18059_RAPTOR.pdf">PDF</a></td></tr>
 </tbody>

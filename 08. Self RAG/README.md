@@ -26,7 +26,7 @@ flowchart TB
     Q[Query] --> D{Retrieve needed?}
     D -- No --> G0[Generate directly] --> A[Answer]
     D -- Yes --> R[Retrieve passages] --> G[Generate per passage]
-    G --> C{IsRel / IsSup / IsUse critique}
+    G --> C{IsRel / IsSup /<br/>IsUse critique}
     C -- pass --> A
     C -- fail --> R
 ```
@@ -59,7 +59,7 @@ flowchart TB
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="47" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="830" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="47" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="237" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="118" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="118" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection</td><td>2023</td><td>ICLR 2024 (UW / AI2)</td><td><a href="https://arxiv.org/abs/2310.11511">2310.11511</a></td><td><a href="papers/2310.11511_Self-RAG.pdf">PDF</a></td></tr>
 </tbody>

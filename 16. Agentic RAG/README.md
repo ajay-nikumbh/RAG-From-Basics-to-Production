@@ -27,7 +27,7 @@ flowchart TB
     P --> T1[Vector search tool]
     P --> T2[SQL / API tool]
     P --> T3[Web search tool]
-    T1 --> RF{Reflect: enough info?}
+    T1 --> RF{Reflect: enough<br/>info?}
     T2 --> RF
     T3 --> RF
     RF -- No --> P
@@ -62,7 +62,7 @@ flowchart TB
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="54" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="864" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="54" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="150" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="137" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="137" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Agentic Retrieval-Augmented Generation: A Survey on Agentic RAG</td><td>2025</td><td>arXiv</td><td><a href="https://arxiv.org/abs/2501.09136">2501.09136</a></td><td><a href="papers/2501.09136_AgenticRAG-Survey.pdf">PDF</a></td></tr>
 </tbody>

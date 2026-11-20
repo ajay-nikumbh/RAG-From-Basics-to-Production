@@ -23,10 +23,10 @@ Real documents contain figures, tables and layouts that text extraction loses. M
 
 ```mermaid
 flowchart LR
-    D[PDF pages / images / tables] --> VE[Vision-language embedder ColPali]
+    D[PDF pages / images /<br/>tables] --> VE[Vision-language<br/>embedder ColPali]
     VE --> V[(Multi-vector index)]
-    Q[Query] --> QE[Text embedder] --> R[Late-interaction search]
-    V --> R --> VLM[Vision-language model] --> A[Answer]
+    Q[Query] --> QE[Text embedder] --> R[Late-interaction<br/>search]
+    V --> R --> VLM[Vision-language<br/>model] --> A[Answer]
 ```
 
 ## How It Works
@@ -56,7 +56,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="47" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="830" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="47" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="237" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="118" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="118" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>MuRAG: Multimodal Retrieval-Augmented Generator for Open QA over Images and Text</td><td>2022</td><td>EMNLP 2022 (Google)</td><td><a href="https://arxiv.org/abs/2210.02928">2210.02928</a></td><td><a href="papers/2210.02928_MuRAG.pdf">PDF</a></td></tr>
 <tr><td>2</td><td>ColPali: Efficient Document Retrieval with Vision Language Models</td><td>2024</td><td>ICLR 2025</td><td><a href="https://arxiv.org/abs/2407.01449">2407.01449</a></td><td><a href="papers/2407.01449_ColPali.pdf">PDF</a></td></tr>

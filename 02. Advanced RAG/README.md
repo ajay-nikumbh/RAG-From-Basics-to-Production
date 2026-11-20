@@ -23,8 +23,8 @@ Advanced RAG keeps the linear pipeline but optimizes the stages around retrieval
 
 ```mermaid
 flowchart LR
-    Q[Query] --> RW[Query rewrite / expansion] --> R[Retriever top-50]
-    R --> RR[Cross-encoder re-ranker] --> K[Top-5] --> CC[Context compression]
+    Q[Query] --> RW[Query rewrite /<br/>expansion] --> R[Retriever top-50]
+    R --> RR[Cross-encoder<br/>re-ranker] --> K[Top-5] --> CC[Context compression]
     CC --> L[LLM] --> A[Answer]
 ```
 
@@ -55,7 +55,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="56" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="854" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="56" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="154" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="140" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="140" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Query Rewriting for Retrieval-Augmented Large Language Models</td><td>2023</td><td>EMNLP 2023</td><td><a href="https://arxiv.org/abs/2305.14283">2305.14283</a></td><td><a href="papers/2305.14283_Query-Rewriting.pdf">PDF</a></td></tr>
 <tr><td>2</td><td>Passage Re-ranking with BERT</td><td>2019</td><td>arXiv (NYU)</td><td><a href="https://arxiv.org/abs/1901.04085">1901.04085</a></td><td><a href="papers/1901.04085_BERT-Reranker.pdf">PDF</a></td></tr>

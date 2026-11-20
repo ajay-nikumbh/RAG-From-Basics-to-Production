@@ -23,9 +23,9 @@ Classic RAG uses short passages, so the retriever must find a needle in millions
 
 ```mermaid
 flowchart LR
-    D[Documents] --> G[Group into long units ~4K tokens] --> V[(Index)]
-    Q[Query] --> R[Retrieve top few long units]
-    V --> R --> LC[Long-context LLM reader] --> A[Answer]
+    D[Documents] --> G[Group into long<br/>units ~4K tokens] --> V[(Index)]
+    Q[Query] --> R[Retrieve top few<br/>long units]
+    V --> R --> LC[Long-context LLM<br/>reader] --> A[Answer]
 ```
 
 ## How It Works
@@ -54,7 +54,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="62" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="707" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="62" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="251" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="157" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="157" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>LongRAG: Enhancing RAG with Long-context LLMs</td><td>2024</td><td>arXiv (Waterloo)</td><td><a href="https://arxiv.org/abs/2406.15319">2406.15319</a></td><td><a href="papers/2406.15319_LongRAG.pdf">PDF</a></td></tr>
 </tbody>

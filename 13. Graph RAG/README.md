@@ -23,11 +23,11 @@ Microsoft GraphRAG uses an LLM to extract entities and relations into a knowledg
 
 ```mermaid
 flowchart LR
-    D[Documents] --> X[LLM entity + relation extraction] --> KG[(Knowledge graph)]
-    KG --> CM[Community detection Leiden] --> CS[Community summaries]
+    D[Documents] --> X[LLM entity +<br/>relation extraction] --> KG[(Knowledge graph)]
+    KG --> CM[Community detection<br/>Leiden] --> CS[Community summaries]
     Q[Query] --> T{Global or local?}
-    T -- Global --> MR[Map-reduce over summaries]
-    T -- Local --> NB[Entity neighbourhood search]
+    T -- Global --> MR[Map-reduce over<br/>summaries]
+    T -- Local --> NB[Entity neighbourhood<br/>search]
     CS --> MR
     KG --> NB
     MR --> A[Answer]
@@ -61,7 +61,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="45" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="790" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="45" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="293" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="112" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="112" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>From Local to Global: A Graph RAG Approach to Query-Focused Summarization</td><td>2024</td><td>arXiv (Microsoft Research)</td><td><a href="https://arxiv.org/abs/2404.16130">2404.16130</a></td><td><a href="papers/2404.16130_GraphRAG-Microsoft.pdf">PDF</a></td></tr>
 <tr><td>2</td><td>Think-on-Graph: Deep and Responsible Reasoning of LLMs on Knowledge Graph</td><td>2023</td><td>ICLR 2024</td><td><a href="https://arxiv.org/abs/2307.07697">2307.07697</a></td><td><a href="papers/2307.07697_Think-on-Graph.pdf">PDF</a></td></tr>

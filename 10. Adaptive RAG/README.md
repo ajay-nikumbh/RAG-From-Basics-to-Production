@@ -23,10 +23,10 @@ Not every question needs the same pipeline. Adaptive-RAG trains a small classifi
 
 ```mermaid
 flowchart LR
-    Q[Query] --> C{Complexity classifier}
+    Q[Query] --> C{Complexity<br/>classifier}
     C -- Simple --> L0[LLM only]
     C -- Moderate --> S[Single-step RAG]
-    C -- Complex --> M[Multi-step iterative RAG]
+    C -- Complex --> M[Multi-step iterative<br/>RAG]
     L0 --> A[Answer]
     S --> A
     M --> A
@@ -58,7 +58,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="48" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="844" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="48" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="217" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Adaptive-RAG: Learning to Adapt Retrieval-Augmented LLMs through Question Complexity</td><td>2024</td><td>NAACL 2024 (KAIST)</td><td><a href="https://arxiv.org/abs/2403.14403">2403.14403</a></td><td><a href="papers/2403.14403_Adaptive-RAG.pdf">PDF</a></td></tr>
 </tbody>

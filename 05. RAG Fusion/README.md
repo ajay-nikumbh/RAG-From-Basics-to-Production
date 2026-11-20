@@ -23,11 +23,11 @@ One query sees the corpus from one angle. RAG-Fusion asks the LLM for several re
 
 ```mermaid
 flowchart LR
-    Q[Query] --> MQ[LLM generates N sub-queries]
+    Q[Query] --> MQ[LLM generates N<br/>sub-queries]
     MQ --> R1[Retrieve q1]
     MQ --> R2[Retrieve q2]
     MQ --> R3[Retrieve qN]
-    R1 --> F[Reciprocal Rank Fusion]
+    R1 --> F[Reciprocal Rank<br/>Fusion]
     R2 --> F
     R3 --> F --> L[LLM] --> A[Answer]
 ```
@@ -58,7 +58,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="56" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="784" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="56" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="224" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="140" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="140" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>RAG-Fusion: a New Take on Retrieval-Augmented Generation</td><td>2024</td><td>arXiv (Infineon)</td><td><a href="https://arxiv.org/abs/2402.03367">2402.03367</a></td><td><a href="papers/2402.03367_RAG-Fusion.pdf">PDF</a></td></tr>
 </tbody>

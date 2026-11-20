@@ -26,7 +26,7 @@ flowchart LR
     Q[Query] --> T[Think] --> S{Need search?}
     S -- Yes --> SE[Search engine] --> I[Insert results] --> T
     S -- No --> A[Answer]
-    A -.outcome reward.-> RL[RL training PPO / GRPO]
+    A -.outcome reward.-> RL[RL training PPO /<br/>GRPO]
 ```
 
 ## How It Works
@@ -56,7 +56,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="50" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="890" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="50" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="152" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="127" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="127" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Search-R1: Training LLMs to Reason and Leverage Search Engines with RL</td><td>2025</td><td>arXiv (UIUC)</td><td><a href="https://arxiv.org/abs/2503.09516">2503.09516</a></td><td><a href="papers/2503.09516_Search-R1.pdf">PDF</a></td></tr>
 </tbody>

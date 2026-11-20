@@ -7,14 +7,14 @@ These notes explain every building block of a basic (Naive) RAG system in simple
 ```mermaid
 flowchart LR
     N1[01 What is RAG] --> N2[02 Why LLMs need RAG]
-    N2 --> N3[03 Loading and parsing]
+    N2 --> N3[03 Loading and<br/>parsing]
     N3 --> N4[04 Chunking]
     N4 --> N5[05 Embeddings]
     N5 --> N6[06 Similarity]
     N6 --> N7[07 Vector databases]
     N7 --> N8[08 Retrieval]
-    N8 --> N9[09 Prompt and generation]
-    N9 --> N10[10 End to end architecture]
+    N8 --> N9[09 Prompt and<br/>generation]
+    N9 --> N10[10 End to end<br/>architecture]
     N10 --> N11[11 Evaluation]
     N11 --> N12[12 Limitations]
 ```
@@ -22,7 +22,7 @@ flowchart LR
 ## Reading order
 
 <table width="100%">
-<thead><tr><th>#</th><th>Note</th><th>What you will learn</th><th>Pipeline stage</th><th>Diagrams</th></tr></thead>
+<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="40" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="335" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="690" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="177" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="157" height="1">Diagrams</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20What%20is%20RAG.md">What is RAG</a></td><td>Definition, open-book analogy, parametric vs non-parametric memory, RAG vs fine-tuning</td><td>Overview</td><td>Mermaid</td></tr>
 <tr><td>02</td><td><a href="02.%20Why%20LLMs%20Need%20RAG.md">Why LLMs Need RAG</a></td><td>Next-token prediction, tokens, context window, knowledge cutoff, hallucination</td><td>Overview</td><td>Mermaid</td></tr>

@@ -41,7 +41,7 @@ This folder is not an architecture. It holds the reference papers that frame the
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="48" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="796" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="48" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="265" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="120" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Retrieval-Augmented Generation for Large Language Models: A Survey</td><td>2023</td><td>arXiv (Tongji / Fudan)</td><td><a href="https://arxiv.org/abs/2312.10997">2312.10997</a></td><td><a href="papers/2312.10997_RAG-Survey.pdf">PDF</a></td></tr>
 <tr><td>2</td><td>REALM: Retrieval-Augmented Language Model Pre-Training</td><td>2020</td><td>ICML 2020 (Google)</td><td><a href="https://arxiv.org/abs/2002.08909">2002.08909</a></td><td><a href="papers/2002.08909_REALM.pdf">PDF</a></td></tr>

@@ -25,7 +25,7 @@ Dense embeddings capture meaning but miss exact terms such as product codes, nam
 flowchart LR
     Q[Query] --> S[BM25 sparse search]
     Q --> D[Dense vector search]
-    S --> F[Rank fusion RRF / weighted]
+    S --> F[Rank fusion RRF /<br/>weighted]
     D --> F --> L[LLM] --> A[Answer]
 ```
 
@@ -56,7 +56,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="51" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="899" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="51" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="141" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="128" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="128" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Blended RAG: Improving RAG Accuracy with Semantic Search and Hybrid Query-Based Retrievers</td><td>2024</td><td>arXiv (IBM)</td><td><a href="https://arxiv.org/abs/2404.07220">2404.07220</a></td><td><a href="papers/2404.07220_Blended-RAG.pdf">PDF</a></td></tr>
 </tbody>

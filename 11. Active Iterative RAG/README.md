@@ -23,8 +23,8 @@ Single retrieval fails on multi-hop questions where the next fact depends on the
 
 ```mermaid
 flowchart LR
-    Q[Query] --> R[Retrieve] --> T[Generate next step / sentence]
-    T --> C{Low confidence or more hops?}
+    Q[Query] --> R[Retrieve] --> T[Generate next step /<br/>sentence]
+    T --> C{Low confidence or<br/>more hops?}
     C -- Yes --> R
     C -- No --> A[Answer]
 ```
@@ -56,7 +56,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="44" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="777" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="44" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="311" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="111" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="111" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Active Retrieval Augmented Generation</td><td>2023</td><td>EMNLP 2023 (CMU)</td><td><a href="https://arxiv.org/abs/2305.06983">2305.06983</a></td><td><a href="papers/2305.06983_FLARE.pdf">PDF</a></td></tr>
 <tr><td>2</td><td>Interleaving Retrieval with Chain-of-Thought Reasoning for Multi-Step Questions</td><td>2022</td><td>ACL 2023 (Stony Brook / AI2)</td><td><a href="https://arxiv.org/abs/2212.10509">2212.10509</a></td><td><a href="papers/2212.10509_IRCoT.pdf">PDF</a></td></tr>

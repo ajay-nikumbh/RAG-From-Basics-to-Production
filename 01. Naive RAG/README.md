@@ -25,8 +25,8 @@ The baseline retrieve-then-read pipeline. Documents are split into chunks, embed
 ```mermaid
 flowchart LR
     D[Documents] --> C[Chunking] --> E[Embedding model] --> V[(Vector DB)]
-    Q[User query] --> QE[Embed query] --> R[Top-k similarity search]
-    V --> R --> P[Prompt = query + context] --> L[LLM] --> A[Answer]
+    Q[User query] --> QE[Embed query] --> R[Top-k similarity<br/>search]
+    V --> R --> P[Prompt = query +<br/>context] --> L[LLM] --> A[Answer]
 ```
 
 ## How It Works
@@ -63,7 +63,7 @@ flowchart LR
 Read the notes in this order before the implementation.
 
 <table width="100%">
-<thead><tr><th>#</th><th>Notes</th><th>What it covers</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="57" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="342" height="1">Notes</th><th><img src="../assets/spacer.png" align="right" width="1000" height="1">What it covers</th></tr></thead>
 <tbody>
 <tr><td>1</td><td><a href="notes/01.%20Basic%20Concepts/">Basic Concepts</a></td><td>Every building block of a RAG system explained in simple terms with diagrams: documents, chunking, embeddings, similarity, vector databases, retrieval, prompting, evaluation.</td></tr>
 <tr><td>2</td><td><a href="notes/02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Section by section walkthrough of Lewis et al. 2020: figures, equations and results explained in simple terms.</td></tr>
@@ -73,7 +73,7 @@ Read the notes in this order before the implementation.
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="49" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="785" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="49" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="270" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="122" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="122" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</td><td>2020</td><td>NeurIPS 2020 (Meta AI)</td><td><a href="https://arxiv.org/abs/2005.11401">2005.11401</a></td><td><a href="papers/2005.11401_RAG-Lewis.pdf">PDF</a></td></tr>
 </tbody>

@@ -23,10 +23,10 @@ LightRAG keeps the benefits of graph structure at much lower cost than GraphRAG.
 
 ```mermaid
 flowchart LR
-    D[Documents] --> X[Entity + relation extraction] --> G[(Graph + KV index)]
-    Q[Query] --> K[Extract low + high level keywords]
-    K --> LL[Low-level: entity match]
-    K --> HL[High-level: relation / theme match]
+    D[Documents] --> X[Entity + relation<br/>extraction] --> G[(Graph + KV index)]
+    Q[Query] --> K[Extract low + high<br/>level keywords]
+    K --> LL[Low-level: entity<br/>match]
+    K --> HL[High-level: relation<br/>/ theme match]
     G --> LL
     G --> HL
     LL --> L[LLM] --> A[Answer]
@@ -61,7 +61,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="58" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="825" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="58" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="162" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="147" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="147" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>LightRAG: Simple and Fast Retrieval-Augmented Generation</td><td>2024</td><td>arXiv (HKU)</td><td><a href="https://arxiv.org/abs/2410.05779">2410.05779</a></td><td><a href="papers/2410.05779_LightRAG.pdf">PDF</a></td></tr>
 </tbody>

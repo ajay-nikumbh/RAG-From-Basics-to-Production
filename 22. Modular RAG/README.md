@@ -25,7 +25,7 @@ Modular RAG generalizes everything above. The system is decomposed into modules 
 flowchart LR
     Q[Query] --> RT{Router}
     RT --> M1[Module: rewrite]
-    RT --> M2[Module: hybrid retrieve]
+    RT --> M2[Module: hybrid<br/>retrieve]
     M1 --> M2 --> M3[Module: re-rank]
     M3 --> J{Judge}
     J -- loop --> M1
@@ -61,7 +61,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="50" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="875" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="50" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="175" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="125" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="125" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Modular RAG: Transforming RAG Systems into LEGO-like Reconfigurable Frameworks</td><td>2024</td><td>arXiv (Tongji)</td><td><a href="https://arxiv.org/abs/2407.21059">2407.21059</a></td><td><a href="papers/2407.21059_Modular-RAG.pdf">PDF</a></td></tr>
 </tbody>

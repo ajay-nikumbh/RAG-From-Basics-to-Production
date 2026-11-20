@@ -23,7 +23,7 @@ MemoRAG adds a global memory module. A light long-context model reads the full c
 
 ```mermaid
 flowchart LR
-    D[Corpus] --> M[Memory model builds global memory]
+    D[Corpus] --> M[Memory model builds<br/>global memory]
     Q[Query] --> M --> CL[Draft clues]
     CL --> R[Retrieve evidence] --> L[Expressive LLM] --> A[Answer]
 ```
@@ -54,7 +54,7 @@ flowchart LR
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th>#</th><th>Paper</th><th>Year</th><th>Venue / Org</th><th>arXiv</th><th>Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="49" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="867" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="49" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="185" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="123" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="123" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>MemoRAG: Boosting Long Context Processing with Global Memory-Enhanced Retrieval</td><td>2024</td><td>WWW 2025 (BAAI)</td><td><a href="https://arxiv.org/abs/2409.05591">2409.05591</a></td><td><a href="papers/2409.05591_MemoRAG.pdf">PDF</a></td></tr>
 </tbody>
