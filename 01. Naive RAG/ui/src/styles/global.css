@@ -1,9 +1,21 @@
 /*
  * Global styles.
  *
- * Base reset applied to the whole page: box sizing, no default margins and
- * smooth font rendering. Design tokens are added in the design system step.
+ * Loads the fonts and design tokens, then applies a small base reset to the
+ * whole page: box sizing, no default margins, the desk background, the
+ * interface font and a visible focus ring for keyboard users.
  */
+
+/* Fonts: IBM Plex Sans (interface), IBM Plex Mono (data), Source Serif 4 (reading) */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource-variable/source-serif-4';
+
+/* Design tokens */
+@import './tokens.css';
 
 /* Include padding and border in element sizes */
 *, *::before, *::after {
@@ -11,11 +23,45 @@
 }
 
 /* Remove default browser spacing */
-body, h1, h2, h3, p {
+body, h1, h2, h3, p, ul, ol {
   margin: 0;
 }
 
-/* Smoother text on macOS */
+/* Page base: desk color, interface font, ink text */
 body {
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Headings wrap evenly; paragraphs avoid single-word last lines */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Form controls use the interface font, not the browser default */
+button, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Visible focus ring for keyboard navigation only */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
 }
