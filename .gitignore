@@ -16,6 +16,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+# React source helpers live in src/lib and must be tracked
+!**/src/lib/
 parts/
 sdist/
 var/
