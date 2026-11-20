@@ -14,6 +14,7 @@ import PageHeader from '@/components/layout/PageHeader'
 import DocumentDrawer from './DocumentDrawer'
 import DocumentsTable from './DocumentsTable'
 import { useDocuments } from '@/api/queries'
+import { useLocation } from 'react-router'
 import UploadPanel from './UploadPanel'
 import { useState } from 'react'
 
@@ -39,6 +40,14 @@ export default function DocumentsPage() {
   const { data, isPending } = useDocuments()
   const [open, setOpen] = useState(null)
   const documents = data?.documents ?? []
+
+  // Open the document picked in the sidebar library (passed as router state), once per navigation
+  const location = useLocation()
+  const [handledKey, setHandledKey] = useState(null)
+  if (location.state?.open && handledKey !== location.key && documents.length > 0) {
+    setHandledKey(location.key)
+    setOpen(documents.find((doc) => doc.source === location.state.open) ?? null)
+  }
 
   // Summary numbers
   const pages = documents.filter((d) => d.file_type === 'pdf').reduce((sum, d) => sum + d.parts, 0)
