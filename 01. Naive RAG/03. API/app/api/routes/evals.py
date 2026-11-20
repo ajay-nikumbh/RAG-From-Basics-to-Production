@@ -1,22 +1,32 @@
 """
 Evaluation routes.
 
-This file defines POST /evals/answer. It grades one answer with the LLM
-judge (faithfulness, answer relevance, context precision and, with a
-reference, correctness) and returns the scores with their reasons and the
-cost of grading. The chat UI calls it from the "Evaluate" button under an
-answer. The judge call is recorded as an "eval_judge" run, so evaluation
-cost appears in analytics separately from questions.
+This file defines the evaluation endpoints:
+
+    POST /evals/answer      grade one answer with the LLM judge
+    GET  /evals/testset     the built-in test cases
+    POST /evals/runs        start evaluating the pipeline on the test set
+    GET  /evals/runs        every saved run, newest first, without results
+    GET  /evals/runs/{id}   one run with its per-case results
+
+POST /evals/answer returns faithfulness, answer relevance, context precision
+and, with a reference, correctness, with reasons and the cost of grading; the
+chat UI calls it from the "Evaluate" button. Runs execute in the background
+and save a report after every case, so the UI polls GET /evals/runs/{id} for
+progress. Judge calls are recorded as "eval_judge" runs and evaluation
+questions as "eval_query" runs, so evaluation cost appears in analytics
+separately from user questions.
 """
 
 # Imports
-from app.schemas.evals import EvalAnswerRequest, EvalAnswerResponse, JudgeUsage, MetricResponse
+from app.schemas.evals import EvalAnswerRequest, EvalAnswerResponse, EvalRunRequest, JudgeUsage, MetricResponse
+from app.evals.runner import RunInProgressError, get_report, list_reports, load_testset, start_run
+from fastapi import APIRouter, HTTPException, status
 from app.core.logging import get_logger, log_step
 from app.services.usage import track_usage
 from app.core.config import get_settings
 from app.evals.judge import judge_answer
 from dataclasses import asdict
-from fastapi import APIRouter
 import time
 
 
@@ -61,3 +71,44 @@ def evaluate_answer(request: EvalAnswerRequest) -> EvalAnswerResponse:
             latency_ms=round((time.perf_counter() - start) * 1000),
         ),
     )
+
+
+@router.get("/evals/testset")
+def testset() -> dict:
+    """The built-in test cases: question, reference answer and expected file."""
+
+    # Cases as stored in testset.json
+    return {"cases": load_testset()}
+
+
+@router.post("/evals/runs", status_code=status.HTTP_202_ACCEPTED)
+def create_run(request: EvalRunRequest) -> dict:
+    """Start evaluating the pipeline on the test set; returns the new run at once."""
+
+    # Start the background run; only one may be active
+    try:
+        report = start_run(top_k=request.top_k, case_ids=request.case_ids)
+    except RunInProgressError as error:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(error))
+
+    # The run without its (still empty) results
+    return {key: value for key, value in report.items() if key != "results"}
+
+
+@router.get("/evals/runs")
+def runs() -> dict:
+    """Every saved run with its summary, newest first."""
+
+    # Summaries only; results are loaded per run
+    return {"runs": list_reports()}
+
+
+@router.get("/evals/runs/{run_id}")
+def run_detail(run_id: str) -> dict:
+    """One run with its per-case results."""
+
+    # Unknown ids are a clear 404
+    report = get_report(run_id)
+    if report is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Evaluation run '{run_id}' not found")
+    return report

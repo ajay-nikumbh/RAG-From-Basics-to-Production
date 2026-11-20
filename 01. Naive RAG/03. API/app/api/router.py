@@ -26,5 +26,5 @@ api_router.include_router(query.router)
 # Analytics endpoints: GET /analytics
 api_router.include_router(analytics.router)
 
-# Evaluation endpoints: POST /evals/answer
+# Evaluation endpoints: /evals/answer, /evals/testset, /evals/runs
 api_router.include_router(evals.router)

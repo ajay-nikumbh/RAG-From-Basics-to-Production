@@ -77,15 +77,19 @@ class RagAnswer:
     usage: Usage = field(default_factory=Usage)
 
 
-def answer_question(question: str, top_k: int | None = None) -> RagAnswer:
-    """Retrieve context for the question, generate a grounded answer and return it with sources."""
+def answer_question(question: str, top_k: int | None = None, usage_kind: str = "query") -> RagAnswer:
+    """Retrieve context for the question, generate a grounded answer and return it with sources.
+
+    usage_kind names the recorded run: "query" for user questions, "eval_query"
+    when an evaluation run asks the question, so evaluations are counted apart.
+    """
 
     # Read the shared settings and start the clock
     settings = get_settings()
     start = time.perf_counter()
 
     # Measure tokens, cost and time of this query
-    with track_usage("query", question=question[:300]) as meter:
+    with track_usage(usage_kind, question=question[:300]) as meter:
 
         # Step 1: find the most similar chunks
         with log_step(log, "retrieve", top_k=top_k or settings.top_k) as step:

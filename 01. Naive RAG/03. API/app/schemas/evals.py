@@ -4,7 +4,8 @@ Evaluation schemas.
 This file defines the request and response of POST /evals/answer: the
 question, the answer and the context chunks it was generated from (plus an
 optional reference answer) go in; every metric with its reason, the overall
-score and the cost of the judge call come out.
+score and the cost of the judge call come out. It also defines the request
+of POST /evals/runs, which starts an evaluation of the built-in test set.
 """
 
 # Imports
@@ -65,3 +66,13 @@ class EvalAnswerResponse(BaseModel):
 
     # Tokens and cost of grading
     usage: JudgeUsage
+
+
+class EvalRunRequest(BaseModel):
+    """Request body of POST /evals/runs."""
+
+    # Number of chunks to retrieve per question; uses TOP_K from settings when missing
+    top_k: int | None = Field(default=None, ge=1, le=20)
+
+    # Test case ids to run; every case when missing
+    case_ids: list[str] | None = None

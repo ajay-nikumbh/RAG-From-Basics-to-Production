@@ -78,6 +78,9 @@ class Settings(BaseSettings):
     # File where every query and ingestion run is recorded for analytics
     usage_file: Path = IMPLEMENTATION_DIR / "data" / "usage" / "usage.jsonl"
 
+    # Folder where evaluation run reports are saved (one JSON file per run)
+    evals_dir: Path = IMPLEMENTATION_DIR / "data" / "evals"
+
 
 # Cached so the .env file is read only once
 @lru_cache
