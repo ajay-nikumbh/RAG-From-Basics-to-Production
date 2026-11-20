@@ -4,10 +4,12 @@ Health check route.
 This file defines GET /health. It is the simplest endpoint of the app: it
 confirms the API is running and reports whether the Azure OpenAI chat and
 embedding settings are filled in, so setup problems are visible before any real request.
+It also returns the non-secret pipeline settings (model deployment names,
+chunk size, overlap, top_k) that the UI shows.
 """
 
 # Imports
-from app.schemas.health import ConfigStatus, HealthResponse
+from app.schemas.health import ConfigStatus, HealthResponse, PipelineSettings
 from app.core.config import get_settings
 from fastapi import APIRouter
 
@@ -32,7 +34,7 @@ def health() -> HealthResponse:
     # Embeddings are ready when the connection and the embedding deployment are set
     embeddings_ready = connection_ready and bool(settings.azure_openai_embedding_deployment)
 
-    # Build the response (only True/False, never the secret values)
+    # Build the response (only True/False and names, never the secret values)
     return HealthResponse(
         status="ok",
         app_name=settings.app_name,
@@ -40,5 +42,13 @@ def health() -> HealthResponse:
         config=ConfigStatus(
             azure_chat=chat_ready,
             azure_embeddings=embeddings_ready,
+        ),
+        pipeline=PipelineSettings(
+            chat_model=settings.azure_openai_deployment_name,
+            embedding_model=settings.azure_openai_embedding_deployment,
+            embedding_dimensions=settings.embedding_dimensions,
+            chunk_size=settings.chunk_size,
+            chunk_overlap=settings.chunk_overlap,
+            top_k=settings.top_k,
         ),
     )

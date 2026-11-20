@@ -2,8 +2,9 @@
 Health check schemas.
 
 This file defines the response returned by GET /health. It tells the caller
-that the API is running and which Azure OpenAI services are configured, without
-ever showing secret values.
+that the API is running, which Azure OpenAI services are configured and which
+models and chunking settings the pipeline uses, without ever showing secret
+values.
 """
 
 # Imports
@@ -20,6 +21,20 @@ class ConfigStatus(BaseModel):
     azure_embeddings: bool
 
 
+class PipelineSettings(BaseModel):
+    """Non-secret pipeline settings shown in the UI."""
+
+    # Azure OpenAI deployment names (not secret)
+    chat_model: str
+    embedding_model: str
+    embedding_dimensions: int
+
+    # Chunking and retrieval settings
+    chunk_size: int
+    chunk_overlap: int
+    top_k: int
+
+
 class HealthResponse(BaseModel):
     """Response body of GET /health."""
 
@@ -32,3 +47,6 @@ class HealthResponse(BaseModel):
 
     # Configuration check for external services
     config: ConfigStatus
+
+    # Models and chunking settings the pipeline runs with
+    pipeline: PipelineSettings
