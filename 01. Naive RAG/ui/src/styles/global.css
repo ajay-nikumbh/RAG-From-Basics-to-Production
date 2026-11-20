@@ -1,0 +1,21 @@
+/*
+ * Global styles.
+ *
+ * Base reset applied to the whole page: box sizing, no default margins and
+ * smooth font rendering. Design tokens are added in the design system step.
+ */
+
+/* Include padding and border in element sizes */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Remove default browser spacing */
+body, h1, h2, h3, p {
+  margin: 0;
+}
+
+/* Smoother text on macOS */
+body {
+  -webkit-font-smoothing: antialiased;
+}
