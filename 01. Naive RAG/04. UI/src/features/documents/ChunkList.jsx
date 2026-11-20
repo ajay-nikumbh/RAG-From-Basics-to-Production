@@ -4,7 +4,7 @@
  * This file shows every chunk of one document as numbered cards with the
  * page or sheet it came from and its character count, so it is easy to see
  * how the chunker cut the file. Clicking a PDF chunk can jump the viewer to
- * its page. Chunks with the same page are grouped under a page heading.
+ * its page, with the chunk highlighted.
  */
 
 // Imports
@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/misc'
 import { cn } from '@/lib/utils'
 
 // Chunks of one document
-export default function ChunkList({ source, activePage, onSelectPage }) {
+export default function ChunkList({ source, activePage, onSelect }) {
 
   // Chunks from GET /documents/{source}/chunks
   const { data, isPending, isError, error } = useDocumentChunks(source)
@@ -37,7 +37,7 @@ export default function ChunkList({ source, activePage, onSelectPage }) {
           <li key={index}>
             <button
               type="button"
-              onClick={() => chunk.page && onSelectPage?.(chunk.page)}
+              onClick={() => onSelect?.(chunk)}
               className={cn(
                 'w-full rounded-lg border bg-card p-3 text-left transition-colors hover:border-primary/40 hover:bg-primary-soft/40',
                 active && 'border-primary/50 bg-primary-soft/50',
