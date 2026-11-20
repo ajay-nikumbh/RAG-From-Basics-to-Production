@@ -1,33 +1,28 @@
 /**
  * Root component.
  *
- * Temporary page that shows the new design system primitives while the app
- * shell is being built in the next step.
+ * This file defines the pages of the app. Every page renders inside the
+ * AppShell (sidebar plus content): Chat at "/", Documents at "/documents"
+ * and Analytics at "/analytics". Unknown URLs go back to Chat.
  */
 
 // Imports
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import AnalyticsPage from '@/features/analytics/AnalyticsPage'
+import DocumentsPage from '@/features/documents/DocumentsPage'
+import { Navigate, Route, Routes } from 'react-router'
+import AppShell from '@/components/layout/AppShell'
+import ChatPage from '@/features/chat/ChatPage'
 
-// Design system preview
+// Page routes
 export default function App() {
   return (
-    <main className="mx-auto max-w-3xl p-10">
-      <Card>
-        <CardHeader>
-          <div>
-            <CardTitle>Naive RAG</CardTitle>
-            <CardDescription>New design system foundation</CardDescription>
-          </div>
-          <Badge variant="success">Ready</Badge>
-        </CardHeader>
-        <CardContent className="flex gap-2">
-          <Button variant="primary">Primary</Button>
-          <Button>Outline</Button>
-          <Button variant="ghost">Ghost</Button>
-        </CardContent>
-      </Card>
-    </main>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route index element={<ChatPage />} />
+        <Route path="documents" element={<DocumentsPage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   )
 }

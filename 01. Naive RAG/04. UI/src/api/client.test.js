@@ -7,7 +7,7 @@
  */
 
 // Imports
-import { ApiError, askQuestion, getHealth, listDocuments, readDetail, uploadDocument } from './client.js'
+import { ApiError, askQuestion, deleteDocument, documentFileUrl, getHealth, listDocuments, readDetail, uploadDocument } from './client.js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 // Build a fake fetch that answers with the given status and JSON body
@@ -49,21 +49,43 @@ describe('requests', () => {
     expect(fetch).toHaveBeenCalledWith('/api/documents', {})
   })
 
-  it('uploadDocument sends the file as form data', async () => {
+  it('uploadDocument sends form data and reports progress', async () => {
 
-    // Fake a successful upload
-    const fetch = fakeFetch(200, { source: 'a.txt', chunks: 1 })
+    // Fake XMLHttpRequest that "uploads" instantly and answers 200
+    const sent = {}
+    class FakeXhr {
+      constructor() { this.upload = {} }
+      open(method, url) { Object.assign(sent, { method, url }) }
+      send(form) {
+        sent.fileName = form.get('file').name
+        this.upload.onprogress({ lengthComputable: true, loaded: 50, total: 100 })
+        this.status = 200
+        this.responseText = JSON.stringify({ source: 'a.txt', chunks: 1 })
+        this.onload()
+      }
+    }
+    vi.stubGlobal('XMLHttpRequest', FakeXhr)
+
+    // Upload and collect progress values
+    const progress = []
+    const result = await uploadDocument(new File(['hello'], 'a.txt'), (value) => progress.push(value))
+
+    // POST to /api/documents with the file, progress reported, JSON returned
+    expect(sent).toEqual({ method: 'POST', url: '/api/documents', fileName: 'a.txt' })
+    expect(progress).toEqual([0.5])
+    expect(result).toEqual({ source: 'a.txt', chunks: 1 })
+  })
+
+  it('deleteDocument and documentFileUrl encode the file name', async () => {
+
+    // Fake a successful delete
+    const fetch = fakeFetch(200, { source: 'my file.pdf', removed_chunks: 3 })
     vi.stubGlobal('fetch', fetch)
 
-    // Upload a small file
-    const file = new File(['hello'], 'a.txt')
-    await uploadDocument(file)
-
-    // POST to /api/documents with the file in the "file" field
-    const [url, options] = fetch.mock.calls[0]
-    expect(url).toBe('/api/documents')
-    expect(options.method).toBe('POST')
-    expect(options.body.get('file').name).toBe('a.txt')
+    // Spaces are URL-encoded
+    await deleteDocument('my file.pdf')
+    expect(fetch).toHaveBeenCalledWith('/api/documents/my%20file.pdf', { method: 'DELETE' })
+    expect(documentFileUrl('my file.pdf')).toBe('/api/documents/my%20file.pdf/file')
   })
 
   it('askQuestion sends question and top_k as JSON', async () => {
@@ -86,14 +108,14 @@ describe('errors', () => {
 
   it('backend errors become ApiError with the detail message', async () => {
 
-    // Fake a 409 from the upload endpoint
-    vi.stubGlobal('fetch', fakeFetch(409, { detail: "'a.txt' is already indexed" }))
+    // Fake a 404 from the chunks endpoint
+    vi.stubGlobal('fetch', fakeFetch(404, { detail: "'a.pdf' is not indexed" }))
 
     // The message and status come from the backend
-    await expect(uploadDocument(new File(['x'], 'a.txt'))).rejects.toMatchObject({
+    await expect(deleteDocument('a.pdf')).rejects.toMatchObject({
       name: 'ApiError',
-      status: 409,
-      message: "'a.txt' is already indexed",
+      status: 404,
+      message: "'a.pdf' is not indexed",
     })
   })
 

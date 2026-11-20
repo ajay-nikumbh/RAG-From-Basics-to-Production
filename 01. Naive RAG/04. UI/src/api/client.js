@@ -2,7 +2,8 @@
  * API client.
  *
  * This file is the only place in the UI that talks to the FastAPI backend.
- * It has one function per endpoint (health, list documents, upload, query). Every request
+ * It has one function per endpoint (health, documents, upload, chunks, delete,
+ * query, analytics). Every request
  * goes to /api/..., which the Vite proxy forwards to FastAPI. When the
  * backend returns an error, the function throws an ApiError that carries the
  * readable message from FastAPI's {"detail": ...} body and the HTTP status.
@@ -89,14 +90,67 @@ export function listDocuments() {
   return request('/documents')
 }
 
-// POST /documents: upload and index one file
-export function uploadDocument(file) {
+// POST /documents: upload and index one file, reporting upload progress (0 to 1)
+export function uploadDocument(file, onProgress = () => {}) {
 
   // Files are sent as multipart form data in a field named "file"
   const form = new FormData()
   form.append('file', file)
 
-  return request('/documents', { method: 'POST', body: form })
+  // XMLHttpRequest is used here because fetch cannot report upload progress
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', `${API_BASE}/documents`)
+
+    // Share of bytes sent so far
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        onProgress(event.loaded / event.total)
+      }
+    }
+
+    // Server answered: parse JSON and turn errors into ApiError, like request()
+    xhr.onload = () => {
+      let body = null
+      try {
+        body = JSON.parse(xhr.responseText)
+      } catch {
+        body = null
+      }
+      if (PROXY_DOWN.includes(xhr.status) && !readDetail(body)) {
+        reject(new ApiError(UNREACHABLE, 0))
+      } else if (xhr.status < 200 || xhr.status >= 300) {
+        reject(new ApiError(readDetail(body) || `Request failed with status ${xhr.status}`, xhr.status))
+      } else {
+        resolve(body)
+      }
+    }
+
+    // Network failure
+    xhr.onerror = () => reject(new ApiError(UNREACHABLE, 0))
+
+    xhr.send(form)
+  })
+}
+
+// URL of the original uploaded file, used by the PDF viewer
+export function documentFileUrl(source) {
+  return `${API_BASE}/documents/${encodeURIComponent(source)}/file`
+}
+
+// GET /documents/{source}/chunks: every chunk of one file
+export function getDocumentChunks(source) {
+  return request(`/documents/${encodeURIComponent(source)}/chunks`)
+}
+
+// DELETE /documents/{source}: remove a file from the index
+export function deleteDocument(source) {
+  return request(`/documents/${encodeURIComponent(source)}`, { method: 'DELETE' })
+}
+
+// GET /analytics: usage totals, daily series and recent runs
+export function getAnalytics() {
+  return request('/analytics')
 }
 
 // POST /query: ask a question, get the answer and its sources
