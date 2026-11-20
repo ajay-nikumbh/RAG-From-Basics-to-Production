@@ -6,7 +6,7 @@
  */
 
 // Imports
-import { formatBytes, formatCost, formatMs, formatTokens, plural, timeAgo } from './format.js'
+import { formatBytes, formatCost, formatInr, formatMs, formatTokens, plural, timeAgo } from './format.js'
 import { describe, expect, it } from 'vitest'
 
 describe('format helpers', () => {
@@ -26,6 +26,9 @@ describe('format helpers', () => {
     expect(formatCost(0.000198)).toBe('$0.000198')
     expect(formatCost(0.0421)).toBe('$0.0421')
     expect(formatCost(3.5)).toBe('$3.50')
+    expect(formatInr(0.0459)).toBe('₹0.0459')
+    expect(formatInr(0.42)).toBe('₹0.420')
+    expect(formatInr(12.5)).toBe('₹12.50')
   })
 
   it('formats tokens, durations and relative times', () => {

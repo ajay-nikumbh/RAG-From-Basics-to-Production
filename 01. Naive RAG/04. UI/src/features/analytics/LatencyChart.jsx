@@ -4,18 +4,18 @@
  * One bar per recent question (up to 20, oldest on the left) showing how long
  * the full pipeline took: embed the question, search FAISS, call the chat
  * model. A dashed line marks the average. Hovering a bar shows the question,
- * its latency, tokens and cost.
+ * its latency, question and answer tokens and cost in rupees.
  */
 
 // Imports
 import { Bar, BarChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCost, formatMs, formatTokens } from '@/lib/format'
+import { formatInr, formatMs, formatTokens } from '@/lib/format'
 import { recentQueries } from './analytics'
 import ChartTooltip from './ChartTooltip'
 
 // Tooltip with the hovered question
-function QueryTooltip({ active, payload }) {
+function QueryTooltip({ active, payload, rate }) {
   if (!active || !payload?.length) {
     return null
   }
@@ -25,15 +25,16 @@ function QueryTooltip({ active, payload }) {
       title={query.question}
       rows={[
         { label: 'Latency', value: formatMs(query.latency_ms) },
-        { label: 'Tokens', value: formatTokens(query.total_tokens) },
-        { label: 'Cost', value: formatCost(query.cost_usd) },
+        { label: 'Question tokens', value: formatTokens(query.prompt_tokens) },
+        { label: 'Answer tokens', value: formatTokens(query.completion_tokens) },
+        { label: 'Cost', value: formatInr(query.cost_usd * rate) },
       ]}
     />
   )
 }
 
 // Card with one bar per recent question
-export default function LatencyChart({ recent, average }) {
+export default function LatencyChart({ recent, average, rate }) {
 
   // Latest questions, oldest first
   const queries = recentQueries(recent)
@@ -55,7 +56,7 @@ export default function LatencyChart({ recent, average }) {
               <CartesianGrid vertical={false} stroke="var(--border)" />
               <XAxis dataKey="index" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'var(--subtle-foreground)' }} />
               <YAxis tickLine={false} axisLine={false} width={48} tick={{ fontSize: 11, fill: 'var(--subtle-foreground)' }} tickFormatter={(ms) => `${(ms / 1000).toFixed(1)}s`} />
-              <Tooltip content={<QueryTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.6 }} />
+              <Tooltip content={<QueryTooltip rate={rate} />} cursor={{ fill: 'var(--muted)', opacity: 0.6 }} />
               <ReferenceLine y={average} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
               <Bar dataKey="latency_ms" fill="var(--chart-2)" radius={[4, 4, 0, 0]} maxBarSize={24} isAnimationActive={false} />
             </BarChart>

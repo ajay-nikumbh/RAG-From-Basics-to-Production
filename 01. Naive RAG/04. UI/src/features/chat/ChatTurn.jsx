@@ -3,14 +3,15 @@
  *
  * This file draws one question and its answer. The question is a right-hand
  * bubble. The answer shows a thinking state while the request runs, then the
- * Markdown answer with citation chips, a usage line (latency, tokens, cost)
+ * Markdown answer with citation chips, a usage line (latency, question and
+ * answer tokens, cost in rupees)
  * with a copy button, and the source cards. A failed request shows the error
  * with a retry button.
  */
 
 // Imports
+import { formatCost, formatInr, formatMs, formatTokens, plural } from '@/lib/format'
 import { AlertCircle, Check, Copy, RotateCcw, Sparkles } from 'lucide-react'
-import { formatCost, formatMs, formatTokens, plural } from '@/lib/format'
 import { Tooltip } from '@/components/ui/overlay'
 import { Button } from '@/components/ui/button'
 import AnswerMarkdown from './AnswerMarkdown'
@@ -59,16 +60,16 @@ function UsageLine({ usage, answer }) {
     setTimeout(() => setCopied(false), 1500)
   })
 
-  // Total tokens of the run
-  const tokens = usage.embedding_tokens + usage.prompt_tokens + usage.completion_tokens
-
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11.5px] text-subtle-foreground">
       <span>{formatMs(usage.latency_ms)}</span>
-      <Tooltip content={`${usage.embedding_tokens} embedding, ${usage.prompt_tokens} prompt, ${usage.completion_tokens} completion`}>
-        <span className="cursor-default">{formatTokens(tokens)} tokens</span>
+      <Tooltip content={`Question with retrieved context: ${usage.prompt_tokens} tokens, plus ${usage.embedding_tokens} embedding tokens`}>
+        <span className="cursor-default">{formatTokens(usage.prompt_tokens)} question tokens</span>
       </Tooltip>
-      <span>{formatCost(usage.cost_usd)}</span>
+      <span>{formatTokens(usage.completion_tokens)} answer tokens</span>
+      <Tooltip content={formatCost(usage.cost_usd)}>
+        <span className="cursor-default">{formatInr(usage.cost_inr)}</span>
+      </Tooltip>
       <Button variant="ghost" size="sm" onClick={copy} className="ml-auto h-7 gap-1.5 px-2 font-sans text-[12px]">
         {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
         {copied ? 'Copied' : 'Copy'}

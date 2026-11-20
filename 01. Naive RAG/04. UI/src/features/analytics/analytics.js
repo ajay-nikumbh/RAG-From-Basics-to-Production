@@ -41,8 +41,8 @@ export function tokenSplit(totals) {
   // The three kinds of tokens the pipeline pays for
   const parts = [
     { key: 'embedding', label: 'Embedding', value: totals.embedding_tokens, color: 'var(--chart-1)' },
-    { key: 'prompt', label: 'Prompt', value: totals.prompt_tokens, color: 'var(--chart-2)' },
-    { key: 'completion', label: 'Completion', value: totals.completion_tokens, color: 'var(--chart-3)' },
+    { key: 'prompt', label: 'Question (prompt)', value: totals.prompt_tokens, color: 'var(--chart-2)' },
+    { key: 'completion', label: 'Answer (completion)', value: totals.completion_tokens, color: 'var(--chart-3)' },
   ]
 
   // Share of each part; all zero when nothing was used yet

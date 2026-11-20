@@ -40,6 +40,12 @@ export function useAnalytics() {
   return useQuery({ queryKey: keys.analytics, queryFn: getAnalytics, refetchInterval: 60_000 })
 }
 
+// USD to INR rate from the analytics response, with the backend default until it loads
+export function useInrRate() {
+  const { data } = useAnalytics()
+  return data?.usd_to_inr ?? 84
+}
+
 // Upload one file; documents and analytics refresh afterwards
 export function useUploadDocument() {
   const client = useQueryClient()

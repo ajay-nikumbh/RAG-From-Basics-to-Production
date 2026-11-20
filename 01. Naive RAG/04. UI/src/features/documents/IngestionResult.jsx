@@ -10,7 +10,8 @@
 
 // Imports
 import { Boxes, Database, FileInput, HardDrive, Scissors } from 'lucide-react'
-import { formatCost, formatMs, formatTokens } from '@/lib/format'
+import { formatInr, formatMs, formatTokens } from '@/lib/format'
+import { useInrRate } from '@/api/queries'
 import { motion } from 'motion/react'
 
 // Icon and plain description per step
@@ -25,6 +26,9 @@ const STEPS = {
 // Timeline of the pipeline steps with outcome numbers
 export default function IngestionResult({ result }) {
 
+  // Exchange rate for the rupee cost
+  const rate = useInrRate()
+
   // Total time, used for each step's share
   const total = Math.max(1, result.steps.reduce((sum, step) => sum + step.ms, 0))
 
@@ -33,7 +37,7 @@ export default function IngestionResult({ result }) {
     { label: 'Parts', value: result.documents },
     { label: 'Chunks', value: result.chunks },
     { label: 'Tokens', value: formatTokens(result.embedding_tokens) },
-    { label: 'Cost', value: formatCost(result.cost_usd) },
+    { label: 'Cost', value: formatInr(result.cost_usd * rate) },
     { label: 'Time', value: formatMs(total) },
   ]
 

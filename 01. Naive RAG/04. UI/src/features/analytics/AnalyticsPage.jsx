@@ -11,7 +11,7 @@
 
 // Imports
 import { Clock, Coins, FileUp, Hash, MessageSquare, RefreshCw } from 'lucide-react'
-import { formatCost, formatMs, formatTokens } from '@/lib/format'
+import { formatCost, formatInr, formatMs, formatTokens } from '@/lib/format'
 import PageHeader from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/misc'
@@ -40,6 +40,7 @@ export default function AnalyticsPage() {
 
   // Usage data from the backend
   const { data, isPending, isError, error, refetch, isFetching } = useAnalytics()
+  const rate = data?.usd_to_inr ?? 84
 
   return (
     <div>
@@ -57,24 +58,24 @@ export default function AnalyticsPage() {
         {isError && <p className="rounded-lg border border-danger/30 bg-danger-soft p-4 text-[13px]">Analytics could not be loaded: {error.message}</p>}
         {data && (
           <>
-            {/* Key numbers */}
+            {/* Key numbers; costs are shown in rupees with dollars as context */}
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-              <KpiTile icon={Coins} label="Total cost" value={formatCost(data.totals.cost_usd)} detail="Azure OpenAI list prices" />
+              <KpiTile icon={Coins} label="Total cost" value={formatInr(data.totals.cost_usd * rate)} detail={`${formatCost(data.totals.cost_usd)} at ₹${rate} per USD`} />
               <KpiTile icon={Hash} label="Tokens" value={formatTokens(data.totals.total_tokens)} detail={`${formatTokens(data.totals.prompt_tokens + data.totals.completion_tokens)} chat, ${formatTokens(data.totals.embedding_tokens)} embedding`} />
-              <KpiTile icon={MessageSquare} label="Questions" value={data.totals.queries} detail={data.totals.queries ? `${formatCost(averageCost(data.recent, 'query'))} per question` : 'None yet'} />
+              <KpiTile icon={MessageSquare} label="Questions" value={data.totals.queries} detail={data.totals.queries ? `${formatInr(averageCost(data.recent, 'query') * rate)} per question` : 'None yet'} />
               <KpiTile icon={FileUp} label="Ingestions" value={data.totals.ingestions} detail="Uploads embedded and stored" />
               <KpiTile icon={Clock} label="Avg answer time" value={formatMs(data.totals.avg_query_latency_ms)} detail="Embed, search and generate" />
             </div>
 
             {/* Activity and token split */}
             <div className="grid gap-4 xl:grid-cols-3">
-              <div className="xl:col-span-2"><DailyChart daily={data.daily} /></div>
-              <TokenSplit totals={data.totals} recent={data.recent} />
+              <div className="xl:col-span-2"><DailyChart daily={data.daily} rate={rate} /></div>
+              <TokenSplit totals={data.totals} recent={data.recent} rate={rate} />
             </div>
 
             {/* Latency and recent runs */}
-            <LatencyChart recent={data.recent} average={data.totals.avg_query_latency_ms} />
-            <RecentRuns recent={data.recent} />
+            <LatencyChart recent={data.recent} average={data.totals.avg_query_latency_ms} rate={rate} />
+            <RecentRuns recent={data.recent} rate={rate} />
           </>
         )}
       </div>

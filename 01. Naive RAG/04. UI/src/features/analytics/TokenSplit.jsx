@@ -11,7 +11,7 @@
 
 // Imports
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCost, formatTokens } from '@/lib/format'
+import { formatInr, formatTokens } from '@/lib/format'
 import { averageCost, tokenSplit } from './analytics'
 import { Tooltip } from '@/components/ui/overlay'
 
@@ -23,7 +23,7 @@ const NOTES = {
 }
 
 // Card with the stacked bar and the legend
-export default function TokenSplit({ totals, recent }) {
+export default function TokenSplit({ totals, recent, rate }) {
 
   // Parts with shares
   const parts = tokenSplit(totals)
@@ -70,11 +70,11 @@ export default function TokenSplit({ totals, recent }) {
         <div className="mt-auto grid grid-cols-2 gap-3 border-t pt-5">
           <div>
             <p className="text-[12px] text-muted-foreground">Avg question</p>
-            <p className="mt-0.5 font-mono text-[15px] font-semibold tabular-nums">{formatCost(averageCost(recent, 'query'))}</p>
+            <p className="mt-0.5 font-mono text-[15px] font-semibold tabular-nums">{formatInr(averageCost(recent, 'query') * rate)}</p>
           </div>
           <div>
             <p className="text-[12px] text-muted-foreground">Avg ingestion</p>
-            <p className="mt-0.5 font-mono text-[15px] font-semibold tabular-nums">{formatCost(averageCost(recent, 'ingest'))}</p>
+            <p className="mt-0.5 font-mono text-[15px] font-semibold tabular-nums">{formatInr(averageCost(recent, 'ingest') * rate)}</p>
           </div>
         </div>
       </CardContent>

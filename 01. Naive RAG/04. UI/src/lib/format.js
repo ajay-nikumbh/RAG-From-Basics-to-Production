@@ -2,8 +2,8 @@
  * Formatting helpers.
  *
  * Small functions that turn raw numbers from the API into text people read
- * easily: counts with the right plural, file sizes, money, token counts,
- * durations and relative times.
+ * easily: counts with the right plural, file sizes, money (US dollars and
+ * Indian rupees), token counts, durations and relative times.
  */
 
 // Number plus a word, with an "s" when the count is not 1
@@ -40,6 +40,17 @@ export function formatCost(usd) {
     return `$${usd.toFixed(4)}`
   }
   return `$${usd.toFixed(6)}`
+}
+
+// Rupee amount: 0.0459 -> "₹0.0459", 0.42 -> "₹0.420", 12.5 -> "₹12.50"
+export function formatInr(inr) {
+  if (inr >= 1) {
+    return `₹${inr.toFixed(2)}`
+  }
+  if (inr >= 0.1) {
+    return `₹${inr.toFixed(3)}`
+  }
+  return `₹${inr.toFixed(4)}`
 }
 
 // 21198 -> "21.2K"
