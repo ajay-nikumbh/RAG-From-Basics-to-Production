@@ -10,11 +10,12 @@
  *   Sheet        panel that slides in from the right (document drawer)
  *   DropdownMenu small action menu (row actions)
  *   Tabs         switch between views in the same place
+ *   ConfirmDialog ask before a destructive action (delete)
  */
 
 // Imports
 import { DropdownMenu as Menu, HoverCard as Hover, Tooltip as Tip } from 'radix-ui'
-import { Dialog, Tabs as TabsPrimitive } from 'radix-ui'
+import { AlertDialog, Dialog, Tabs as TabsPrimitive } from 'radix-ui'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -118,4 +119,25 @@ export function TabsTrigger({ className, ...props }) {
 // Tabs: one panel
 export function TabsContent({ className, ...props }) {
   return <TabsPrimitive.Content className={cn('outline-none', className)} {...props} />
+}
+
+// ConfirmDialog: title, description and a confirm button for destructive actions
+export function ConfirmDialog({ open, onOpenChange, title, description, confirmLabel = 'Delete', onConfirm }) {
+  return (
+    <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
+      <AlertDialog.Portal>
+        <AlertDialog.Overlay className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-card p-6 shadow-pop">
+          <AlertDialog.Title className="text-base font-semibold">{title}</AlertDialog.Title>
+          <AlertDialog.Description className="mt-2 text-sm text-muted-foreground">{description}</AlertDialog.Description>
+          <div className="mt-6 flex justify-end gap-2">
+            <AlertDialog.Cancel className="h-9 rounded-md border bg-card px-4 text-sm font-medium hover:bg-accent">Cancel</AlertDialog.Cancel>
+            <AlertDialog.Action onClick={onConfirm} className="h-9 rounded-md bg-danger px-4 text-sm font-medium text-white hover:opacity-90">
+              {confirmLabel}
+            </AlertDialog.Action>
+          </div>
+        </AlertDialog.Content>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
+  )
 }
