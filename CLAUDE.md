@@ -29,7 +29,7 @@ These rules apply to all work in this repository.
 ## 4. Implementation stack
 
 - APIs are built with FastAPI.
-- LLM: Azure OpenAI. Embeddings: OpenAI embeddings. Vector database: FAISS.
+- LLM: Azure OpenAI chat deployment. Embeddings: Azure OpenAI `text-embedding-3-small` deployment. Vector database: FAISS.
 - Secrets live in the repository root `.env` (never committed). Commit only `.env.example` with variable names.
 - Create a clean folder structure first, then write code.
 

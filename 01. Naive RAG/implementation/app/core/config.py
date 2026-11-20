@@ -2,7 +2,7 @@
 Application settings.
 
 This file reads every configuration value the app needs (Azure OpenAI chat
-settings, OpenAI embedding settings, chunking and retrieval settings, data
+and embedding settings, chunking and retrieval settings, data
 folders) from environment variables and from the repository root .env file.
 
 All other files get settings through get_settings(), so values are read once
@@ -42,9 +42,9 @@ class Settings(BaseSettings):
     azure_openai_deployment_name: str = ""
     azure_openai_api_version: str = "2024-10-21"
 
-    # OpenAI embedding model used to turn text into vectors
-    openai_api_key: str = ""
-    openai_embedding_model: str = "text-embedding-3-small"
+    # Azure OpenAI embedding model used to turn text into vectors
+    azure_openai_embedding_deployment: str = "text-embedding-3-small"
+    embedding_dimensions: int = 1536
 
     # Chunking settings (in characters)
     chunk_size: int = 1000

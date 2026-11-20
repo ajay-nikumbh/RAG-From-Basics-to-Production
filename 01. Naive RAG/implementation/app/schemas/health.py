@@ -2,7 +2,7 @@
 Health check schemas.
 
 This file defines the response returned by GET /health. It tells the caller
-that the API is running and which external services are configured, without
+that the API is running and which Azure OpenAI services are configured, without
 ever showing secret values.
 """
 
@@ -14,10 +14,10 @@ class ConfigStatus(BaseModel):
     """Which required settings have a value (True) or are missing (False)."""
 
     # Azure OpenAI chat model settings
-    azure_openai: bool
+    azure_chat: bool
 
-    # OpenAI embeddings settings
-    openai_embeddings: bool
+    # Azure OpenAI embedding model settings
+    azure_embeddings: bool
 
 
 class HealthResponse(BaseModel):
