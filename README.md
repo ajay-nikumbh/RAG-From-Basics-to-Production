@@ -47,7 +47,7 @@ Reference surveys, evaluation frameworks and the baseline retrieve-then-read pip
 <thead><tr><th><img src="assets/spacer.png" align="right" width="41" height="1">#</th><th><img src="assets/spacer.png" align="right" width="280" height="1">Architecture</th><th><img src="assets/spacer.png" align="right" width="725" height="1">Core Idea</th><th><img src="assets/spacer.png" align="right" width="176" height="1">Key Paper</th><th><img src="assets/spacer.png" align="right" width="62" height="1">Papers</th><th><img src="assets/spacer.png" align="right" width="114" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>00</td><td><a href="00.%20RAG%20Surveys%20and%20Foundations/">RAG Surveys and Foundations</a></td><td>Survey papers, historical roots and evaluation frameworks used across every architecture.</td><td><a href="https://arxiv.org/abs/2312.10997">RAG-Survey</a> (2023)</td><td>8</td><td>Planned</td></tr>
-<tr><td>01</td><td><a href="01.%20Naive%20RAG/">Naive (Basic) RAG</a></td><td>Index, retrieve top-k chunks by vector similarity, stuff them into the prompt, generate.</td><td><a href="https://arxiv.org/abs/2005.11401">RAG-Lewis</a> (2020)</td><td>1</td><td>Notes ready</td></tr>
+<tr><td>01</td><td><a href="01.%20Naive%20RAG/">Naive (Basic) RAG</a></td><td>Index, retrieve top-k chunks by vector similarity, stuff them into the prompt, generate.</td><td><a href="https://arxiv.org/abs/2005.11401">RAG-Lewis</a> (2020)</td><td>1</td><td>Implemented</td></tr>
 </tbody>
 </table>
 

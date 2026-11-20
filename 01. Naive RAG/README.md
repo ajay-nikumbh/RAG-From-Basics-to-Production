@@ -2,7 +2,7 @@
 
 **Category:** Foundational  
 **Core idea:** Index, retrieve top-k chunks by vector similarity, stuff them into the prompt, generate.  
-**Status:** Notes ready. Implementation planned.
+**Status:** Notes and implementation complete.
 
 ## Table of Contents
 
@@ -60,13 +60,14 @@ flowchart LR
 
 ## Notes
 
-Read the notes in this order before the implementation.
+Read the notes in this order, then the implementation.
 
 <table width="100%">
 <thead><tr><th><img src="../assets/spacer.png" align="right" width="57" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="342" height="1">Notes</th><th><img src="../assets/spacer.png" align="right" width="1000" height="1">What it covers</th></tr></thead>
 <tbody>
 <tr><td>1</td><td><a href="notes/01.%20Basic%20Concepts/">Basic Concepts</a></td><td>Every building block of a RAG system explained in simple terms with diagrams: documents, chunking, embeddings, similarity, vector databases, retrieval, prompting, evaluation.</td></tr>
 <tr><td>2</td><td><a href="notes/02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Section by section walkthrough of Lewis et al. 2020: figures, equations and results explained in simple terms.</td></tr>
+<tr><td>3</td><td><a href="implementation/">Implementation</a></td><td>End-to-end FastAPI app with Azure OpenAI and FAISS, built step by step, with 19 numbered design docs.</td></tr>
 </tbody>
 </table>
 

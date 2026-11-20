@@ -8,8 +8,8 @@ cosine similarity score), best first.
 """
 
 # Imports
-from app.services.vector_store import get_vector_store
 from app.vectorstore.faiss_store import FaissStore, SearchResult
+from app.services.vector_store import get_vector_store
 from app.embeddings.embedder import embed_query
 from app.core.config import get_settings
 

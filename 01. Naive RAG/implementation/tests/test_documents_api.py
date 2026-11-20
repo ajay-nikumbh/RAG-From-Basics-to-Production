@@ -8,8 +8,8 @@ folder. They check a successful upload and the 400, 409 and 422 errors.
 
 # Imports
 from app.services.vector_store import get_vector_store
-from fastapi.testclient import TestClient
 from app.services import ingestion_service
+from fastapi.testclient import TestClient
 from app.core.config import get_settings
 from app.main import app
 import numpy as np
