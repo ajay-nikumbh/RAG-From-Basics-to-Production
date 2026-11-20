@@ -1,13 +1,16 @@
 /**
  * Vite configuration.
  *
- * This file sets up the React plugin and a development proxy. Every request
- * the UI sends to /api/... is forwarded to the FastAPI server on port 8000
- * with the /api prefix removed, so /api/query reaches POST /query. Because
- * the browser only talks to the Vite server, no CORS setup is needed.
+ * This file sets up React, Tailwind CSS and two conveniences. The "@" alias
+ * points to src, so imports read "@/components/ui/button" instead of long
+ * relative paths. The dev proxy forwards every /api/... request to the
+ * FastAPI server on port 8000 with the /api prefix removed, so the browser
+ * only talks to Vite and no CORS setup is needed.
  */
 
 // Imports
+import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -16,8 +19,13 @@ const API_URL = 'http://127.0.0.1:8000'
 
 export default defineConfig({
 
-  // Enable JSX and fast refresh for React
-  plugins: [react()],
+  // React (JSX, fast refresh) and Tailwind CSS v4
+  plugins: [react(), tailwindcss()],
+
+  // "@/..." means "src/..."
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
 
   // Forward /api requests to FastAPI during development
   server: {

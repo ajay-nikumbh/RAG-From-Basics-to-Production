@@ -1,0 +1,171 @@
+/*
+ * Global styles and design tokens.
+ *
+ * Loads Tailwind CSS v4 and the Geist fonts, then defines every color of the
+ * UI as a CSS variable for the light theme (:root) and the dark theme (.dark).
+ * The @theme block maps those variables to Tailwind names, so components use
+ * classes like bg-card, text-muted-foreground or border-border and switch
+ * theme automatically.
+ */
+
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* "dark:" utilities apply inside an element with the dark class */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Light theme */
+:root {
+  --background: #f6f6f7;
+  --foreground: #0c0e14;
+  --card: #ffffff;
+  --card-foreground: #0c0e14;
+  --sidebar: #fbfbfb;
+  --muted: #f1f1f3;
+  --muted-foreground: #646978;
+  --subtle-foreground: #8b8f9c;
+  --border: #e6e6ea;
+  --input: #e2e2e7;
+  --ring: #5b63d3;
+  --primary: #4f57cf;
+  --primary-hover: #434ab8;
+  --primary-foreground: #ffffff;
+  --primary-soft: #eef0fc;
+  --accent: #f3f3f5;
+  --highlight: rgba(251, 191, 36, 0.32);
+  --highlight-strong: #f59e0b;
+  --success: #15803d;
+  --success-soft: #ecfdf3;
+  --warning: #b45309;
+  --danger: #c2410c;
+  --danger-soft: #fff4ed;
+  --chart-1: #4f57cf;
+  --chart-2: #0ea5a4;
+  --chart-3: #f59e0b;
+  --chart-4: #a855f7;
+  --shadow-card: 0 1px 2px rgba(12, 14, 20, 0.04), 0 1px 1px rgba(12, 14, 20, 0.02);
+  --shadow-pop: 0 12px 32px -8px rgba(12, 14, 20, 0.18), 0 2px 6px rgba(12, 14, 20, 0.06);
+}
+
+/* Dark theme */
+.dark {
+  --background: #0a0b0e;
+  --foreground: #ececf0;
+  --card: #111318;
+  --card-foreground: #ececf0;
+  --sidebar: #0d0f13;
+  --muted: #171a20;
+  --muted-foreground: #9a9eab;
+  --subtle-foreground: #6e7280;
+  --border: #22252d;
+  --input: #2a2e37;
+  --ring: #8189f0;
+  --primary: #7c84f4;
+  --primary-hover: #8f96f6;
+  --primary-foreground: #0a0b0e;
+  --primary-soft: #1b1e33;
+  --accent: #191c23;
+  --highlight: rgba(251, 191, 36, 0.28);
+  --highlight-strong: #fbbf24;
+  --success: #4ade80;
+  --success-soft: #0f2a1a;
+  --warning: #fbbf24;
+  --danger: #fb923c;
+  --danger-soft: #2a160c;
+  --chart-1: #7c84f4;
+  --chart-2: #2dd4bf;
+  --chart-3: #fbbf24;
+  --chart-4: #c084fc;
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.02);
+  --shadow-pop: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Tailwind names for the tokens */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-highlight: var(--highlight);
+  --color-highlight-strong: var(--highlight-strong);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --font-sans: 'Geist Variable', system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* Page base */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every border uses the theme border color by default */
+*,
+::before,
+::after {
+  border-color: var(--border);
+}
+
+/* Thin, quiet scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--input) transparent;
+}
+
+/* Visible focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Highlight used for cited passages inside the PDF text layer */
+.pdf-highlight {
+  background: var(--highlight);
+  box-shadow: 0 0 0 1px var(--highlight);
+  border-radius: 2px;
+}
+
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}

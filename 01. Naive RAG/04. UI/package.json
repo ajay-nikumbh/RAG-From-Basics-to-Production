@@ -11,11 +11,26 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@fontsource-variable/source-serif-4": "^5.2.8",
-    "@fontsource/ibm-plex-mono": "^5.2.6",
-    "@fontsource/ibm-plex-sans": "^5.2.6",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@tanstack/react-query": "^5.108.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.77.0",
+    "motion": "^14.14.0",
+    "radix-ui": "^1.8.1",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "react-dropzone": "^20.2.1",
+    "react-markdown": "^10.1.0",
+    "react-pdf": "^11.1.0",
+    "react-router": "^7.18.6",
+    "recharts": "^3.11.0",
+    "remark-gfm": "^4.0.1",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.1",
+    "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
