@@ -15,10 +15,10 @@ FastAPI can run two upload requests in parallel threads.
 """
 
 # Imports
+from app.core.logging import get_logger, log_detail, log_step
 from app.services.vector_store import get_vector_store
 from app.vectorstore.faiss_store import FaissStore
 from app.ingestion.chunker import chunk_documents
-from app.core.logging import get_logger, log_step
 from app.embeddings.embedder import embed_texts
 from app.ingestion.file_loader import load_file
 from app.services.usage import track_usage
@@ -78,6 +78,9 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
     if path.name in store.sources():
         raise DuplicateDocumentError(f"'{path.name}' is already indexed")
 
+    # The file being ingested
+    log.info(f"  [bold]{'file':<12}[/]  {path.name}  [dim]type={path.suffix.lstrip('.')}  size={path.stat().st_size / 1024:.1f} KB[/]")
+
     # Measure tokens, cost and time of this ingestion
     with track_usage("ingest", file=path.name) as meter:
 
@@ -88,12 +91,22 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
             step["characters"] = sum(len(d.text) for d in documents)
         steps = [{"name": "load", "ms": step["duration_ms"]}]
 
+        # Parts found (pages or sheets), with the emptiest one, to spot scanned pages
+        if documents:
+            sizes = [len(d.text) for d in documents]
+            log_detail(log, "parts", f"{len(documents)}  [dim]chars per part min={min(sizes)}  max={max(sizes)}  avg={sum(sizes) // len(sizes)}[/]")
+
         # Step 2: split the Documents into chunks
         with log_step(log, "chunk", size=settings.chunk_size, overlap=settings.chunk_overlap) as step:
             chunks = chunk_documents(documents, settings.chunk_size, settings.chunk_overlap)
             step["chunks"] = len(chunks)
             meter.details["chunks"] = len(chunks)
         steps.append({"name": "chunk", "ms": step["duration_ms"]})
+
+        # Chunk sizes, to check the splitter behaves as configured
+        if chunks:
+            sizes = [len(c.text) for c in chunks]
+            log_detail(log, "chunks", f"{len(chunks)}  [dim]chars min={min(sizes)}  max={max(sizes)}  avg={sum(sizes) // len(sizes)}[/]")
 
         # Stop if there is nothing to index, for example a scanned PDF
         if not chunks:
@@ -123,6 +136,9 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
             with log_step(log, "save", folder=settings.index_dir.name) as step:
                 store.save(settings.index_dir)
             steps.append({"name": "save", "ms": step["duration_ms"]})
+
+    # Totals of the whole ingestion
+    log.info(f"  [bold]{'usage':<12}[/]  tokens=[cyan]{meter.embedding_tokens}[/]  cost=[cyan]${meter.cost(settings):.6f}[/]  inr=[cyan]Rs {meter.cost(settings) * settings.usd_to_inr:.4f}[/]")
 
     # Report what was done
     return IngestionResult(

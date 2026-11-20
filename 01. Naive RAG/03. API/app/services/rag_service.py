@@ -14,13 +14,14 @@ about HTTP.
 
 # Imports
 from app.generation.prompts import NOT_FOUND_ANSWER, build_messages, source_label
+from app.core.logging import get_logger, is_debug, log_detail, log_step, preview
 from app.generation.generator import generate_answer
-from app.core.logging import get_logger, log_step
 from app.retrieval.retriever import retrieve
 from app.services.usage import track_usage
 from app.core.config import get_settings
 from dataclasses import dataclass, field
 import time
+import re
 
 
 # Logger for pipeline steps
@@ -88,6 +89,12 @@ def answer_question(question: str, top_k: int | None = None, usage_kind: str = "
     settings = get_settings()
     start = time.perf_counter()
 
+    # Detail lines are longer at DEBUG level
+    limit = 300 if is_debug(log) else 64
+
+    # The question being answered
+    log.info(f"  [bold]{'question':<12}[/]  \"{preview(question, 120)}\"  [dim]kind={usage_kind}[/]")
+
     # Measure tokens, cost and time of this query
     with track_usage(usage_kind, question=question[:300]) as meter:
 
@@ -98,6 +105,12 @@ def answer_question(question: str, top_k: int | None = None, usage_kind: str = "
             step["top_score"] = round(results[0].score, 3) if results else None
             step["tokens"] = meter.embedding_tokens
 
+        # One line per retrieved chunk: rank, score, file, page and the start of the text
+        for rank, result in enumerate(results, start=1):
+            meta = result.document.metadata
+            page = f"p.{meta['page']}" if "page" in meta else "-"
+            log_detail(log, f"#{rank}", f"[cyan]{result.score:.3f}[/]  {meta.get('source', '?')}  [dim]{page}[/]  \"{preview(result.document.text, limit)}\"")
+
         # Nothing indexed: answer without calling the chat model
         if not results:
             log.info("  [yellow]no chunks retrieved, returning the not-found answer[/]")
@@ -107,6 +120,10 @@ def answer_question(question: str, top_k: int | None = None, usage_kind: str = "
         with log_step(log, "prompt") as step:
             messages = build_messages(question, results)
             step["context_chars"] = len(messages[1]["content"])
+            step["messages"] = len(messages)
+
+        # Full prompt only at DEBUG level, because it is long
+        log.debug(f"      [dim]prompt[/]\n{preview(messages[1]['content'], 20000)}")
 
         # Step 3: ask the chat model
         with log_step(log, "generate", model=settings.azure_openai_deployment_name) as step:
@@ -114,6 +131,11 @@ def answer_question(question: str, top_k: int | None = None, usage_kind: str = "
             step["tokens_in"] = meter.prompt_tokens
             step["tokens_out"] = meter.completion_tokens
             step["cost"] = f"${meter.cost(settings):.6f}"
+
+        # The answer and the sources it cites
+        cited = sorted({int(number) for number in re.findall(r"\[(\d+)\]", answer)})
+        log_detail(log, "answer", f"\"{preview(answer, limit + 60)}\"")
+        log_detail(log, "cited", f"{cited or 'none'}  [dim]of {len(results)} retrieved[/]")
 
         # Keep the number of sources with the saved event
         meter.details["sources"] = len(results)
@@ -132,6 +154,8 @@ def answer_question(question: str, top_k: int | None = None, usage_kind: str = "
     ]
 
     # Usage of the whole run
+    total_tokens = meter.embedding_tokens + meter.prompt_tokens + meter.completion_tokens
+    log.info(f"  [bold]{'usage':<12}[/]  tokens=[cyan]{total_tokens}[/]  cost=[cyan]${meter.cost(settings):.6f}[/]  inr=[cyan]Rs {meter.cost(settings) * settings.usd_to_inr:.4f}[/]")
     usage = Usage(
         embedding_tokens=meter.embedding_tokens,
         prompt_tokens=meter.prompt_tokens,

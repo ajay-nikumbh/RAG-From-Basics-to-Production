@@ -15,12 +15,12 @@ averages each metric, the retrieval hit rate, latency and cost.
 """
 
 # Imports
+from app.core.logging import get_logger, log_detail, log_spacer
 from app.services.rag_service import answer_question
 from app.services.usage import track_usage
 from app.core.config import get_settings
 from app.evals.judge import judge_answer
 from datetime import datetime, timezone
-from app.core.logging import get_logger
 from dataclasses import asdict
 from pathlib import Path
 import threading
@@ -178,9 +178,10 @@ def evaluate_case(case: dict, top_k: int | None) -> dict:
 def run_evaluation(report: dict, cases: list[dict]) -> None:
     """Evaluate every case, saving the report after each one."""
 
-    # Work through the cases in order
+    # Work through the cases in order; each case starts with an empty line
     try:
         for index, case in enumerate(cases, start=1):
+            log_spacer()
 
             # One failing case is recorded and the run continues
             try:
@@ -194,7 +195,12 @@ def run_evaluation(report: dict, cases: list[dict]) -> None:
             report["completed"] = index
             report["summary"] = summarize_results(report["results"])
             save_report(report)
-            log.info(f"  eval  {index}/{len(cases)}  [cyan]{case['id']}[/]  overall={result.get('overall')}")
+            log.info(f"  [bold]eval {index}/{len(cases)}[/]  [cyan]{case['id']}[/]  overall=[cyan]{result.get('overall')}[/]")
+            if not result.get("error"):
+                scores = "  ".join(f"{name}={metric['score']}" for name, metric in result["metrics"].items() if metric)
+                log_detail(log, "scores", f"hit={result['retrieval_hit']}  {scores}")
+                log_detail(log, "cost", f"answer=${result['answer_cost_usd']:.6f}  judge=${result['judge_cost_usd']:.6f}  latency={result['latency_ms']} ms")
+            log_spacer()
 
         # All cases done
         report["status"] = "done"

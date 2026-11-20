@@ -21,8 +21,8 @@ separately from user questions.
 # Imports
 from app.schemas.evals import EvalAnswerRequest, EvalAnswerResponse, EvalRunRequest, JudgeUsage, MetricResponse
 from app.evals.runner import RunInProgressError, get_report, list_reports, load_testset, start_run
+from app.core.logging import get_logger, log_detail, log_step, preview
 from fastapi import APIRouter, HTTPException, status
-from app.core.logging import get_logger, log_step
 from app.services.usage import track_usage
 from app.core.config import get_settings
 from app.evals.judge import judge_answer
@@ -35,6 +35,21 @@ router = APIRouter(tags=["Evals"])
 
 # Logger for evaluation steps
 log = get_logger(__name__)
+
+
+def log_judgement(judgement) -> None:
+    """Log every metric of a judgement with its score and reason."""
+
+    # Metrics in display order; correctness only with a reference
+    metrics = [("faithful", judgement.faithfulness), ("relevance", judgement.answer_relevance), ("precision", judgement.context_precision), ("correct", judgement.correctness)]
+    for label, metric in metrics:
+        if metric is None:
+            continue
+        score = "-" if metric.score is None else f"{metric.score:.2f}"
+        log_detail(log, label, f"[cyan]{score}[/]  [dim]{preview(metric.reason, 110)}[/]")
+
+    # Chunks the judge found relevant
+    log_detail(log, "relevant", f"{judgement.relevant_chunks or 'none'}")
 
 
 @router.post("/evals/answer", response_model=EvalAnswerResponse)
@@ -54,6 +69,10 @@ def evaluate_answer(request: EvalAnswerRequest) -> EvalAnswerResponse:
             step["tokens_out"] = meter.completion_tokens
         meter.details["overall"] = judgement.overall()
         cost = meter.cost(settings)
+
+    # What was graded, then one line per metric with its reason
+    log_detail(log, "question", f"\"{preview(request.question, 120)}\"")
+    log_judgement(judgement)
 
     # Convert the judgement into the response schema
     return EvalAnswerResponse(
