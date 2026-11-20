@@ -1,0 +1,5 @@
+# Uploaded files and the FAISS index are local data, not source code
+data/uploads/*
+data/index/*
+!data/uploads/.gitkeep
+!data/index/.gitkeep
