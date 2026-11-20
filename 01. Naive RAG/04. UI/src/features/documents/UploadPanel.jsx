@@ -152,18 +152,19 @@ export default function UploadPanel() {
       <div
         {...getRootProps()}
         className={cn(
-          'group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-dashed px-6 py-10 text-center transition-colors',
+          'group relative flex cursor-pointer items-center gap-4 rounded-xl border border-dashed px-5 py-5 transition-colors',
           isDragActive ? 'border-primary bg-primary-soft' : 'border-input bg-muted/40 hover:border-primary/60 hover:bg-primary-soft/50',
         )}
       >
         <input {...getInputProps()} />
-        <div className="grid size-11 place-items-center rounded-full border bg-card shadow-card transition-transform group-hover:-translate-y-0.5">
+        <div className="grid size-11 shrink-0 place-items-center rounded-full border bg-card shadow-card transition-transform group-hover:-translate-y-0.5">
           <CloudUpload className="size-5 text-primary" />
         </div>
-        <div>
-          <p className="text-sm font-medium">{isDragActive ? 'Drop to upload' : 'Drop files here or click to browse'}</p>
-          <p className="mt-1 text-[12px] text-muted-foreground">PDF, Excel, Word, Markdown or text. Files are parsed, chunked, embedded and indexed.</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">{isDragActive ? 'Drop to upload' : 'Drop files here to index them'}</p>
+          <p className="mt-0.5 text-[12px] text-muted-foreground">PDF, Excel, Word, Markdown or text. Files are parsed, chunked, embedded and indexed.</p>
         </div>
+        <span className="hidden shrink-0 rounded-lg border bg-card px-3 py-1.5 text-[12.5px] font-medium shadow-card sm:inline">Browse files</span>
       </div>
 
       {/* Upload queue */}

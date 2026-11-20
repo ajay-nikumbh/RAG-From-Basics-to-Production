@@ -1,8 +1,9 @@
 /**
  * Documents table.
  *
- * This file lists every indexed file with its type, pages or sheets, chunks,
- * size and upload time. A search box filters by name. Clicking a row opens
+ * This file lists every indexed file: name with its type and pages or sheets
+ * underneath, chunks, size and upload time. Four columns keep the table
+ * narrow enough to sit next to the index overview without scrolling. A search box filters by name. Clicking a row opens
  * the document drawer; the row menu offers Open and Delete, and Delete asks
  * for confirmation first. Loading shows skeleton rows, an empty index shows
  * a short call to action.
@@ -14,13 +15,12 @@ import { Ellipsis, Eye, Search, Trash2 } from 'lucide-react'
 import { formatBytes, plural, timeAgo } from '@/lib/format'
 import { useDeleteDocument } from '@/api/queries'
 import { Skeleton } from '@/components/ui/misc'
-import { Badge } from '@/components/ui/badge'
 import { fileType } from './fileTypes'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 // Column headings
-const COLUMNS = ['Name', 'Type', 'Parts', 'Chunks', 'Size', 'Uploaded', '']
+const COLUMNS = ['Name', 'Chunks', 'Size', 'Uploaded', '']
 
 // Indexed documents with search and row actions
 export default function DocumentsTable({ documents, isPending, onOpen }) {
@@ -90,14 +90,15 @@ export default function DocumentsTable({ documents, isPending, onOpen }) {
               const { icon: Icon, color, label, part } = fileType(doc.file_type)
               return (
                 <tr key={doc.source} onClick={() => onOpen(doc)} className="group cursor-pointer border-b whitespace-nowrap transition-colors last:border-0 hover:bg-accent/60">
-                  <td className="max-w-80 px-4 py-3">
-                    <div className="flex items-center gap-2.5">
-                      <Icon className={`size-4 shrink-0 ${color}`} />
-                      <span className="truncate font-medium">{doc.source}</span>
+                  <td className="w-full max-w-0 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-muted"><Icon className={`size-4 ${color}`} /></span>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium" title={doc.source}>{doc.source}</p>
+                        <p className="text-[11.5px] text-subtle-foreground">{label}{part ? ` - ${plural(doc.parts, part)}` : ''}</p>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3"><Badge>{label}</Badge></td>
-                  <td className="px-4 py-3 font-mono text-muted-foreground tabular-nums">{part ? plural(doc.parts, part) : '-'}</td>
                   <td className="px-4 py-3 font-mono tabular-nums">{doc.chunks}</td>
                   <td className="px-4 py-3 font-mono text-muted-foreground tabular-nums">{formatBytes(doc.size_bytes)}</td>
                   <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">{timeAgo(doc.uploaded_at)}</td>
