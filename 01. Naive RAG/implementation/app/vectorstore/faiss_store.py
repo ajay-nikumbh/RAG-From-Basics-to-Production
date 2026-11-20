@@ -55,6 +55,12 @@ class FaissStore:
         # One index row per chunk
         return self.index.ntotal
 
+    def sources(self) -> set[str]:
+        """Names of all files that have chunks in the store."""
+
+        # Every chunk keeps its file name in metadata
+        return {chunk.metadata.get("source") for chunk in self.chunks}
+
     def add(self, vectors: np.ndarray, chunks: list[Document]) -> None:
         """Add chunk vectors and their chunks, keeping both in the same order."""
 
