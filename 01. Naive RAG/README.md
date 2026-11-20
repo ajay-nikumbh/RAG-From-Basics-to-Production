@@ -65,10 +65,10 @@ Read the notes in this order, then the implementation.
 <table width="100%">
 <thead><tr><th><img src="../assets/spacer.png" align="right" width="57" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="342" height="1">Notes</th><th><img src="../assets/spacer.png" align="right" width="1000" height="1">What it covers</th></tr></thead>
 <tbody>
-<tr><td>1</td><td><a href="notes/01.%20Basic%20Concepts/">Basic Concepts</a></td><td>Every building block of a RAG system explained in simple terms with diagrams: documents, chunking, embeddings, similarity, vector databases, retrieval, prompting, evaluation.</td></tr>
-<tr><td>2</td><td><a href="notes/02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Section by section walkthrough of Lewis et al. 2020: figures, equations and results explained in simple terms.</td></tr>
-<tr><td>3</td><td><a href="implementation/">Implementation</a></td><td>End-to-end FastAPI app with Azure OpenAI and FAISS, built step by step, with 19 numbered design docs.</td></tr>
-<tr><td>4</td><td><a href="ui/">UI</a></td><td>React reading-desk interface: upload, ask, and verify answers against highlighted evidence, with 10 numbered design docs.</td></tr>
+<tr><td>1</td><td><a href="01.%20Notes/01.%20Basic%20Concepts/">Basic Concepts</a></td><td>Every building block of a RAG system explained in simple terms with diagrams: documents, chunking, embeddings, similarity, vector databases, retrieval, prompting, evaluation.</td></tr>
+<tr><td>2</td><td><a href="01.%20Notes/02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Section by section walkthrough of Lewis et al. 2020: figures, equations and results explained in simple terms.</td></tr>
+<tr><td>3</td><td><a href="03.%20API/">API</a></td><td>End-to-end FastAPI app with Azure OpenAI and FAISS, built step by step, with 20 numbered design docs.</td></tr>
+<tr><td>4</td><td><a href="04.%20UI/">UI</a></td><td>React reading-desk interface: upload, ask, and verify answers against highlighted evidence, with 10 numbered design docs.</td></tr>
 </tbody>
 </table>
 
@@ -77,7 +77,7 @@ Read the notes in this order, then the implementation.
 <table width="100%">
 <thead><tr><th><img src="../assets/spacer.png" align="right" width="49" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="785" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="49" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="270" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="122" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="122" height="1">Local copy</th></tr></thead>
 <tbody>
-<tr><td>1</td><td>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</td><td>2020</td><td>NeurIPS 2020 (Meta AI)</td><td><a href="https://arxiv.org/abs/2005.11401">2005.11401</a></td><td><a href="papers/2005.11401_RAG-Lewis.pdf">PDF</a></td></tr>
+<tr><td>1</td><td>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</td><td>2020</td><td>NeurIPS 2020 (Meta AI)</td><td><a href="https://arxiv.org/abs/2005.11401">2005.11401</a></td><td><a href="02.%20Papers/2005.11401_RAG-Lewis.pdf">PDF</a></td></tr>
 </tbody>
 </table>
 
