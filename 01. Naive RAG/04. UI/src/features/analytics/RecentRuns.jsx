@@ -6,14 +6,15 @@
  * time, latency and number of sources or chunks), a token breakdown bar,
  * the question tokens (prompt: question plus retrieved context), the answer
  * tokens (completion), the embedding tokens and the cost in rupees with the
- * dollar amount underneath. Tabs filter by type.
+ * dollar amount underneath. Tabs filter by type: questions, ingestions and
+ * evaluations (evaluation questions and judge calls).
  */
 
 // Imports
 import { formatCost, formatInr, formatMs, formatTokens, plural, timeAgo } from '@/lib/format'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, Tooltip } from '@/components/ui/overlay'
-import { FileUp, MessageSquare } from 'lucide-react'
+import { FileUp, Gauge, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -58,7 +59,7 @@ export default function RecentRuns({ recent, rate }) {
 
   // Selected filter and the matching rows
   const [filter, setFilter] = useState('all')
-  const rows = filter === 'all' ? recent : recent.filter((event) => event.kind === filter)
+  const rows = filter === 'all' ? recent : recent.filter((event) => (filter === 'eval' ? event.kind.startsWith('eval') : event.kind === filter))
 
   return (
     <Card className="overflow-hidden">
@@ -72,6 +73,7 @@ export default function RecentRuns({ recent, rate }) {
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="query">Questions</TabsTrigger>
             <TabsTrigger value="ingest">Ingestions</TabsTrigger>
+            <TabsTrigger value="eval">Evaluations</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
@@ -90,22 +92,24 @@ export default function RecentRuns({ recent, rate }) {
           <tbody>
             {rows.map((event) => {
               const isIngest = event.kind === 'ingest'
-              const Icon = isIngest ? FileUp : MessageSquare
+              const isEval = event.kind.startsWith('eval')
+              const Icon = isIngest ? FileUp : isEval ? Gauge : MessageSquare
               const subject = isIngest ? event.file : event.question
-              const extra = isIngest ? plural(event.chunks ?? 0, 'chunk') : plural(event.sources ?? 0, 'source')
+              const extra = isIngest ? plural(event.chunks ?? 0, 'chunk') : event.kind === 'eval_judge' ? 'judge' : plural(event.sources ?? 0, 'source')
+              const kindLabel = isIngest ? 'Ingestion' : isEval ? 'Evaluation' : 'Question'
               return (
                 <tr key={`${event.time}-${subject}`} className="border-b last:border-0 hover:bg-muted/40">
 
                   {/* Run: icon, question or file, and its context */}
                   <td className="max-w-[30rem] px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <span className={cn('grid size-8 shrink-0 place-items-center rounded-lg', isIngest ? 'bg-muted text-muted-foreground' : 'bg-primary-soft text-primary')}>
+                      <span className={cn('grid size-8 shrink-0 place-items-center rounded-lg', isIngest ? 'bg-muted text-muted-foreground' : isEval ? 'bg-success-soft text-success' : 'bg-primary-soft text-primary')}>
                         <Icon className="size-3.5" />
                       </span>
                       <div className="min-w-0">
                         <p className="truncate font-medium" title={subject}>{subject}</p>
                         <p className="text-[11.5px] text-subtle-foreground">
-                          {isIngest ? 'Ingestion' : 'Question'} - {timeAgo(event.time)} - {formatMs(event.latency_ms)} - {extra}
+                          {kindLabel} - {timeAgo(event.time)} - {formatMs(event.latency_ms)} - {extra}
                         </p>
                       </div>
                     </div>

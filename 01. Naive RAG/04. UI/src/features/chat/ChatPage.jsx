@@ -94,7 +94,7 @@ function EmptyState({ onAsk }) {
 export default function ChatPage() {
 
   // Conversation state and screen size
-  const { turns, busy, ask, reset, opened, openSource, closeSource } = useChat()
+  const { turns, busy, ask, evaluate, reset, opened, openSource, closeSource } = useChat()
   const isLarge = useMediaQuery('(min-width: 1024px)')
 
   // The turn whose source is open
@@ -144,6 +144,7 @@ export default function ChatPage() {
                   activeNumber={opened?.turnId === turn.id ? opened.number : null}
                   onOpen={(number) => openSource(turn.id, number)}
                   onRetry={() => ask(turn.question, turn.topK)}
+                  onEvaluate={() => evaluate(turn)}
                 />
               ))}
               <div ref={endRef} />

@@ -161,3 +161,36 @@ export function askQuestion(question, topK = null) {
     body: JSON.stringify({ question, top_k: topK }),
   })
 }
+
+// POST /evals/answer: grade one answer with the LLM judge
+export function evaluateAnswer({ question, answer, contexts, reference = null }) {
+  return request('/evals/answer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question, answer, contexts, reference }),
+  })
+}
+
+// GET /evals/testset: the built-in test cases
+export function getEvalTestset() {
+  return request('/evals/testset')
+}
+
+// GET /evals/runs: saved evaluation runs, newest first
+export function listEvalRuns() {
+  return request('/evals/runs')
+}
+
+// GET /evals/runs/{id}: one run with its per-case results
+export function getEvalRun(id) {
+  return request(`/evals/runs/${encodeURIComponent(id)}`)
+}
+
+// POST /evals/runs: start evaluating the pipeline on the test set
+export function startEvalRun({ topK = null, caseIds = null } = {}) {
+  return request('/evals/runs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ top_k: topK, case_ids: caseIds }),
+  })
+}

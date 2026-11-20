@@ -4,20 +4,23 @@
  * This file draws one question and its answer. The question is a right-hand
  * bubble. The answer shows a thinking state while the request runs, then the
  * Markdown answer with citation chips, a usage line (latency, question and
- * answer tokens, cost in rupees)
- * with a copy button, and the source cards. A failed request shows the error
- * with a retry button.
+ * answer tokens, cost in rupees) with Evaluate and Copy buttons, the
+ * evaluation card once the answer is graded, and the source cards (chunks
+ * the judge found relevant are marked). A failed request shows the error with
+ * a retry button.
  */
 
 // Imports
 import { formatCost, formatInr, formatMs, formatTokens, plural } from '@/lib/format'
-import { AlertCircle, Check, Copy, RotateCcw, Sparkles } from 'lucide-react'
+import { AlertCircle, Check, Copy, Gauge, RotateCcw, Sparkles } from 'lucide-react'
+import AnswerEvaluation from './AnswerEvaluation'
 import { Tooltip } from '@/components/ui/overlay'
 import { Button } from '@/components/ui/button'
 import AnswerMarkdown from './AnswerMarkdown'
 import { citedNumbers } from './citations'
 import SourceCards from './SourceCards'
 import { motion } from 'motion/react'
+import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
 // Steps shown while the answer is being prepared
@@ -51,7 +54,7 @@ function Thinking() {
 }
 
 // Latency, tokens and cost of one answer, plus a copy button
-function UsageLine({ usage, answer }) {
+function UsageLine({ usage, answer, canEvaluate, onEvaluate }) {
 
   // Brief "copied" state after a click
   const [copied, setCopied] = useState(false)
@@ -70,7 +73,14 @@ function UsageLine({ usage, answer }) {
       <Tooltip content={formatCost(usage.cost_usd)}>
         <span className="cursor-default">{formatInr(usage.cost_inr)}</span>
       </Tooltip>
-      <Button variant="ghost" size="sm" onClick={copy} className="ml-auto h-7 gap-1.5 px-2 font-sans text-[12px]">
+      {canEvaluate && (
+        <Tooltip content="Grade this answer with the LLM judge">
+          <Button variant="ghost" size="sm" onClick={onEvaluate} className="ml-auto h-7 gap-1.5 px-2 font-sans text-[12px]">
+            <Gauge className="size-3.5" />Evaluate
+          </Button>
+        </Tooltip>
+      )}
+      <Button variant="ghost" size="sm" onClick={copy} className={cn('h-7 gap-1.5 px-2 font-sans text-[12px]', !canEvaluate && 'ml-auto')}>
         {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
         {copied ? 'Copied' : 'Copy'}
       </Button>
@@ -79,10 +89,11 @@ function UsageLine({ usage, answer }) {
 }
 
 // One question and its answer
-export default function ChatTurn({ turn, activeNumber, onOpen, onRetry }) {
+export default function ChatTurn({ turn, activeNumber, onOpen, onRetry, onEvaluate }) {
 
-  // Which sources the answer cites
+  // Which sources the answer cites, and which ones the judge found relevant
   const cited = citedNumbers(turn.answer)
+  const relevant = new Set(turn.evaluation?.result?.relevant_chunks ?? [])
 
   return (
     <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
@@ -114,13 +125,14 @@ export default function ChatTurn({ turn, activeNumber, onOpen, onRetry }) {
           {turn.status === 'done' && (
             <>
               <AnswerMarkdown text={turn.answer} sources={turn.sources} activeNumber={activeNumber} onOpen={onOpen} />
-              <UsageLine usage={turn.usage} answer={turn.answer} />
+              <UsageLine usage={turn.usage} answer={turn.answer} canEvaluate={!turn.evaluation && turn.sources.length > 0} onEvaluate={onEvaluate} />
+              {turn.evaluation && <AnswerEvaluation evaluation={turn.evaluation} onRetry={onEvaluate} />}
               {turn.sources.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-[11px] font-medium tracking-wider text-subtle-foreground uppercase">
                     {plural(turn.sources.length, 'source')} - {cited.size} cited
                   </p>
-                  <SourceCards sources={turn.sources} cited={cited} activeNumber={activeNumber} onOpen={onOpen} />
+                  <SourceCards sources={turn.sources} cited={cited} relevant={relevant} activeNumber={activeNumber} onOpen={onOpen} />
                 </div>
               )}
             </>

@@ -4,7 +4,8 @@
  * This file lists the retrieved chunks under an answer as compact cards:
  * number, file name, page, similarity score and the first lines of the chunk.
  * Cited sources come first and are marked; sources the model retrieved but
- * did not cite are dimmed. Clicking a card opens it in the source panel.
+ * did not cite are dimmed. After an evaluation, chunks the judge found
+ * relevant get a "Relevant" tag. Clicking a card opens it in the source panel.
  */
 
 // Imports
@@ -14,7 +15,7 @@ import { sourceType } from './citations'
 import { cn } from '@/lib/utils'
 
 // Grid of source cards
-export default function SourceCards({ sources, cited, activeNumber, onOpen }) {
+export default function SourceCards({ sources, cited, relevant = new Set(), activeNumber, onOpen }) {
 
   // Cited sources first, then the rest, each group in retrieval order
   const ordered = [...sources].sort((a, b) => Number(cited.has(b.number)) - Number(cited.has(a.number)))
@@ -52,7 +53,10 @@ export default function SourceCards({ sources, cited, activeNumber, onOpen }) {
             {/* Score and cited flag */}
             <div className="flex items-center justify-between">
               <ScoreBar score={source.score} />
-              <span className="text-[11px] text-subtle-foreground">{isCited ? 'Cited' : 'Retrieved'}</span>
+              <span className="flex items-center gap-1.5 text-[11px] text-subtle-foreground">
+                {relevant.has(source.number) && <span className="rounded bg-success-soft px-1.5 py-px font-medium text-success">Relevant</span>}
+                {isCited ? 'Cited' : 'Retrieved'}
+              </span>
             </div>
           </button>
         )

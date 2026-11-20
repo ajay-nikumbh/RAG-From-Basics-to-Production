@@ -9,7 +9,7 @@
  */
 
 // Imports
-import { askQuestion, deleteDocument, getAnalytics, getDocumentChunks, getHealth, listDocuments, uploadDocument } from './client.js'
+import { askQuestion, deleteDocument, evaluateAnswer, getAnalytics, getDocumentChunks, getEvalRun, getEvalTestset, getHealth, listDocuments, listEvalRuns, startEvalRun, uploadDocument } from './client.js'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 // Cache keys, in one place so invalidation never misses a typo
@@ -18,6 +18,9 @@ export const keys = {
   documents: ['documents'],
   chunks: (source) => ['documents', source, 'chunks'],
   analytics: ['analytics'],
+  testset: ['evals', 'testset'],
+  evalRuns: ['evals', 'runs'],
+  evalRun: (id) => ['evals', 'runs', id],
 }
 
 // API status, checked every 30 seconds
@@ -73,5 +76,50 @@ export function useAsk() {
   return useMutation({
     mutationFn: ({ question, topK }) => askQuestion(question, topK),
     onSuccess: () => client.invalidateQueries({ queryKey: keys.analytics }),
+  })
+}
+
+// Grade one chat answer with the LLM judge; analytics refresh afterwards (grading has a cost)
+export function useEvaluateAnswer() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: evaluateAnswer,
+    onSuccess: () => client.invalidateQueries({ queryKey: keys.analytics }),
+  })
+}
+
+// Built-in evaluation test cases
+export function useEvalTestset() {
+  return useQuery({ queryKey: keys.testset, queryFn: getEvalTestset })
+}
+
+// Saved evaluation runs; polled every 3 seconds while one is running
+export function useEvalRuns() {
+  return useQuery({
+    queryKey: keys.evalRuns,
+    queryFn: listEvalRuns,
+    refetchInterval: (query) => (query.state.data?.runs?.some((run) => run.status === 'running') ? 3000 : false),
+  })
+}
+
+// One evaluation run with results; polled every 2 seconds until it finishes
+export function useEvalRun(id) {
+  return useQuery({
+    queryKey: keys.evalRun(id),
+    queryFn: () => getEvalRun(id),
+    enabled: Boolean(id),
+    refetchInterval: (query) => (query.state.data?.status === 'running' ? 2000 : false),
+  })
+}
+
+// Start an evaluation run; the run list and analytics refresh afterwards
+export function useStartEvalRun() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: startEvalRun,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: keys.evalRuns })
+      client.invalidateQueries({ queryKey: keys.analytics })
+    },
   })
 }
