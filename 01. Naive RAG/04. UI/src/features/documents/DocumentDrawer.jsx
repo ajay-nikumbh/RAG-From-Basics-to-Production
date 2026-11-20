@@ -10,10 +10,10 @@
  */
 
 // Imports
-import { documentFileUrl } from '@/api/client'
 import { formatBytes, plural } from '@/lib/format'
-import { Sheet } from '@/components/ui/overlay'
 import PdfViewer from '@/features/pdf/PdfViewer'
+import { Sheet } from '@/components/ui/overlay'
+import { documentFileUrl } from '@/api/client'
 import { fileType } from './fileTypes'
 import ChunkList from './ChunkList'
 import { useState } from 'react'

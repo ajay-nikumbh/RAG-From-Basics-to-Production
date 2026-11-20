@@ -13,10 +13,10 @@
 import { ChevronLeft, ChevronRight, Minus, Plus, ExternalLink } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { escapeHtml, isInChunk, normalise } from './highlight'
-import 'react-pdf/dist/Page/TextLayer.css'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { Skeleton } from '@/components/ui/misc'
 import { Button } from '@/components/ui/button'
+import 'react-pdf/dist/Page/TextLayer.css'
 
 // pdf.js parses PDFs in a web worker shipped with pdfjs-dist
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()

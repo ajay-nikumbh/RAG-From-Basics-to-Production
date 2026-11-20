@@ -3,12 +3,14 @@
  *
  * This file defines the pages of the app. Every page renders inside the
  * AppShell (sidebar plus content): Chat at "/", Documents at "/documents"
- * and Analytics at "/analytics". Unknown URLs go back to Chat.
+ * and Analytics at "/analytics". Unknown URLs go back to Chat. The
+ * ChatProvider keeps the conversation while moving between pages.
  */
 
 // Imports
 import AnalyticsPage from '@/features/analytics/AnalyticsPage'
 import DocumentsPage from '@/features/documents/DocumentsPage'
+import { ChatProvider } from '@/features/chat/ChatContext'
 import { Navigate, Route, Routes } from 'react-router'
 import AppShell from '@/components/layout/AppShell'
 import ChatPage from '@/features/chat/ChatPage'
@@ -16,13 +18,15 @@ import ChatPage from '@/features/chat/ChatPage'
 // Page routes
 export default function App() {
   return (
-    <Routes>
-      <Route element={<AppShell />}>
-        <Route index element={<ChatPage />} />
-        <Route path="documents" element={<DocumentsPage />} />
-        <Route path="analytics" element={<AnalyticsPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+    <ChatProvider>
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route index element={<ChatPage />} />
+          <Route path="documents" element={<DocumentsPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </ChatProvider>
   )
 }
