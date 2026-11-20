@@ -1,0 +1,31 @@
+/*
+ * Panel header styles.
+ *
+ * Small tracked uppercase label in tertiary ink, like a section label in a
+ * printed index, with tabular metadata on the right.
+ */
+
+/* Label and metadata on one line */
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+/* Uppercase section label */
+.title {
+  color: var(--ink-faint);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Count or other metadata in the data font */
+.meta {
+  color: var(--ink-faint);
+  font-family: var(--font-data);
+  font-size: var(--text-caption);
+  font-variant-numeric: tabular-nums;
+}
