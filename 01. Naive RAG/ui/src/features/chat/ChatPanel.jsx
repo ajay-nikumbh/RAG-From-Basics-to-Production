@@ -14,7 +14,7 @@ import AskForm from './AskForm.jsx'
 import Turn from './Turn.jsx'
 
 // Title, thread and question box
-export default function ChatPanel({ turns, busy, onAsk, selectedId }) {
+export default function ChatPanel({ turns, busy, onAsk, selectedId, onSelect }) {
 
   // Marker after the last turn, used for scrolling
   const endRef = useRef(null)
@@ -37,7 +37,7 @@ export default function ChatPanel({ turns, busy, onAsk, selectedId }) {
           </EmptyState>
         ) : (
           turns.map((turn) => (
-            <Turn key={turn.id} turn={turn} selected={turn.id === selectedId} />
+            <Turn key={turn.id} turn={turn} selected={turn.id === selectedId} onSelect={onSelect} />
           ))
         )}
         <div ref={endRef} />

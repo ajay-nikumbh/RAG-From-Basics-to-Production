@@ -55,3 +55,53 @@
   background: var(--danger-tint);
   color: var(--danger);
 }
+
+/* Citation chip: a small pen-blue number, like a footnote mark */
+.cite {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  margin: 0 1px;
+  padding: 0 var(--space-1);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--pen-tint);
+  color: var(--pen);
+  font-family: var(--font-data);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  vertical-align: 2px;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+/* Larger click area than the visible chip */
+.cite::after {
+  content: '';
+  position: absolute;
+  inset: -6px -3px;
+}
+
+.cite:hover {
+  background: var(--pen);
+  color: var(--sheet);
+}
+
+/* Text button that selects the turn */
+.showEvidence {
+  margin-top: var(--space-3);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--pen);
+  font-size: var(--text-small);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.showEvidence:hover {
+  text-decoration: underline;
+}

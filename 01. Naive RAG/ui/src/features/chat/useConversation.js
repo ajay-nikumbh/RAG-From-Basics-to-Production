@@ -5,7 +5,8 @@
  * question and its answer. ask() adds a pending turn right away, sends the
  * question to POST /query and then fills the turn with the answer and its
  * sources, or with the error message. It also remembers which turn is
- * selected, so the evidence panel knows whose sources to show.
+ * selected and which of its sources was clicked, so the evidence panel knows
+ * what to show and what to point at.
  */
 
 // Imports
@@ -21,9 +22,18 @@ export function useConversation() {
   // Id of the turn whose sources the evidence panel shows
   const [selectedId, setSelectedId] = useState(null)
 
+  // Source number clicked in that turn's answer, or null
+  const [focusedNumber, setFocusedNumber] = useState(null)
+
   // Change one turn by id without touching the others
   function updateTurn(id, changes) {
     setTurns((current) => current.map((turn) => (turn.id === id ? { ...turn, ...changes } : turn)))
+  }
+
+  // Show a turn's sources, optionally pointing at one source number
+  function select(id, number = null) {
+    setSelectedId(id)
+    setFocusedNumber(number)
   }
 
   // Ask a question and fill in the answer when it arrives
@@ -32,7 +42,7 @@ export function useConversation() {
     // Add the turn immediately so the question shows while waiting
     const id = crypto.randomUUID()
     setTurns((current) => [...current, { id, question, status: 'pending', answer: '', sources: [], error: '' }])
-    setSelectedId(id)
+    select(id)
 
     // Ask the backend, then store the answer or the error
     try {
@@ -49,5 +59,5 @@ export function useConversation() {
   // The selected turn, or null
   const selectedTurn = turns.find((turn) => turn.id === selectedId) ?? null
 
-  return { turns, busy, ask, selectedTurn, select: setSelectedId }
+  return { turns, busy, ask, selectedTurn, focusedNumber, select }
 }
