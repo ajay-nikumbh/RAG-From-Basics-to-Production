@@ -14,8 +14,13 @@ it knows nothing about HTTP.
 # Imports
 from app.generation.prompts import NOT_FOUND_ANSWER, build_messages, source_label
 from app.generation.generator import generate_answer
+from app.core.logging import get_logger, log_step
 from app.retrieval.retriever import retrieve
 from dataclasses import dataclass
+
+
+# Logger for pipeline steps
+log = get_logger(__name__)
 
 
 @dataclass
@@ -50,17 +55,25 @@ def answer_question(question: str, top_k: int | None = None) -> RagAnswer:
     """Retrieve context for the question, generate a grounded answer and return it with sources."""
 
     # Step 1: find the most similar chunks
-    results = retrieve(question, top_k=top_k)
+    with log_step(log, "retrieve", top_k=top_k or "default") as step:
+        results = retrieve(question, top_k=top_k)
+        step["results"] = len(results)
+        step["top_score"] = round(results[0].score, 3) if results else None
 
     # Nothing indexed: answer without calling the chat model
     if not results:
+        log.info("  [yellow]no chunks retrieved, returning the not-found answer[/]")
         return RagAnswer(answer=NOT_FOUND_ANSWER, sources=[])
 
     # Step 2: build the grounded prompt
-    messages = build_messages(question, results)
+    with log_step(log, "prompt") as step:
+        messages = build_messages(question, results)
+        step["context_chars"] = len(messages[1]["content"])
 
     # Step 3: ask the chat model
-    answer = generate_answer(messages)
+    with log_step(log, "generate") as step:
+        answer = generate_answer(messages)
+        step["answer_chars"] = len(answer)
 
     # Number the sources the same way as the context blocks in the prompt
     sources = [

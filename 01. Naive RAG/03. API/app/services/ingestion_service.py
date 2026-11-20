@@ -18,6 +18,7 @@ FastAPI can run two upload requests in parallel threads.
 from app.services.vector_store import get_vector_store
 from app.vectorstore.faiss_store import FaissStore
 from app.ingestion.chunker import chunk_documents
+from app.core.logging import get_logger, log_step
 from app.embeddings.embedder import embed_texts
 from app.ingestion.file_loader import load_file
 from app.core.config import get_settings
@@ -28,6 +29,9 @@ import threading
 
 # Only one ingestion may change the shared store at a time
 STORE_LOCK = threading.Lock()
+
+# Logger for pipeline steps
+log = get_logger(__name__)
 
 
 class DuplicateDocumentError(ValueError):
@@ -67,17 +71,24 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
         raise DuplicateDocumentError(f"'{path.name}' is already indexed")
 
     # Step 1: read the file into Documents (pages, sheets or whole file)
-    documents = load_file(path)
+    with log_step(log, "load", file=path.name) as step:
+        documents = load_file(path)
+        step["documents"] = len(documents)
+        step["characters"] = sum(len(d.text) for d in documents)
 
     # Step 2: split the Documents into chunks
-    chunks = chunk_documents(documents, settings.chunk_size, settings.chunk_overlap)
+    with log_step(log, "chunk", size=settings.chunk_size, overlap=settings.chunk_overlap) as step:
+        chunks = chunk_documents(documents, settings.chunk_size, settings.chunk_overlap)
+        step["chunks"] = len(chunks)
 
     # Stop if there is nothing to index, for example a scanned PDF
     if not chunks:
         raise EmptyDocumentError(f"'{path.name}' has no extractable text")
 
     # Step 3: turn every chunk into a vector
-    vectors = embed_texts([chunk.text for chunk in chunks])
+    with log_step(log, "embed", model=settings.azure_openai_embedding_deployment) as step:
+        vectors = embed_texts([chunk.text for chunk in chunks])
+        step["vectors"] = len(vectors)
 
     # Steps 4 and 5 change the shared store, so one request at a time
     with STORE_LOCK:
@@ -87,10 +98,13 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
             raise DuplicateDocumentError(f"'{path.name}' is already indexed")
 
         # Step 4: add the vectors and chunks to the store
-        store.add(vectors, chunks)
+        with log_step(log, "store") as step:
+            store.add(vectors, chunks)
+            step["total_chunks"] = store.count
 
         # Step 5: save the index so it survives a restart
-        store.save(settings.index_dir)
+        with log_step(log, "save", folder=settings.index_dir.name):
+            store.save(settings.index_dir)
 
     # Report what was done
     return IngestionResult(

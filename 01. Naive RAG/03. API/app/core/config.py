@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     app_name: str = "Naive RAG API"
     app_version: str = "0.1.0"
 
+    # Log level for the app logs: DEBUG, INFO, WARNING or ERROR
+    log_level: str = "INFO"
+
     # Azure OpenAI chat model used to write answers
     azure_openai_endpoint: str = ""
     azure_openai_api_key: str = ""
