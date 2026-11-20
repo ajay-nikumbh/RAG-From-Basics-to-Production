@@ -1,7 +1,8 @@
 """
-Document upload route.
+Document routes.
 
-This file defines POST /documents. It receives one uploaded file, checks the
+This file defines the document endpoints. GET /documents lists every indexed
+file. POST /documents receives one uploaded file, checks the
 file type and that the file is not already indexed, saves it to data/uploads
 and runs the ingestion service (load, chunk, embed, store). Known problems are
 returned as clear HTTP errors:
@@ -13,9 +14,10 @@ returned as clear HTTP errors:
 
 # Imports
 from app.services.ingestion_service import DuplicateDocumentError, EmptyDocumentError, ingest_file
+from app.schemas.documents import DocumentInfo, DocumentListResponse, DocumentUploadResponse
 from app.ingestion.file_loader import UnsupportedFileError, supported_extensions
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from app.schemas.documents import DocumentUploadResponse
+from app.services.document_service import list_documents
 from app.services.vector_store import get_vector_store
 from app.core.config import get_settings
 from pathlib import Path
@@ -24,6 +26,23 @@ import shutil
 
 # Router for document endpoints, shown under the "Documents" group in the API docs
 router = APIRouter(tags=["Documents"])
+
+
+@router.get("/documents", response_model=DocumentListResponse)
+def get_documents() -> DocumentListResponse:
+    """List every indexed file with its type, parts and chunk count."""
+
+    # Summaries built from the chunk metadata in the store
+    summaries = list_documents()
+
+    # Convert to the response schema
+    return DocumentListResponse(
+        documents=[
+            DocumentInfo(source=s.source, file_type=s.file_type, parts=s.parts, chunks=s.chunks)
+            for s in summaries
+        ],
+        total_chunks=sum(s.chunks for s in summaries),
+    )
 
 
 @router.post("/documents", response_model=DocumentUploadResponse)

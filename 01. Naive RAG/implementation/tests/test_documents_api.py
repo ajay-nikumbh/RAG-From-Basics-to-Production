@@ -86,3 +86,23 @@ def test_upload_rejects_empty_file(client):
     # Rejected and removed from the upload folder
     assert response.status_code == 422
     assert not (get_settings().upload_dir / "empty.txt").exists()
+
+
+def test_list_documents_after_uploads(client):
+    """GET /documents lists every uploaded file with its counts."""
+
+    # Nothing indexed yet
+    assert client.get("/documents").json() == {"documents": [], "total_chunks": 0}
+
+    # Upload two files
+    client.post("/documents", files={"file": ("policy.txt", b"Employees get 8 sick days.")})
+    client.post("/documents", files={"file": ("notes.md", b"# Notes\n\nShort text.")})
+
+    # Both listed in upload order with their type and counts
+    assert client.get("/documents").json() == {
+        "documents": [
+            {"source": "policy.txt", "file_type": "text", "parts": 1, "chunks": 1},
+            {"source": "notes.md", "file_type": "markdown", "parts": 1, "chunks": 1},
+        ],
+        "total_chunks": 2,
+    }

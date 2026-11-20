@@ -12,6 +12,7 @@ Start with [docs/19. Naive RAG Architecture Overview](docs/19.%20Naive%20RAG%20A
 <thead><tr><th><img src="../../assets/spacer.png" align="right" width="95" height="1">Method</th><th><img src="../../assets/spacer.png" align="right" width="159" height="1">Path</th><th><img src="../../assets/spacer.png" align="right" width="1081" height="1">What it does</th><th><img src="../../assets/spacer.png" align="right" width="63" height="1">Doc</th></tr></thead>
 <tbody>
 <tr><td>GET</td><td>/health</td><td>API status and whether Azure chat and embedding settings are present</td><td>03</td></tr>
+<tr><td>GET</td><td>/documents</td><td>List indexed files with type, pages or sheets and chunk count</td><td>20</td></tr>
 <tr><td>POST</td><td>/documents</td><td>Upload a .pdf, .xlsx, .docx, .txt or .md file and index it</td><td>13</td></tr>
 <tr><td>POST</td><td>/query</td><td>Ask a question, get an answer with numbered sources</td><td>18</td></tr>
 </tbody>
@@ -87,5 +88,6 @@ Each feature was built, documented and pushed as its own step. The docs explain 
 <tr><td>17</td><td><a href="docs/17.%20RAG%20Service.md">RAG Service</a></td></tr>
 <tr><td>18</td><td><a href="docs/18.%20Query%20API.md">Query API</a></td></tr>
 <tr><td>19</td><td><a href="docs/19.%20Naive%20RAG%20Architecture%20Overview.md">Naive RAG Architecture Overview</a></td></tr>
+<tr><td>20</td><td><a href="docs/20.%20Document%20List%20API.md">Document List API</a></td></tr>
 </tbody>
 </table>
