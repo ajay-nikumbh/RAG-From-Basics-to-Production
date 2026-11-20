@@ -4,7 +4,83 @@ A React app for the Naive RAG API: chat with your documents and open every citat
 
 Start with [docs/09. UI Architecture Overview](docs/09.%20UI%20Architecture%20Overview.md) for the big picture.
 
-<img src="docs/images/07-chat-screenshot.png" width="100%" alt="Naive RAG chat with a cited PDF page open">
+<img src="docs/images/showcase/showcase-06-citation-pdf.png" width="100%" alt="Naive RAG chat with a cited PDF page open">
+
+## Showcase
+
+All screenshots are taken from the running app with real answers from the indexed papers (gpt-4o-mini, text-embedding-3-small, FAISS).
+
+### 1. Ask a question
+
+<table width="100%">
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="420" height="1">Start screen</th><th><img src="../../assets/spacer.png" align="right" width="980" height="1">While the answer is prepared</th></tr></thead>
+<tbody>
+<tr><td><img src="docs/images/showcase/showcase-01-chat-empty.png" width="100%" alt="Start screen with indexed documents and starter questions"></td><td><img src="docs/images/showcase/showcase-03-chat-thinking.png" width="100%" alt="Thinking state: embedding, searching, writing"></td></tr>
+</tbody>
+</table>
+
+The start screen lists the indexed documents and starter questions. After Enter, the question appears at once and the pipeline steps (embed the question, search the index, write the answer) pulse until the answer arrives.
+
+### 2. The answer with citations
+
+<img src="docs/images/showcase/showcase-04-chat-answer.png" width="100%" alt="Answer with citation chips, usage line and source cards">
+
+Each claim ends with a numbered citation chip. Under the answer: answer time, question tokens, answer tokens and the cost in rupees, then the four retrieved chunks as cards (cited first, uncited dimmed) with their similarity scores.
+
+### 3. Open a citation
+
+<table width="100%">
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="426" height="1">Hover a chip: preview</th><th><img src="../../assets/spacer.png" align="right" width="973" height="1">Click a chip: the PDF opens at the cited passage</th></tr></thead>
+<tbody>
+<tr><td><img src="docs/images/showcase/showcase-05-citation-preview.png" width="100%" alt="Hover card with file, page, score and chunk text"></td><td><img src="docs/images/showcase/showcase-06-citation-pdf.png" width="100%" alt="Split view with the PDF page and the highlighted passage"></td></tr>
+</tbody>
+</table>
+
+### 4. Evaluate the answer
+
+<img src="docs/images/showcase/showcase-07-chat-evaluation.png" width="100%" alt="Evaluation card with overall score, metrics and judge reasons">
+
+The Evaluate button sends the answer and its chunks to the LLM judge. The card shows the overall score, faithfulness, answer relevance and context precision with the judge's reasons and the cost of grading; source cards the judge found useful get a "Relevant" tag.
+
+### 5. Dark mode
+
+<img src="docs/images/showcase/showcase-08-chat-dark.png" width="100%" alt="Chat with the source panel in dark mode">
+
+### 6. Documents and ingestion
+
+<img src="docs/images/showcase/showcase-09-documents.png" width="100%" alt="Documents page with upload zone, table and index overview">
+
+<table width="100%">
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="709" height="1">Upload: queue and pipeline breakdown</th><th><img src="../../assets/spacer.png" align="right" width="690" height="1">Open a file: PDF next to its chunks</th></tr></thead>
+<tbody>
+<tr><td><img src="docs/images/showcase/showcase-10-upload-pipeline.png" width="100%" alt="Upload with pipeline step timings, tokens and cost"></td><td><img src="docs/images/showcase/showcase-11-document-drawer.png" width="100%" alt="Document drawer with a chunk highlighted on its PDF page"></td></tr>
+</tbody>
+</table>
+
+An upload shows every ingestion step (load, chunk, embed, store, save) with its time, plus chunks, tokens and cost. Opening a file shows the PDF and its chunks; clicking a chunk highlights it on its page.
+
+### 7. Analytics
+
+<img src="docs/images/showcase/showcase-12-analytics.png" width="100%" alt="Analytics with cost in rupees, token split, latency and recent runs">
+
+Total cost in rupees, tokens, questions, ingestions and answer time; daily activity; where the tokens go; latency per question; and every run with its question, answer and embedding tokens.
+
+### 8. Evals: run the test set
+
+<img src="docs/images/showcase/showcase-13-evals-running.png" width="100%" alt="Evaluation run in progress">
+
+<img src="docs/images/showcase/showcase-14-evals-report.png" width="100%" alt="Finished evaluation report with a case expanded">
+
+Run evaluation asks 11 test questions through the pipeline and grades each answer against a reference answer. Scores fill in case by case; the finished report shows the overall score, the four metric averages, the retrieval hit rate and cost, and each case opens to compare the answer with the reference and read the judge's reasons. How to read it: [API doc 26](../03.%20API/docs/26.%20Reading%20the%20Evaluation%20Report.md).
+
+### 9. Sidebar and phone layout
+
+<table width="100%">
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="816" height="1">Sidebar</th><th><img src="../../assets/spacer.png" align="right" width="583" height="1">Phone</th></tr></thead>
+<tbody>
+<tr><td><img src="docs/images/showcase/showcase-02-sidebar.png" width="256" alt="Sidebar with library, recent questions and today's spend"></td><td><img src="docs/images/showcase/showcase-15-mobile.png" width="320" alt="Chat on a phone"></td></tr>
+</tbody>
+</table>
 
 ## Run
 
