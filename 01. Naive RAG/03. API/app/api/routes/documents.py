@@ -2,7 +2,10 @@
 Document routes.
 
 This file defines the document endpoints. GET /documents lists every indexed
-file. POST /documents receives one uploaded file, checks the
+file, GET /documents/{source}/file returns the original file (the UI shows
+PDFs from it), GET /documents/{source}/chunks returns its chunks and
+DELETE /documents/{source} removes it. POST /documents receives one uploaded
+file, checks the
 file type and that the file is not already indexed, saves it to data/uploads
 and runs the ingestion service (load, chunk, embed, store). Known problems are
 returned as clear HTTP errors:
@@ -13,12 +16,15 @@ returned as clear HTTP errors:
 """
 
 # Imports
+from app.services.document_service import DocumentNotFoundError, delete_document, list_chunks, uploaded_file
 from app.services.ingestion_service import DuplicateDocumentError, EmptyDocumentError, ingest_file
-from app.schemas.documents import DocumentInfo, DocumentListResponse, DocumentUploadResponse
+from app.schemas.documents import DocumentChunksResponse, DocumentDeleteResponse, DocumentInfo
+from app.schemas.documents import DocumentListResponse, DocumentUploadResponse, StepTiming
 from app.ingestion.file_loader import UnsupportedFileError, supported_extensions
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from app.services.document_service import list_documents
 from app.services.vector_store import get_vector_store
+from fastapi.responses import FileResponse
 from app.core.config import get_settings
 from pathlib import Path
 import shutil
@@ -38,7 +44,14 @@ def get_documents() -> DocumentListResponse:
     # Convert to the response schema
     return DocumentListResponse(
         documents=[
-            DocumentInfo(source=s.source, file_type=s.file_type, parts=s.parts, chunks=s.chunks)
+            DocumentInfo(
+                source=s.source,
+                file_type=s.file_type,
+                parts=s.parts,
+                chunks=s.chunks,
+                size_bytes=s.size_bytes,
+                uploaded_at=s.uploaded_at,
+            )
             for s in summaries
         ],
         total_chunks=sum(s.chunks for s in summaries),
@@ -85,4 +98,45 @@ def upload_document(file: UploadFile = File(...)) -> DocumentUploadResponse:
         total_chunks=result.total_chunks,
         embedding_tokens=result.embedding_tokens,
         cost_usd=result.cost_usd,
+        steps=[StepTiming(**step) for step in result.steps],
     )
+
+
+@router.get("/documents/{source}/file")
+def get_document_file(source: str) -> FileResponse:
+    """Return the original uploaded file, shown inline in the browser."""
+
+    # Find the saved upload or answer 404
+    try:
+        path = uploaded_file(source)
+    except DocumentNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error))
+
+    # inline lets the browser and the PDF viewer display it instead of downloading
+    return FileResponse(path, filename=path.name, content_disposition_type="inline")
+
+
+@router.get("/documents/{source}/chunks", response_model=DocumentChunksResponse)
+def get_document_chunks(source: str) -> DocumentChunksResponse:
+    """Return every chunk of one indexed file, in order."""
+
+    # Chunks from the store or 404
+    try:
+        chunks = list_chunks(source)
+    except DocumentNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error))
+
+    return DocumentChunksResponse(source=source, chunks=chunks)
+
+
+@router.delete("/documents/{source}", response_model=DocumentDeleteResponse)
+def remove_document(source: str) -> DocumentDeleteResponse:
+    """Remove a file from the index and delete its upload."""
+
+    # Delete or 404
+    try:
+        removed = delete_document(source)
+    except DocumentNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error))
+
+    return DocumentDeleteResponse(source=source, removed_chunks=removed)

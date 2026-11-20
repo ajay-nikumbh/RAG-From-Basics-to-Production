@@ -51,10 +51,11 @@ def test_upload_indexes_file(client):
 
     # Success with the expected counts
     assert response.status_code == 200
-    assert response.json() == {
-        "source": "policy.txt", "documents": 1, "chunks": 1, "total_chunks": 1,
-        "embedding_tokens": 0, "cost_usd": 0.0,
-    }
+    body = response.json()
+    assert (body["source"], body["documents"], body["chunks"], body["total_chunks"]) == ("policy.txt", 1, 1, 1)
+
+    # Every pipeline step reports its duration
+    assert [step["name"] for step in body["steps"]] == ["load", "chunk", "embed", "store", "save"]
 
     # The file was saved to the upload folder
     assert (get_settings().upload_dir / "policy.txt").exists()
@@ -101,11 +102,39 @@ def test_list_documents_after_uploads(client):
     client.post("/documents", files={"file": ("policy.txt", b"Employees get 8 sick days.")})
     client.post("/documents", files={"file": ("notes.md", b"# Notes\n\nShort text.")})
 
-    # Both listed in upload order with their type and counts
-    assert client.get("/documents").json() == {
-        "documents": [
-            {"source": "policy.txt", "file_type": "text", "parts": 1, "chunks": 1},
-            {"source": "notes.md", "file_type": "markdown", "parts": 1, "chunks": 1},
-        ],
-        "total_chunks": 2,
-    }
+    # Both listed in upload order with their type, counts, size and upload time
+    body = client.get("/documents").json()
+    assert body["total_chunks"] == 2
+    assert [(d["source"], d["file_type"], d["chunks"]) for d in body["documents"]] == [
+        ("policy.txt", "text", 1),
+        ("notes.md", "markdown", 1),
+    ]
+    assert body["documents"][0]["size_bytes"] == len(b"Employees get 8 sick days.")
+    assert body["documents"][0]["uploaded_at"]
+
+
+def test_file_chunks_and_delete(client):
+    """A file can be downloaded, its chunks listed, and then deleted."""
+
+    # Upload one file
+    client.post("/documents", files={"file": ("policy.txt", b"Employees get 8 sick days.")})
+
+    # The original file comes back unchanged
+    assert client.get("/documents/policy.txt/file").content == b"Employees get 8 sick days."
+
+    # Its chunks are listed
+    chunks = client.get("/documents/policy.txt/chunks").json()["chunks"]
+    assert chunks[0]["text"] == "Employees get 8 sick days."
+
+    # Delete removes the chunks and the upload
+    assert client.delete("/documents/policy.txt").json() == {"source": "policy.txt", "removed_chunks": 1}
+    assert client.get("/documents").json()["documents"] == []
+    assert client.get("/documents/policy.txt/file").status_code == 404
+
+
+def test_unknown_document_gives_404(client):
+    """Chunks and delete for a file that is not indexed give 404."""
+
+    # Nothing indexed
+    assert client.get("/documents/missing.pdf/chunks").status_code == 404
+    assert client.delete("/documents/missing.pdf").status_code == 404

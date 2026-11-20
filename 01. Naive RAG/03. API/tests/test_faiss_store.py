@@ -76,3 +76,16 @@ def test_load_without_files_gives_empty_store(tmp_path):
 
     # Nothing has been saved in tmp_path
     assert FaissStore.load(tmp_path, dimensions=3).count == 0
+
+
+def test_remove_source_keeps_other_files():
+    """Removing hr.pdf leaves only the it.pdf chunk, still searchable."""
+
+    # hr.pdf has two chunks, it.pdf one
+    store = build_store()
+    assert store.remove_source("hr.pdf") == 2
+
+    # Only the laptops chunk is left and search still works
+    assert store.count == 1
+    assert store.search(np.array([[0, 1, 0]]), top_k=1)[0].document.text == "laptops"
+    assert store.remove_source("missing.pdf") == 0

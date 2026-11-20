@@ -61,6 +61,26 @@ class FaissStore:
         # Every chunk keeps its file name in metadata
         return {chunk.metadata.get("source") for chunk in self.chunks}
 
+    def remove_source(self, source: str) -> int:
+        """Remove every chunk of one file and return how many were removed."""
+
+        # Rows to keep: chunks from other files
+        keep = [row for row, chunk in enumerate(self.chunks) if chunk.metadata.get("source") != source]
+        removed = self.count - len(keep)
+        if removed == 0:
+            return 0
+
+        # IndexFlatIP cannot delete rows in place, so rebuild it from the kept vectors
+        vectors = self.index.reconstruct_n(0, self.count)
+        index = faiss.IndexFlatIP(self.index.d)
+        if keep:
+            index.add(vectors[keep])
+
+        # Swap in the new index and the matching chunk list
+        self.index = index
+        self.chunks = [self.chunks[row] for row in keep]
+        return removed
+
     def add(self, vectors: np.ndarray, chunks: list[Document]) -> None:
         """Add chunk vectors and their chunks, keeping both in the same order."""
 

@@ -1,13 +1,23 @@
 """
 Document schemas.
 
-This file defines the responses of the document endpoints: POST /documents
-returns what was indexed for one uploaded file, and GET /documents returns the
-list of all indexed files.
+This file defines the responses of the document endpoints: what was indexed
+for one upload (with step timings), the list of indexed files, the chunks of
+one file and the result of deleting a file.
 """
 
 # Imports
 from pydantic import BaseModel
+
+
+class StepTiming(BaseModel):
+    """Duration of one ingestion step."""
+
+    # load, chunk, embed, store or save
+    name: str
+
+    # Milliseconds the step took
+    ms: int
 
 
 class DocumentUploadResponse(BaseModel):
@@ -29,6 +39,9 @@ class DocumentUploadResponse(BaseModel):
     embedding_tokens: int = 0
     cost_usd: float = 0.0
 
+    # Duration of each pipeline step
+    steps: list[StepTiming] = []
+
 
 class DocumentInfo(BaseModel):
     """One indexed file in GET /documents."""
@@ -45,6 +58,10 @@ class DocumentInfo(BaseModel):
     # Chunks stored for this file
     chunks: int
 
+    # Upload size in bytes and upload time (ISO, UTC), when the file is present
+    size_bytes: int | None = None
+    uploaded_at: str | None = None
+
 
 class DocumentListResponse(BaseModel):
     """Response body of GET /documents."""
@@ -54,3 +71,37 @@ class DocumentListResponse(BaseModel):
 
     # Chunks in the whole index
     total_chunks: int
+
+
+class ChunkInfo(BaseModel):
+    """One chunk of a file in GET /documents/{source}/chunks."""
+
+    # Position of the chunk inside its page, sheet or file
+    chunk_index: int
+
+    # PDF page or Excel sheet, when the file has them
+    page: int | None = None
+    sheet: str | None = None
+
+    # The chunk text
+    text: str
+
+
+class DocumentChunksResponse(BaseModel):
+    """Response body of GET /documents/{source}/chunks."""
+
+    # File name
+    source: str
+
+    # Chunks in index order
+    chunks: list[ChunkInfo]
+
+
+class DocumentDeleteResponse(BaseModel):
+    """Response body of DELETE /documents/{source}."""
+
+    # File name
+    source: str
+
+    # Chunks removed from the index
+    removed_chunks: int

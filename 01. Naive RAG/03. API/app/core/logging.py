@@ -121,5 +121,8 @@ def log_step(logger: logging.Logger, name: str, **meta):
         raise
 
     # One line: step name, metadata, duration
-    elapsed = format_duration(time.perf_counter() - start)
-    logger.info(f"  [bold]{name:<{STEP_WIDTH}}[/]  {format_meta(details)}  [dim]{elapsed}[/]")
+    seconds = time.perf_counter() - start
+    logger.info(f"  [bold]{name:<{STEP_WIDTH}}[/]  {format_meta(details)}  [dim]{format_duration(seconds)}[/]")
+
+    # Leave the duration in the dict for callers that report step timings
+    details["duration_ms"] = round(seconds * 1000)

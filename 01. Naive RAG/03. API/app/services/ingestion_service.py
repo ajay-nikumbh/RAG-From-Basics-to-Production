@@ -23,7 +23,7 @@ from app.embeddings.embedder import embed_texts
 from app.ingestion.file_loader import load_file
 from app.services.usage import track_usage
 from app.core.config import get_settings
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 import threading
 
@@ -63,6 +63,9 @@ class IngestionResult:
     embedding_tokens: int = 0
     cost_usd: float = 0.0
 
+    # Duration of each pipeline step, for example [{"name": "load", "ms": 12}]
+    steps: list = field(default_factory=list)
+
 
 def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
     """Load, chunk, embed and store one file, then save the index."""
@@ -83,12 +86,14 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
             documents = load_file(path)
             step["documents"] = len(documents)
             step["characters"] = sum(len(d.text) for d in documents)
+        steps = [{"name": "load", "ms": step["duration_ms"]}]
 
         # Step 2: split the Documents into chunks
         with log_step(log, "chunk", size=settings.chunk_size, overlap=settings.chunk_overlap) as step:
             chunks = chunk_documents(documents, settings.chunk_size, settings.chunk_overlap)
             step["chunks"] = len(chunks)
             meter.details["chunks"] = len(chunks)
+        steps.append({"name": "chunk", "ms": step["duration_ms"]})
 
         # Stop if there is nothing to index, for example a scanned PDF
         if not chunks:
@@ -99,6 +104,7 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
             vectors = embed_texts([chunk.text for chunk in chunks])
             step["vectors"] = len(vectors)
             step["tokens"] = meter.embedding_tokens
+        steps.append({"name": "embed", "ms": step["duration_ms"]})
 
         # Steps 4 and 5 change the shared store, so one request at a time
         with STORE_LOCK:
@@ -111,10 +117,12 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
             with log_step(log, "store") as step:
                 store.add(vectors, chunks)
                 step["total_chunks"] = store.count
+            steps.append({"name": "store", "ms": step["duration_ms"]})
 
             # Step 5: save the index so it survives a restart
-            with log_step(log, "save", folder=settings.index_dir.name):
+            with log_step(log, "save", folder=settings.index_dir.name) as step:
                 store.save(settings.index_dir)
+            steps.append({"name": "save", "ms": step["duration_ms"]})
 
     # Report what was done
     return IngestionResult(
@@ -124,4 +132,5 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
         total_chunks=store.count,
         embedding_tokens=meter.embedding_tokens,
         cost_usd=round(meter.cost(settings), 6),
+        steps=steps,
     )
