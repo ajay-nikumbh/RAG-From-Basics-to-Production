@@ -9,6 +9,9 @@ It connects the building blocks from the ingestion, embeddings and vectorstore
 packages and knows nothing about HTTP. A file whose name is already in the
 store is rejected with DuplicateDocumentError, so the same text is never
 indexed twice.
+
+A lock makes sure only one file is added to the shared store at a time, because
+FastAPI can run two upload requests in parallel threads.
 """
 
 # Imports
@@ -20,6 +23,11 @@ from app.ingestion.file_loader import load_file
 from app.core.config import get_settings
 from dataclasses import dataclass
 from pathlib import Path
+import threading
+
+
+# Only one ingestion may change the shared store at a time
+STORE_LOCK = threading.Lock()
 
 
 class DuplicateDocumentError(ValueError):
@@ -71,11 +79,18 @@ def ingest_file(path: Path, store: FaissStore | None = None) -> IngestionResult:
     # Step 3: turn every chunk into a vector
     vectors = embed_texts([chunk.text for chunk in chunks])
 
-    # Step 4: add the vectors and chunks to the store
-    store.add(vectors, chunks)
+    # Steps 4 and 5 change the shared store, so one request at a time
+    with STORE_LOCK:
 
-    # Step 5: save the index so it survives a restart
-    store.save(settings.index_dir)
+        # Check again: another request may have added this file in the meantime
+        if path.name in store.sources():
+            raise DuplicateDocumentError(f"'{path.name}' is already indexed")
+
+        # Step 4: add the vectors and chunks to the store
+        store.add(vectors, chunks)
+
+        # Step 5: save the index so it survives a restart
+        store.save(settings.index_dir)
 
     # Report what was done
     return IngestionResult(

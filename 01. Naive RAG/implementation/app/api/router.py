@@ -7,7 +7,7 @@ adding one include_router line here.
 """
 
 # Imports
-from app.api.routes import health
+from app.api.routes import documents, health
 from fastapi import APIRouter
 
 
@@ -16,3 +16,6 @@ api_router = APIRouter()
 
 # Health endpoints: GET /health
 api_router.include_router(health.router)
+
+# Document endpoints: POST /documents
+api_router.include_router(documents.router)
