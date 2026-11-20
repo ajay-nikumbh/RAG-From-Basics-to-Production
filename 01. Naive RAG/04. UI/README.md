@@ -1,6 +1,6 @@
 # Naive RAG UI
 
-A React app for the Naive RAG API: chat with your documents and open every citation at the exact passage in the PDF, upload and inspect documents, and track LLM cost and token usage.
+A React app for the Naive RAG API: chat with your documents and open every citation at the exact passage in the PDF, upload and inspect documents, track LLM cost and token usage in rupees, and evaluate answer quality with an LLM judge.
 
 Start with [docs/09. UI Architecture Overview](docs/09.%20UI%20Architecture%20Overview.md) for the big picture.
 
@@ -44,7 +44,9 @@ npm run dev
 <tr><td>Click a citation to open the PDF at the cited page with the passage highlighted</td><td>Chat source panel</td><td>06, 07</td></tr>
 <tr><td>Drag and drop upload queue with progress and ingestion step timings</td><td>Documents</td><td>05</td></tr>
 <tr><td>Document table with search, delete, and a drawer with PDF and chunks</td><td>Documents</td><td>05, 06</td></tr>
-<tr><td>Cost, tokens, latency and recent runs</td><td>Analytics</td><td>08</td></tr>
+<tr><td>Cost in rupees, question and answer tokens, latency and recent runs</td><td>Analytics</td><td>08</td></tr>
+<tr><td>Evaluate any answer: faithfulness, relevance, context precision</td><td>Chat</td><td>10</td></tr>
+<tr><td>Run the test set and compare runs: correctness, retrieval hit rate, cost</td><td>Evals</td><td>11</td></tr>
 <tr><td>Light and dark themes, phone to wide-screen layouts</td><td>Everywhere</td><td>03, 09</td></tr>
 </tbody>
 </table>
@@ -63,5 +65,7 @@ npm run dev
 <tr><td>07</td><td><a href="docs/07.%20Chat%20with%20Citations.md">Chat with Citations</a></td></tr>
 <tr><td>08</td><td><a href="docs/08.%20Analytics%20Dashboard.md">Analytics Dashboard</a></td></tr>
 <tr><td>09</td><td><a href="docs/09.%20UI%20Architecture%20Overview.md">UI Architecture Overview</a></td></tr>
+<tr><td>10</td><td><a href="docs/10.%20Answer%20Evaluation%20in%20Chat.md">Answer Evaluation in Chat</a></td></tr>
+<tr><td>11</td><td><a href="docs/11.%20Evals%20Page.md">Evals Page</a></td></tr>
 </tbody>
 </table>

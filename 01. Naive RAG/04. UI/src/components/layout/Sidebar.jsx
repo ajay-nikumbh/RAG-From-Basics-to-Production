@@ -4,7 +4,8 @@
  * This file is the left navigation of the app, from top to bottom:
  *
  *   - the product mark and a "New chat" button
- *   - links to the pages, with the active page highlighted
+ *   - links to the pages (Chat, Documents, Analytics, Evals), with the
+ *     active page highlighted
  *   - Library: the indexed documents; clicking one opens it on the
  *     Documents page with its PDF and chunks
  *   - Recent questions: the latest recorded questions; clicking one asks it
@@ -17,7 +18,7 @@
  */
 
 // Imports
-import { BarChart3, FileText, History, MessageSquareText, Moon, Plus, Sun, ArrowUpRight } from 'lucide-react'
+import { BarChart3, FileText, FlaskConical, History, MessageSquareText, Moon, Plus, Sun, ArrowUpRight } from 'lucide-react'
 import { useAnalytics, useDocuments, useHealth, useInrRate } from '@/api/queries'
 import { formatInr, formatTokens, plural } from '@/lib/format'
 import { fileType } from '@/features/documents/fileTypes'
@@ -33,6 +34,7 @@ const NAV = [
   { to: '/', label: 'Chat', icon: MessageSquareText },
   { to: '/documents', label: 'Documents', icon: FileText },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/evals', label: 'Evals', icon: FlaskConical },
 ]
 
 // Documents listed in the library before "View all", and recent questions shown
