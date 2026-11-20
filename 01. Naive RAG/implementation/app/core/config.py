@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     # Retrieval settings
     top_k: int = 4
 
+    # Answer generation settings
+    llm_temperature: float = 0.0
+    llm_max_tokens: int = 800
+
     # Data folders for uploaded files and the saved FAISS index
     upload_dir: Path = IMPLEMENTATION_DIR / "data" / "uploads"
     index_dir: Path = IMPLEMENTATION_DIR / "data" / "index"
