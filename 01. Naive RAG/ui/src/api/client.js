@@ -6,10 +6,18 @@
  * goes to /api/..., which the Vite proxy forwards to FastAPI. When the
  * backend returns an error, the function throws an ApiError that carries the
  * readable message from FastAPI's {"detail": ...} body and the HTTP status.
+ * When the backend is down (network failure, or a 502/503/504 from the Vite
+ * proxy) the error says so, with status 0.
  */
 
 // Base path for all backend calls; the Vite proxy removes it
 const API_BASE = '/api'
+
+// Message when the API server cannot be reached
+const UNREACHABLE = 'Cannot reach the API server. Is it running on port 8000?'
+
+// Statuses the Vite proxy returns when FastAPI is not running
+const PROXY_DOWN = [502, 503, 504]
 
 // Error thrown for any failed request
 export class ApiError extends Error {
@@ -51,11 +59,16 @@ async function request(path, options = {}) {
   try {
     response = await fetch(`${API_BASE}${path}`, options)
   } catch {
-    throw new ApiError('Cannot reach the API server. Is it running on port 8000?', 0)
+    throw new ApiError(UNREACHABLE, 0)
   }
 
   // FastAPI always answers with JSON; tolerate an empty body
   const body = await response.json().catch(() => null)
+
+  // Proxy error without a FastAPI body: the backend is down
+  if (PROXY_DOWN.includes(response.status) && !readDetail(body)) {
+    throw new ApiError(UNREACHABLE, 0)
+  }
 
   // Error status: use the message from the backend when there is one
   if (!response.ok) {

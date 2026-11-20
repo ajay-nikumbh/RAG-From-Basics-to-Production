@@ -108,6 +108,17 @@ describe('errors', () => {
     expect(error.status).toBe(0)
   })
 
+  it('a proxy 502 without a detail means the server is down', async () => {
+
+    // Vite answers 502 with an empty body when FastAPI is not running
+    vi.stubGlobal('fetch', fakeFetch(502, null))
+
+    // Same clear message as a network failure
+    const error = await getHealth().catch((e) => e)
+    expect(error.status).toBe(0)
+    expect(error.message).toContain('Cannot reach the API server')
+  })
+
   it('readDetail joins validation messages', () => {
 
     // FastAPI 422 body with two problems

@@ -12,6 +12,7 @@
 import DocumentsPanel from './features/documents/DocumentsPanel.jsx'
 import { useConversation } from './features/chat/useConversation.js'
 import EvidencePanel from './features/evidence/EvidencePanel.jsx'
+import ApiStatus from './features/health/ApiStatus.jsx'
 import ChatPanel from './features/chat/ChatPanel.jsx'
 import AppLayout from './components/AppLayout.jsx'
 import styles from './App.module.css'
@@ -22,12 +23,13 @@ export default function App() {
   // Questions, answers, the selected turn and the clicked source
   const { turns, busy, ask, selectedTurn, focusedNumber, select } = useConversation()
 
-  // Left region: app name, upload and the documents list
+  // Left region: app name, API status, upload and the documents list
   const rail = (
     <>
       <div className={styles.brand}>
         <p className={styles.wordmark}>Naive RAG</p>
         <p className={styles.tagline}>Ask your documents, check the evidence.</p>
+        <ApiStatus />
       </div>
       <DocumentsPanel />
     </>
