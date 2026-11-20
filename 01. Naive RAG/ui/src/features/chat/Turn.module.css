@@ -105,3 +105,10 @@
 .showEvidence:hover {
   text-decoration: underline;
 }
+
+/* Phones: the sheet padding is smaller, so the bar moves closer */
+@media (max-width: 760px) {
+  .selected::before {
+    left: calc(-1 * var(--space-3));
+  }
+}
