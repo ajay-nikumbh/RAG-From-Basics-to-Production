@@ -100,11 +100,12 @@ export default function ChatPage() {
   // The turn whose source is open
   const openedTurn = opened ? turns.find((turn) => turn.id === opened.turnId) : null
 
-  // Keep the newest message in view
+  // Keep the newest message in view when a question is added and when its answer arrives
   const endRef = useRef(null)
+  const lastStatus = turns.at(-1)?.status
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-  }, [turns.length])
+  }, [turns.length, lastStatus])
 
   // Source panel for the opened citation
   const panel = openedTurn && (

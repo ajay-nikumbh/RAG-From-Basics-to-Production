@@ -56,7 +56,7 @@ export default function Composer({ busy, onSend }) {
         onKeyDown={onKeyDown}
         rows={1}
         placeholder="Ask a question about your documents..."
-        className="field-sizing-content max-h-48 focus-visible:outline-none min-h-11 w-full resize-none bg-transparent px-3 py-2.5 text-[14.5px] outline-none placeholder:text-subtle-foreground"
+        className="field-sizing-content max-h-48 min-h-11 w-full resize-none bg-transparent px-3 py-2.5 text-[14.5px] outline-none focus-visible:outline-none placeholder:text-subtle-foreground"
         aria-label="Question"
       />
       <div className="flex items-center justify-between gap-2 px-1">

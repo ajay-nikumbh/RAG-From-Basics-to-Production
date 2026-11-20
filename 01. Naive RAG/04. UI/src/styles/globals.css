@@ -147,10 +147,12 @@ body {
   scrollbar-color: var(--input) transparent;
 }
 
-/* Visible focus ring for keyboard users */
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+/* Visible focus ring for keyboard users (in the base layer so utilities can override it) */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
 }
 
 /* Highlight used for cited passages inside the PDF text layer */

@@ -67,8 +67,8 @@ Read the notes in this order, then the implementation.
 <tbody>
 <tr><td>1</td><td><a href="01.%20Notes/01.%20Basic%20Concepts/">Basic Concepts</a></td><td>Every building block of a RAG system explained in simple terms with diagrams: documents, chunking, embeddings, similarity, vector databases, retrieval, prompting, evaluation.</td></tr>
 <tr><td>2</td><td><a href="01.%20Notes/02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Section by section walkthrough of Lewis et al. 2020: figures, equations and results explained in simple terms.</td></tr>
-<tr><td>3</td><td><a href="03.%20API/">API</a></td><td>End-to-end FastAPI app with Azure OpenAI and FAISS, built step by step, with 20 numbered design docs.</td></tr>
-<tr><td>4</td><td><a href="04.%20UI/">UI</a></td><td>React reading-desk interface: upload, ask, and verify answers against highlighted evidence, with 10 numbered design docs.</td></tr>
+<tr><td>3</td><td><a href="03.%20API/">API</a></td><td>End-to-end FastAPI app with Azure OpenAI and FAISS, structured logging and usage tracking, built step by step, with 23 numbered design docs.</td></tr>
+<tr><td>4</td><td><a href="04.%20UI/">UI</a></td><td>React app with chat and clickable citations that open the PDF at the cited passage, document ingestion, and an LLM cost and usage dashboard, with 9 numbered design docs.</td></tr>
 </tbody>
 </table>
 
