@@ -14,9 +14,10 @@ from pydantic import BaseModel
 class AnalyticsTotals(BaseModel):
     """Totals over all recorded runs."""
 
-    # Number of runs
+    # Number of runs (evaluation runs are counted on their own)
     queries: int
     ingestions: int
+    evals: int = 0
 
     # Tokens by type and in total
     embedding_tokens: int
@@ -40,6 +41,7 @@ class DailyPoint(BaseModel):
     tokens: int
     queries: int
     ingestions: int
+    evals: int = 0
 
 
 class AnalyticsResponse(BaseModel):

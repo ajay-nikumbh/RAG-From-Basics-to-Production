@@ -60,6 +60,9 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.0
     llm_max_tokens: int = 800
 
+    # Longest reply the evaluation judge may write (scores and short reasons)
+    eval_judge_max_tokens: int = 600
+
     # Prices in US dollars per one million tokens (gpt-4o-mini and text-embedding-3-small list prices)
     price_embedding_per_million: float = 0.02
     price_chat_input_per_million: float = 0.15

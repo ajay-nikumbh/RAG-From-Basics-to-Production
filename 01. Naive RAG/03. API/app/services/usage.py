@@ -9,7 +9,8 @@ appended to data/usage/usage.jsonl with the tokens, the cost in US dollars,
 the duration and a little context (the question or the file name).
 
 summarize() turns those events into the totals, daily series and recent list
-shown on the analytics page.
+shown on the analytics page. Runs are of three families: questions (query),
+ingestions (ingest) and evaluations (every kind starting with "eval").
 """
 
 # Imports
@@ -149,6 +150,7 @@ def summarize(events: list[dict], recent_limit: int = 50) -> dict:
     totals = {
         "queries": len(queries),
         "ingestions": sum(1 for e in events if e["kind"] == "ingest"),
+        "evals": sum(1 for e in events if e["kind"].startswith("eval")),
         "embedding_tokens": sum(e["embedding_tokens"] for e in events),
         "prompt_tokens": sum(e["prompt_tokens"] for e in events),
         "completion_tokens": sum(e["completion_tokens"] for e in events),
@@ -158,12 +160,13 @@ def summarize(events: list[dict], recent_limit: int = 50) -> dict:
     }
 
     # Cost, tokens and run counts per day (UTC date)
-    days = defaultdict(lambda: {"cost_usd": 0.0, "tokens": 0, "queries": 0, "ingestions": 0})
+    days = defaultdict(lambda: {"cost_usd": 0.0, "tokens": 0, "queries": 0, "ingestions": 0, "evals": 0})
+    counters = {"query": "queries", "ingest": "ingestions"}
     for event in events:
         day = days[event["time"][:10]]
         day["cost_usd"] += event["cost_usd"]
         day["tokens"] += event["total_tokens"]
-        day["queries" if event["kind"] == "query" else "ingestions"] += 1
+        day[counters.get(event["kind"], "evals")] += 1
     daily = [{"date": date, **values, "cost_usd": round(values["cost_usd"], 6)} for date, values in sorted(days.items())]
 
     # Newest runs first

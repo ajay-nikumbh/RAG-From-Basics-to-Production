@@ -66,3 +66,20 @@ def test_summarize_totals_and_daily():
     assert summary["totals"]["total_tokens"] == 2560
     assert len(summary["daily"]) == 1
     assert summary["recent"][0]["kind"] == "query"
+
+
+def test_summarize_counts_evaluation_runs_separately():
+    """Evaluation runs are counted as evals, not as questions or ingestions."""
+
+    # One question and one judge call
+    with track_usage("query", question="Q"):
+        add_chat_tokens(500, 50)
+    with track_usage("eval_judge", question="Q"):
+        add_chat_tokens(800, 100)
+
+    # Totals and the daily point
+    summary = summarize(read_events())
+    assert summary["totals"]["queries"] == 1
+    assert summary["totals"]["ingestions"] == 0
+    assert summary["totals"]["evals"] == 1
+    assert summary["daily"][0]["evals"] == 1
