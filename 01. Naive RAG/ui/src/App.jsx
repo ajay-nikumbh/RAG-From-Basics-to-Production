@@ -2,13 +2,17 @@
  * Root component.
  *
  * This file puts the three regions of the reading desk into the app layout:
- * the documents rail, the conversation sheet and the evidence panel. Each
- * region shows its feature, or an empty state until that feature is built.
+ * the documents rail, the conversation sheet and the evidence panel. It owns
+ * the conversation state, because both the chat and the evidence panel need
+ * it: the chat adds turns, the evidence panel shows the selected turn's
+ * sources.
  */
 
 // Imports
 import DocumentsPanel from './features/documents/DocumentsPanel.jsx'
+import { useConversation } from './features/chat/useConversation.js'
 import PanelHeader from './components/PanelHeader.jsx'
+import ChatPanel from './features/chat/ChatPanel.jsx'
 import EmptyState from './components/EmptyState.jsx'
 import AppLayout from './components/AppLayout.jsx'
 import styles from './App.module.css'
@@ -16,7 +20,10 @@ import styles from './App.module.css'
 // Main component
 export default function App() {
 
-  // Left region: app name and the documents list
+  // Questions, answers and the selected turn
+  const { turns, busy, ask, selectedTurn } = useConversation()
+
+  // Left region: app name, upload and the documents list
   const rail = (
     <>
       <div className={styles.brand}>
@@ -29,13 +36,7 @@ export default function App() {
 
   // Middle region: the conversation
   const conversation = (
-    <>
-      <h1 className={styles.title}>Ask your documents</h1>
-      <p className={styles.subtitle}>Answers come only from the files you upload, with numbered sources.</p>
-      <EmptyState title="No questions yet">
-        Your questions and the answers will appear here.
-      </EmptyState>
-    </>
+    <ChatPanel turns={turns} busy={busy} onAsk={ask} selectedId={selectedTurn?.id} />
   )
 
   // Right region: evidence for the selected answer

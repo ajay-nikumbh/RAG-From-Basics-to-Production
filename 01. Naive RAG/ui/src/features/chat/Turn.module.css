@@ -1,0 +1,57 @@
+/*
+ * Turn styles.
+ *
+ * Turns are separated by rules, like sections of a document, not boxed as
+ * chat bubbles. The selected turn gets a thin pen-blue bar in the margin,
+ * matching the evidence shown on the right.
+ */
+
+/* One turn, rule below */
+.turn {
+  position: relative;
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Margin bar on the selected turn */
+.selected::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--space-5));
+  top: var(--space-5);
+  bottom: var(--space-5);
+  width: 2px;
+  border-radius: 1px;
+  background: var(--pen);
+}
+
+/* Question line */
+.question {
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+/* Answer as reading text */
+.answer {
+  margin-top: var(--space-3);
+  font-family: var(--font-read);
+  font-size: var(--text-reading);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+/* Waiting message */
+.pending {
+  margin-top: var(--space-3);
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* Error message */
+.error {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--danger-tint);
+  color: var(--danger);
+}

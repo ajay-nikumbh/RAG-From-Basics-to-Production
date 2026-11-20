@@ -1,8 +1,7 @@
 /*
  * Root component styles.
  *
- * The app name in the rail and the title of the conversation sheet. The
- * sheet title is the largest text on the page: it names the one task.
+ * The app name and tagline at the top of the documents rail.
  */
 
 /* App name block at the top of the rail */
@@ -25,19 +24,4 @@
   color: var(--ink-faint);
   font-size: var(--text-small);
   margin-top: var(--space-1);
-}
-
-/* Conversation title: the focal heading */
-.title {
-  font-family: var(--font-read);
-  font-size: var(--text-h1);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-/* Short explanation under the title */
-.subtitle {
-  color: var(--ink-soft);
-  margin: var(--space-2) 0 var(--space-6);
 }
