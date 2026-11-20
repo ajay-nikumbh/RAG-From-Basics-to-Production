@@ -3,7 +3,8 @@ Analytics schemas.
 
 This file defines the response of GET /analytics: totals over every recorded
 query and ingestion (runs, tokens, cost, average query time), one point per
-day for the charts, and the most recent runs for the activity table.
+day for the charts, the most recent runs for the activity table, and the
+USD to INR rate used to show costs in rupees.
 """
 
 # Imports
@@ -52,3 +53,6 @@ class AnalyticsResponse(BaseModel):
 
     # Most recent runs, newest first, as recorded (kind, tokens, cost, latency, question or file)
     recent: list[dict]
+
+    # Exchange rate the UI uses to show costs in Indian rupees
+    usd_to_inr: float

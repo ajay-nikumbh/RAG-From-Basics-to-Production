@@ -57,8 +57,9 @@ class Usage:
     prompt_tokens: int = 0
     completion_tokens: int = 0
 
-    # Cost in US dollars and total time in milliseconds
+    # Cost in US dollars and Indian rupees, and total time in milliseconds
     cost_usd: float = 0.0
+    cost_inr: float = 0.0
     latency_ms: int = 0
 
 
@@ -132,6 +133,7 @@ def answer_question(question: str, top_k: int | None = None) -> RagAnswer:
         prompt_tokens=meter.prompt_tokens,
         completion_tokens=meter.completion_tokens,
         cost_usd=round(meter.cost(settings), 6),
+        cost_inr=round(meter.cost(settings) * settings.usd_to_inr, 4),
         latency_ms=round((time.perf_counter() - start) * 1000),
     )
 

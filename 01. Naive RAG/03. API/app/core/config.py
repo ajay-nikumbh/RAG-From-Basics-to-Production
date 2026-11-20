@@ -65,6 +65,9 @@ class Settings(BaseSettings):
     price_chat_input_per_million: float = 0.15
     price_chat_output_per_million: float = 0.60
 
+    # Fixed exchange rate used to show costs in Indian rupees (set USD_TO_INR in .env to change it)
+    usd_to_inr: float = 84.0
+
     # Data folders for uploaded files and the saved FAISS index
     upload_dir: Path = IMPLEMENTATION_DIR / "data" / "uploads"
     index_dir: Path = IMPLEMENTATION_DIR / "data" / "index"

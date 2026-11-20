@@ -3,7 +3,7 @@ Query schemas.
 
 This file defines the request and response of POST /query. The request holds
 the question and an optional top_k. The response holds the answer, the
-sources (citations) it was generated from and the usage (tokens, cost, time).
+sources (citations) it was generated from and the usage (tokens, cost in USD and INR, time).
 """
 
 # Imports
@@ -48,8 +48,9 @@ class UsageResponse(BaseModel):
     prompt_tokens: int
     completion_tokens: int
 
-    # Cost in US dollars and total time in milliseconds
+    # Cost in US dollars and Indian rupees, and total time in milliseconds
     cost_usd: float
+    cost_inr: float = 0.0
     latency_ms: int
 
 
