@@ -1,0 +1,60 @@
+/*
+ * Button styles.
+ *
+ * 36px tall, 4px radius, interface font at 500 weight. Every state is
+ * covered: hover, active (a small press), keyboard focus (global ring) and
+ * disabled.
+ */
+
+/* Shared shape and motion */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+/* Small press feedback */
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Disabled: ghost ink, no pointer */
+.button:disabled {
+  cursor: not-allowed;
+  color: var(--ink-ghost);
+}
+
+/* Primary: pen blue, the main action of a region */
+.primary {
+  background: var(--pen);
+  color: var(--sheet);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--pen-hover);
+}
+
+.primary:disabled {
+  background: var(--inset);
+}
+
+/* Quiet: outlined, for secondary actions */
+.quiet {
+  background: transparent;
+  border-color: var(--rule-strong);
+  color: var(--ink-soft);
+}
+
+.quiet:hover:not(:disabled) {
+  background: var(--pen-tint);
+  color: var(--pen);
+}

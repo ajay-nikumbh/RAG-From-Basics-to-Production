@@ -7,7 +7,7 @@
  */
 
 // Imports
-import { ApiError, askQuestion, getHealth, readDetail, uploadDocument } from './client.js'
+import { ApiError, askQuestion, getHealth, listDocuments, readDetail, uploadDocument } from './client.js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 // Build a fake fetch that answers with the given status and JSON body
@@ -35,6 +35,18 @@ describe('requests', () => {
     // Call and check
     expect(await getHealth()).toEqual({ status: 'ok' })
     expect(fetch).toHaveBeenCalledWith('/api/health', {})
+  })
+
+  it('listDocuments calls GET /api/documents', async () => {
+
+    // Fake one indexed file
+    const body = { documents: [{ source: 'a.pdf', file_type: 'pdf', parts: 2, chunks: 5 }], total_chunks: 5 }
+    const fetch = fakeFetch(200, body)
+    vi.stubGlobal('fetch', fetch)
+
+    // Call and check
+    expect(await listDocuments()).toEqual(body)
+    expect(fetch).toHaveBeenCalledWith('/api/documents', {})
   })
 
   it('uploadDocument sends the file as form data', async () => {

@@ -2,7 +2,7 @@
  * API client.
  *
  * This file is the only place in the UI that talks to the FastAPI backend.
- * It has one function per endpoint (health, upload, query). Every request
+ * It has one function per endpoint (health, list documents, upload, query). Every request
  * goes to /api/..., which the Vite proxy forwards to FastAPI. When the
  * backend returns an error, the function throws an ApiError that carries the
  * readable message from FastAPI's {"detail": ...} body and the HTTP status.
@@ -69,6 +69,11 @@ async function request(path, options = {}) {
 // GET /health: API status and configuration check
 export function getHealth() {
   return request('/health')
+}
+
+// GET /documents: every indexed file with its type, parts and chunk count
+export function listDocuments() {
+  return request('/documents')
 }
 
 // POST /documents: upload and index one file
