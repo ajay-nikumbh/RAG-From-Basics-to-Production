@@ -25,6 +25,10 @@ class DocumentUploadResponse(BaseModel):
     # Chunks in the whole index after this upload
     total_chunks: int
 
+    # Embedding tokens used and their cost in US dollars
+    embedding_tokens: int = 0
+    cost_usd: float = 0.0
+
 
 class DocumentInfo(BaseModel):
     """One indexed file in GET /documents."""

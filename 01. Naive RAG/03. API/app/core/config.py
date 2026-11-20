@@ -60,9 +60,17 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.0
     llm_max_tokens: int = 800
 
+    # Prices in US dollars per one million tokens (gpt-4o-mini and text-embedding-3-small list prices)
+    price_embedding_per_million: float = 0.02
+    price_chat_input_per_million: float = 0.15
+    price_chat_output_per_million: float = 0.60
+
     # Data folders for uploaded files and the saved FAISS index
     upload_dir: Path = IMPLEMENTATION_DIR / "data" / "uploads"
     index_dir: Path = IMPLEMENTATION_DIR / "data" / "index"
+
+    # File where every query and ingestion run is recorded for analytics
+    usage_file: Path = IMPLEMENTATION_DIR / "data" / "usage" / "usage.jsonl"
 
 
 # Cached so the .env file is read only once

@@ -51,7 +51,10 @@ def test_upload_indexes_file(client):
 
     # Success with the expected counts
     assert response.status_code == 200
-    assert response.json() == {"source": "policy.txt", "documents": 1, "chunks": 1, "total_chunks": 1}
+    assert response.json() == {
+        "source": "policy.txt", "documents": 1, "chunks": 1, "total_chunks": 1,
+        "embedding_tokens": 0, "cost_usd": 0.0,
+    }
 
     # The file was saved to the upload folder
     assert (get_settings().upload_dir / "policy.txt").exists()

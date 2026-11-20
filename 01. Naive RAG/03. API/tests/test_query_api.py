@@ -7,7 +7,7 @@ sources and the automatic 422 responses for invalid input.
 """
 
 # Imports
-from app.services.rag_service import RagAnswer, Source
+from app.services.rag_service import RagAnswer, Source, Usage
 from fastapi.testclient import TestClient
 from app.api.routes import query
 from app.main import app
@@ -27,7 +27,8 @@ def test_query_returns_answer_and_sources(monkeypatch):
         received.update(question=question, top_k=top_k)
         return RagAnswer(
             answer="You get 8 sick days [1].",
-            sources=[Source(number=1, label="hr.pdf, page 4", score=0.81, text="Employees get 8 sick days.")],
+            sources=[Source(number=1, label="hr.pdf, page 4", score=0.81, text="Employees get 8 sick days.", source="hr.pdf", page=4)],
+            usage=Usage(embedding_tokens=7, prompt_tokens=300, completion_tokens=20, cost_usd=0.0001, latency_ms=900),
         )
 
     monkeypatch.setattr(query, "answer_question", fake_answer_question)
@@ -39,7 +40,8 @@ def test_query_returns_answer_and_sources(monkeypatch):
     assert response.status_code == 200
     assert response.json() == {
         "answer": "You get 8 sick days [1].",
-        "sources": [{"number": 1, "label": "hr.pdf, page 4", "score": 0.81, "text": "Employees get 8 sick days."}],
+        "sources": [{"number": 1, "label": "hr.pdf, page 4", "score": 0.81, "text": "Employees get 8 sick days.", "source": "hr.pdf", "page": 4}],
+        "usage": {"embedding_tokens": 7, "prompt_tokens": 300, "completion_tokens": 20, "cost_usd": 0.0001, "latency_ms": 900},
     }
     assert received == {"question": "How many sick days?", "top_k": 2}
 

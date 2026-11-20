@@ -83,4 +83,6 @@ def upload_document(file: UploadFile = File(...)) -> DocumentUploadResponse:
         documents=result.documents,
         chunks=result.chunks,
         total_chunks=result.total_chunks,
+        embedding_tokens=result.embedding_tokens,
+        cost_usd=result.cost_usd,
     )

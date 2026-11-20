@@ -2,13 +2,14 @@
 Query route.
 
 This file defines POST /query. It receives a question, runs the RAG service
-(retrieve, build prompt, generate) and returns the answer with its sources.
+(retrieve, build prompt, generate) and returns the answer with its sources
+and the usage of the run.
 Input validation (empty question, top_k out of range) is done by the
 QueryRequest schema, so invalid requests get a 422 response automatically.
 """
 
 # Imports
-from app.schemas.query import QueryRequest, QueryResponse, SourceResponse
+from app.schemas.query import QueryRequest, QueryResponse, SourceResponse, UsageResponse
 from app.services.rag_service import answer_question
 from fastapi import APIRouter
 
@@ -33,7 +34,10 @@ def query(request: QueryRequest) -> QueryResponse:
                 label=source.label,
                 score=source.score,
                 text=source.text,
+                source=source.source,
+                page=source.page,
             )
             for source in result.sources
         ],
+        usage=UsageResponse(**vars(result.usage)),
     )

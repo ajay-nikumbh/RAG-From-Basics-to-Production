@@ -7,7 +7,7 @@ adding one include_router line here.
 """
 
 # Imports
-from app.api.routes import documents, health, query
+from app.api.routes import analytics, documents, health, query
 from fastapi import APIRouter
 
 
@@ -22,3 +22,6 @@ api_router.include_router(documents.router)
 
 # Query endpoints: POST /query
 api_router.include_router(query.router)
+
+# Analytics endpoints: GET /analytics
+api_router.include_router(analytics.router)

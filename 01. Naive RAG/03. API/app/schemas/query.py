@@ -2,8 +2,8 @@
 Query schemas.
 
 This file defines the request and response of POST /query. The request holds
-the question and an optional top_k. The response holds the answer and the
-sources (citations) it was generated from.
+the question and an optional top_k. The response holds the answer, the
+sources (citations) it was generated from and the usage (tokens, cost, time).
 """
 
 # Imports
@@ -35,6 +35,23 @@ class SourceResponse(BaseModel):
     # The chunk text used as context
     text: str
 
+    # File name and PDF page, used by the UI to open the cited page
+    source: str = ""
+    page: int | None = None
+
+
+class UsageResponse(BaseModel):
+    """Tokens, cost and time of one query."""
+
+    # Tokens used by the question embedding and the chat model
+    embedding_tokens: int
+    prompt_tokens: int
+    completion_tokens: int
+
+    # Cost in US dollars and total time in milliseconds
+    cost_usd: float
+    latency_ms: int
+
 
 class QueryResponse(BaseModel):
     """Response body of POST /query."""
@@ -44,3 +61,6 @@ class QueryResponse(BaseModel):
 
     # The retrieved chunks in citation order
     sources: list[SourceResponse]
+
+    # Tokens, cost and time of this query
+    usage: UsageResponse

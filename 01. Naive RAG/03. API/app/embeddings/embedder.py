@@ -4,13 +4,15 @@ Text embedder.
 This file turns text into vectors with the Azure OpenAI embedding deployment
 (text-embedding-3-small, 1536 numbers per text). Chunks are sent in batches to
 keep each request small, and the result is a NumPy float32 matrix with one row
-per text, which is the format FAISS expects.
+per text, which is the format FAISS expects. The token count of every request
+is added to the usage meter of the running query or ingestion.
 
 embed_texts is used at ingestion time for many chunks; embed_query is used at
 question time for one question.
 """
 
 # Imports
+from app.services.usage import add_embedding_tokens
 from app.core.azure_client import get_azure_client
 from app.core.config import get_settings
 import numpy as np
@@ -40,6 +42,10 @@ def embed_texts(texts: list[str], client=None) -> np.ndarray:
 
         # The API returns one embedding per input, in input order
         vectors.extend(item.embedding for item in response.data)
+
+        # Count the tokens of this request for usage and cost
+        if getattr(response, "usage", None):
+            add_embedding_tokens(response.usage.prompt_tokens)
 
     # FAISS works with float32 matrices
     return np.array(vectors, dtype="float32").reshape(len(vectors), -1)
