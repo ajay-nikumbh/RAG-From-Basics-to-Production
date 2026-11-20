@@ -11,6 +11,7 @@
 import EmptyState from '../../components/EmptyState.jsx'
 import Button from '../../components/Button.jsx'
 import styles from './DocumentList.module.css'
+import { plural } from '../../utils/format.js'
 
 // Word used for the parts of each file type
 const PART_NAMES = { pdf: 'page', excel: 'sheet' }
@@ -21,7 +22,7 @@ function partsLabel(fileType, parts) {
   if (!name) {
     return ''
   }
-  return `${parts} ${name}${parts === 1 ? '' : 's'}`
+  return plural(parts, name)
 }
 
 // List of indexed files with its loading, error and empty states
@@ -60,7 +61,7 @@ export default function DocumentList({ documents, status, error, onRetry }) {
           <span className={styles.meta}>
             <span className={styles.tag}>{doc.file_type}</span>
             {partsLabel(doc.file_type, doc.parts) && <span>{partsLabel(doc.file_type, doc.parts)}</span>}
-            <span>{doc.chunks} chunks</span>
+            <span>{plural(doc.chunks, 'chunk')}</span>
           </span>
         </li>
       ))}
