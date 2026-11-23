@@ -2,7 +2,8 @@
 Application settings.
 
 This file reads every configuration value the app needs (Azure OpenAI chat
-and embedding settings, chunking and retrieval settings, data
+and embedding settings, chunking and retrieval settings, the Advanced RAG
+stage switches for rewriting, reranking, thresholds and compression, data
 folders) from environment variables and from the repository root .env file.
 
 All other files get settings through get_settings(), so values are read once
@@ -53,8 +54,29 @@ class Settings(BaseSettings):
     chunk_size: int = 1000
     chunk_overlap: int = 150
 
-    # Retrieval settings
+    # Retrieval settings: top_k is used when reranking is off (Naive behaviour)
     top_k: int = 4
+
+    # Query rewriting: one gpt-4o-mini call that condenses follow-ups and rewrites the question
+    rewrite_enabled: bool = True
+    rewrite_history_turns: int = 3
+    rewrite_max_tokens: int = 150
+
+    # Candidate retrieval: how many chunks the reranker scores
+    candidate_k: int = 10
+
+    # Reranking: gpt-4o-mini scores every candidate from 0 (unrelated) to 10 (answers the question)
+    rerank_enabled: bool = True
+    rerank_max_tokens: int = 400
+
+    # Threshold and dynamic k: keep chunks scoring at least the threshold, between min and max chunks
+    rerank_threshold: float = 5.0
+    min_chunks: int = 1
+    max_chunks: int = 5
+
+    # Optional extractive context compression (off by default, evaluated separately)
+    compression_enabled: bool = False
+    compression_max_tokens: int = 600
 
     # Answer generation settings
     llm_temperature: float = 0.0

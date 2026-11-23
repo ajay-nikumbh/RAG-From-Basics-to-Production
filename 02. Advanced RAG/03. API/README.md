@@ -25,8 +25,8 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <thead><tr><th><img src="../../assets/spacer.png" align="right" width="52" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="330" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="924" height="1">What it adds</th><th><img src="../../assets/spacer.png" align="right" width="92" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Project base</td><td>Copy of the Naive RAG API with its own data folders, port and the new rewriting, reranking and compression packages</td><td>Done</td></tr>
-<tr><td>2</td><td>Pipeline settings</td><td>Settings to switch each stage on or off and tune it</td><td>Next</td></tr>
-<tr><td>3</td><td>Query rewriter</td><td>One gpt-4o-mini call that condenses follow-ups with the chat history and rewrites the question into a search query; skipped when not needed</td><td>Planned</td></tr>
+<tr><td>2</td><td>Pipeline settings</td><td>Settings to switch each stage on or off and tune it</td><td>Done</td></tr>
+<tr><td>3</td><td>Query rewriter</td><td>One gpt-4o-mini call that condenses follow-ups with the chat history and rewrites the question into a search query; skipped when not needed</td><td>Next</td></tr>
 <tr><td>4</td><td>Candidate retrieval</td><td>Retrieve a larger candidate set (top N) for the reranker</td><td>Planned</td></tr>
 <tr><td>5</td><td>Reranker</td><td>gpt-4o-mini scores every candidate chunk for relevance to the question</td><td>Planned</td></tr>
 <tr><td>6</td><td>Threshold and dynamic k</td><td>Keep 1 to 5 chunks whose relevance score passes a threshold, with fallbacks</td><td>Planned</td></tr>
@@ -43,6 +43,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <thead><tr><th><img src="../../assets/spacer.png" align="right" width="52" height="1">#</th><th><img src="../../assets/spacer.png" align="right" width="431" height="1">Doc</th><th><img src="../../assets/spacer.png" align="right" width="915" height="1">Topic</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="docs/01.%20Project%20Base%20and%20Folder%20Structure.md">Project Base and Folder Structure</a></td><td>Why the API starts from Naive RAG, what changed, the new packages and the build order</td></tr>
+<tr><td>02</td><td><a href="docs/02.%20Advanced%20Pipeline%20Settings.md">Advanced Pipeline Settings</a></td><td>Stage switches and limits, why 10 candidates, threshold and chunk limits, fallback to Naive RAG</td></tr>
 </tbody>
 </table>
 

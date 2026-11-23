@@ -27,5 +27,12 @@ def test_health_reports_status_and_pipeline_settings():
     assert body["pipeline"]["top_k"] == settings.top_k
     assert body["pipeline"]["embedding_model"] == settings.azure_openai_embedding_deployment
 
+    # Advanced RAG stage settings are reported too
+    assert body["pipeline"]["rewrite_enabled"] == settings.rewrite_enabled
+    assert body["pipeline"]["candidate_k"] == settings.candidate_k
+    assert body["pipeline"]["rerank_enabled"] == settings.rerank_enabled
+    assert body["pipeline"]["max_chunks"] == settings.max_chunks
+    assert body["pipeline"]["compression_enabled"] == settings.compression_enabled
+
     # The API key never appears in the response
     assert not settings.azure_openai_api_key or settings.azure_openai_api_key not in str(body)

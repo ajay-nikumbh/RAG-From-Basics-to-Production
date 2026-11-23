@@ -45,6 +45,9 @@ async def lifespan(app: FastAPI):
     log.info(f"  chat model    [cyan]{settings.azure_openai_deployment_name or 'not set'}[/]")
     log.info(f"  embeddings    [cyan]{settings.azure_openai_embedding_deployment}[/]  dims=[cyan]{settings.embedding_dimensions}[/]")
     log.info(f"  chunking      size=[cyan]{settings.chunk_size}[/]  overlap=[cyan]{settings.chunk_overlap}[/]  top_k=[cyan]{settings.top_k}[/]")
+    log.info(f"  rewrite       enabled=[cyan]{settings.rewrite_enabled}[/]  history_turns=[cyan]{settings.rewrite_history_turns}[/]")
+    log.info(f"  rerank        enabled=[cyan]{settings.rerank_enabled}[/]  candidates=[cyan]{settings.candidate_k}[/]  threshold=[cyan]{settings.rerank_threshold}[/]  keep=[cyan]{settings.min_chunks}-{settings.max_chunks}[/]")
+    log.info(f"  compression   enabled=[cyan]{settings.compression_enabled}[/]")
     log.info(f"  index         files=[cyan]{len(store.sources())}[/]  chunks=[cyan]{store.count}[/]")
     yield
 

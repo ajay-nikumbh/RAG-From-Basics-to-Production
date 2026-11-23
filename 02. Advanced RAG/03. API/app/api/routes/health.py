@@ -5,7 +5,8 @@ This file defines GET /health. It is the simplest endpoint of the app: it
 confirms the API is running and reports whether the Azure OpenAI chat and
 embedding settings are filled in, so setup problems are visible before any real request.
 It also returns the non-secret pipeline settings (model deployment names,
-chunk size, overlap, top_k) that the UI shows.
+chunk size, overlap, top_k and the Advanced RAG stage switches) that the UI
+shows.
 """
 
 # Imports
@@ -50,5 +51,12 @@ def health() -> HealthResponse:
             chunk_size=settings.chunk_size,
             chunk_overlap=settings.chunk_overlap,
             top_k=settings.top_k,
+            rewrite_enabled=settings.rewrite_enabled,
+            candidate_k=settings.candidate_k,
+            rerank_enabled=settings.rerank_enabled,
+            rerank_threshold=settings.rerank_threshold,
+            min_chunks=settings.min_chunks,
+            max_chunks=settings.max_chunks,
+            compression_enabled=settings.compression_enabled,
         ),
     )

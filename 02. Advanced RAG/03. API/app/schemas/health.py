@@ -34,6 +34,15 @@ class PipelineSettings(BaseModel):
     chunk_overlap: int
     top_k: int
 
+    # Advanced RAG stages: switches and limits
+    rewrite_enabled: bool
+    candidate_k: int
+    rerank_enabled: bool
+    rerank_threshold: float
+    min_chunks: int
+    max_chunks: int
+    compression_enabled: bool
+
 
 class HealthResponse(BaseModel):
     """Response body of GET /health."""
