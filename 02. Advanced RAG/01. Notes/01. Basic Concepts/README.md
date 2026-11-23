@@ -19,12 +19,13 @@ flowchart LR
     N11 --> N12[12 Evaluation]
     N12 --> N13[13 Cost and<br/>latency]
     N13 --> N14[14 Limitations]
+    N14 --> N15[15 Glossary]
 ```
 
 ## Reading order
 
 <table width="100%">
-<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="42" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="384" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="748" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="149" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="74" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="43" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="387" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="753" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="150" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="64" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20What%20is%20Advanced%20RAG.md">What is Advanced RAG</a></td><td>Definition, the three paradigms (Naive, Advanced, Modular), what is added and what stays the same</td><td>Overview</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20From%20Naive%20to%20Advanced%20RAG.md">From Naive to Advanced RAG</a></td><td>The measured Naive RAG gaps and which Advanced RAG technique fixes each</td><td>Overview</td><td>Done</td></tr>
@@ -40,7 +41,7 @@ flowchart LR
 <tr><td>12</td><td><a href="12.%20Evaluating%20Advanced%20RAG.md">Evaluating Advanced RAG</a></td><td>Comparing against the Naive RAG baseline fairly; which metrics should move</td><td>Evaluation</td><td>Done</td></tr>
 <tr><td>13</td><td><a href="13.%20Cost%20and%20Latency%20Trade-offs.md">Cost and Latency Trade-offs</a></td><td>What each extra stage costs, and how to keep it affordable</td><td>Operations</td><td>Done</td></tr>
 <tr><td>14</td><td><a href="14.%20Limitations%20of%20Advanced%20RAG.md">Limitations of Advanced RAG</a></td><td>What it still cannot do and which architectures come next</td><td>Overview</td><td>Done</td></tr>
-<tr><td>15</td><td>Glossary</td><td>Every term used in these notes</td><td>Reference</td><td>Planned</td></tr>
+<tr><td>15</td><td><a href="15.%20Glossary.md">Glossary</a></td><td>Every term used in these notes</td><td>Reference</td><td>Done</td></tr>
 </tbody>
 </table>
 

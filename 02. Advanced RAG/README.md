@@ -2,7 +2,7 @@
 
 **Category:** Retrieval Optimization  
 **Core idea:** Keep the Naive RAG pipeline, and add a pre-retrieval stage (query rewriting) and a post-retrieval stage (reranking, filtering, compression) around retrieval.  
-**Status:** In progress. Folders created; notes are next.
+**Status:** In progress. Basic concept notes done (15); research paper notes are next.
 
 ## Table of Contents
 
@@ -88,9 +88,9 @@ flowchart LR
 Read in this order, the same structure as Naive RAG.
 
 <table width="100%">
-<thead><tr><th><img src="../assets/spacer.png" align="right" width="61" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="153" height="1">Folder</th><th><img src="../assets/spacer.png" align="right" width="1076" height="1">What it holds</th><th><img src="../assets/spacer.png" align="right" width="107" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="58" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="147" height="1">Folder</th><th><img src="../assets/spacer.png" align="right" width="1031" height="1">What it holds</th><th><img src="../assets/spacer.png" align="right" width="162" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>Next</td></tr>
+<tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>In progress</td></tr>
 <tr><td>2</td><td><a href="02.%20Papers/">02. Papers</a></td><td>The research papers as PDFs</td><td>Done</td></tr>
 <tr><td>3</td><td><a href="03.%20API/">03. API</a></td><td>FastAPI implementation built on the Naive RAG API, with numbered design docs</td><td>Planned</td></tr>
 <tr><td>4</td><td><a href="04.%20UI/">04. UI</a></td><td>React UI built on the Naive RAG UI, showing rewrites and reranking</td><td>Planned</td></tr>
