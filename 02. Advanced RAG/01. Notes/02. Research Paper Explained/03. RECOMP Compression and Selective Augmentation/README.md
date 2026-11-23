@@ -31,7 +31,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>06</td><td><a href="06.%20Results.md">Results</a></td><td>5 Results</td><td>Done</td></tr>
 <tr><td>07</td><td><a href="07.%20Analysis%20and%20Discussions.md">Analysis and Discussions</a></td><td>6 Analysis and Discussions</td><td>Done</td></tr>
 <tr><td>08</td><td><a href="08.%20Related%20Work.md">Related Work</a></td><td>7 Related Work</td><td>Done</td></tr>
-<tr><td>09</td><td>Conclusion and Appendix</td><td>8 Conclusion, A Appendix</td><td>Planned</td></tr>
+<tr><td>09</td><td><a href="09.%20Conclusion%20and%20Appendix.md">Conclusion and Appendix</a></td><td>8 Conclusion, A Appendix</td><td>Done</td></tr>
 </tbody>
 </table>
 
