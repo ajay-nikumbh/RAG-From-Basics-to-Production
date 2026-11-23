@@ -2,12 +2,13 @@
 
 **Category:** Retrieval Optimization  
 **Core idea:** Keep the Naive RAG pipeline, and add a pre-retrieval stage (query rewriting) and a post-retrieval stage (reranking, filtering, compression) around retrieval.  
-**Status:** In progress. Basic concept notes done (15); research paper notes are next.
+**Status:** Complete. Against the Naive RAG baseline on the same test set: context precision 0.41 to 0.66, overall 0.79 to 0.87, retrieval hit rate 90 to 100 percent, correctness unchanged at 0.84; about Rs 0.048 and 2.7 s per question. Details: [API doc 11](03.%20API/docs/11.%20Evaluation%20Results%20and%20Comparison%20with%20Naive%20RAG.md).
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Why Advanced RAG Comes Next](#why-advanced-rag-comes-next)
+- [Results](#results)
 - [Architecture](#architecture)
 - [How It Works](#how-it-works)
 - [When to Use](#when-to-use)
@@ -19,7 +20,7 @@
 
 ## Overview
 
-Advanced RAG keeps the linear retrieve-then-generate pipeline of Naive RAG but optimises the stages around retrieval. Before retrieval, the question is rewritten so it matches the documents better (Rewrite-Retrieve-Read). Retrieval brings back a larger set of candidates. After retrieval, a cross-encoder reranker reads each candidate together with the question, re-scores it, and only the best few chunks are kept, filtered or compressed before generation.
+Advanced RAG keeps the linear retrieve-then-generate pipeline of Naive RAG but optimises the stages around retrieval. Before retrieval, the question is rewritten so it matches the documents better (Rewrite-Retrieve-Read). Retrieval brings back a larger set of candidates. After retrieval, a reranker reads each candidate together with the question, re-scores it, and only the best few chunks are kept, filtered or compressed before generation. In this implementation the reranker is gpt-4o-mini used as a relevance judge (the role of a cross-encoder).
 
 ## Why Advanced RAG Comes Next
 
@@ -38,6 +39,38 @@ The [Naive RAG](../01.%20Naive%20RAG/) evaluation showed that generation is reli
 </table>
 
 Details of the measured limitations: [Naive RAG API doc 28](../01.%20Naive%20RAG/03.%20API/docs/28.%20Naive%20RAG%20Limitations%2C%20Lessons%20and%20Next%20Steps.md).
+
+## Results
+
+Measured with five ablation presets on the 11-question test set (same index, same judge as Naive RAG):
+
+<table width="100%">
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="212" height="1">Measure</th><th><img src="../assets/spacer.png" align="right" width="156" height="1">Target</th><th><img src="../assets/spacer.png" align="right" width="224" height="1">Naive RAG (preset A)</th><th><img src="../assets/spacer.png" align="right" width="358" height="1">Advanced RAG (preset D, default)</th><th><img src="../assets/spacer.png" align="right" width="448" height="1">Met?</th></tr></thead>
+<tbody>
+<tr><td>Context precision</td><td>0.65 or higher</td><td>0.41</td><td>0.66</td><td>Yes</td></tr>
+<tr><td>Overall score</td><td>0.85 or higher</td><td>0.79</td><td>0.87</td><td>Yes</td></tr>
+<tr><td>Retrieval hit rate</td><td>95 to 100%</td><td>90%</td><td>100%</td><td>Yes</td></tr>
+<tr><td>Time per question</td><td>under 3 s</td><td>1.7 s</td><td>2.7 s</td><td>Yes (average)</td></tr>
+<tr><td>Correctness</td><td>0.90 or higher</td><td>0.84</td><td>0.84</td><td>No: retrieval and chunking gaps remain</td></tr>
+<tr><td>Cost per question</td><td>under Rs 0.04</td><td>Rs 0.017</td><td>Rs 0.048</td><td>No: the gpt-4o-mini reranker is Rs 0.032</td></tr>
+<tr><td>Follow-up questions</td><td>Supported</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+</tbody>
+</table>
+
+The threshold (sending only chunks the reranker scores 6 or more) gave the largest gain; reranking while still sending 4 chunks mostly added cost; compression raised precision further but lowered correctness and stays off. The remaining correctness gap points to [03. Hybrid Search RAG](../03.%20Hybrid%20Search%20RAG/).
+
+Where to start:
+
+<table width="100%">
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="392" height="1">Goal</th><th><img src="../assets/spacer.png" align="right" width="1007" height="1">Read</th></tr></thead>
+<tbody>
+<tr><td>Understand the concepts</td><td><a href="01.%20Notes/01.%20Basic%20Concepts/">Basic concept notes 01 to 15</a></td></tr>
+<tr><td>Understand the papers</td><td><a href="01.%20Notes/02.%20Research%20Paper%20Explained/">Query Rewriting, BERT re-ranker, RECOMP, section by section</a></td></tr>
+<tr><td>See how it is built</td><td><a href="03.%20API/">API docs 01 to 12</a> and <a href="04.%20UI/">UI docs 01 to 06</a></td></tr>
+<tr><td>Call the API</td><td><a href="03.%20API/docs/12.%20End%20to%20End%20curl%20Guide.md">End to End curl Guide</a></td></tr>
+<tr><td>Prepare for interviews</td><td><a href="01.%20Notes/03.%20Interview%20Preparation/01.%20Advanced%20RAG%20Interview%20Preparation.md">Advanced RAG Interview Preparation</a></td></tr>
+</tbody>
+</table>
 
 ## Architecture
 
@@ -88,9 +121,9 @@ flowchart LR
 Read in this order, the same structure as Naive RAG.
 
 <table width="100%">
-<thead><tr><th><img src="../assets/spacer.png" align="right" width="58" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="147" height="1">Folder</th><th><img src="../assets/spacer.png" align="right" width="1031" height="1">What it holds</th><th><img src="../assets/spacer.png" align="right" width="162" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="62" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="155" height="1">Folder</th><th><img src="../assets/spacer.png" align="right" width="1088" height="1">What it holds</th><th><img src="../assets/spacer.png" align="right" width="93" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>In progress</td></tr>
+<tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>Done</td></tr>
 <tr><td>2</td><td><a href="02.%20Papers/">02. Papers</a></td><td>The research papers as PDFs</td><td>Done</td></tr>
 <tr><td>3</td><td><a href="03.%20API/">03. API</a></td><td>FastAPI implementation built on the Naive RAG API, with numbered design docs</td><td>Done</td></tr>
 <tr><td>4</td><td><a href="04.%20UI/">04. UI</a></td><td>React UI built on the Naive RAG UI, showing rewrites and reranking</td><td>Done</td></tr>
