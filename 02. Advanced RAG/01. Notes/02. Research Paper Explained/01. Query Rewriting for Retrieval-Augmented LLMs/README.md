@@ -21,7 +21,7 @@ These notes go through the paper one section at a time, with one note per sectio
 ## Notes (one per paper section)
 
 <table width="100%">
-<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="52" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="340" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="915" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="91" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="52" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="343" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="924" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="79" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
@@ -30,7 +30,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>05</td><td><a href="05.%20Implementation.md">Implementation</a></td><td>4 Implementation (rewriter, retriever, reader)</td><td>Done</td></tr>
 <tr><td>06</td><td><a href="06.%20Experiments.md">Experiments</a></td><td>5.1 Task Settings (open-domain QA, multiple-choice QA), 5.2 Baselines, 5.3 Results</td><td>Done</td></tr>
 <tr><td>07</td><td><a href="07.%20Analysis.md">Analysis</a></td><td>6.1 Training Process, 6.2 Retrieval Result, 6.3 Case Study</td><td>Done</td></tr>
-<tr><td>08</td><td>Conclusion and Limitations</td><td>7 Conclusion, Limitations</td><td>Planned</td></tr>
+<tr><td>08</td><td><a href="08.%20Conclusion%20and%20Limitations.md">Conclusion and Limitations</a></td><td>7 Conclusion, Limitations</td><td>Done</td></tr>
 </tbody>
 </table>
 
