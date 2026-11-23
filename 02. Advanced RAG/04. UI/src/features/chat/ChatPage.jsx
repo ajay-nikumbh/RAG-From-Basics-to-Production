@@ -94,7 +94,7 @@ function EmptyState({ onAsk }) {
 export default function ChatPage() {
 
   // Conversation state and screen size
-  const { turns, busy, ask, evaluate, reset, opened, openSource, closeSource } = useChat()
+  const { turns, busy, historyTurns, ask, evaluate, reset, opened, openSource, closeSource } = useChat()
   const isLarge = useMediaQuery('(min-width: 1024px)')
 
   // The turn whose source is open
@@ -143,7 +143,7 @@ export default function ChatPage() {
                   turn={turn}
                   activeNumber={opened?.turnId === turn.id ? opened.number : null}
                   onOpen={(number) => openSource(turn.id, number)}
-                  onRetry={() => ask(turn.question, turn.topK)}
+                  onRetry={() => ask(turn.question)}
                   onEvaluate={() => evaluate(turn)}
                 />
               ))}
@@ -154,7 +154,7 @@ export default function ChatPage() {
 
         <div className="shrink-0 px-6 pt-2 pb-5">
           <div className="mx-auto max-w-3xl">
-            <Composer busy={busy} onSend={ask} />
+            <Composer busy={busy} onSend={ask} historyTurns={historyTurns} />
             <p className="mt-2 text-center text-[11.5px] text-subtle-foreground">Answers come only from your indexed documents. Click a citation to see the passage.</p>
           </div>
         </div>

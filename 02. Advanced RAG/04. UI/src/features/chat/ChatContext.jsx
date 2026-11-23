@@ -3,15 +3,17 @@
  *
  * This file keeps the conversation in a React context, so it survives
  * moving between pages (Chat, Documents, Analytics). A turn is one question
- * and its answer. ask() adds a pending turn, sends the question to
- * POST /query and fills the turn with the answer, sources and usage, or the
- * error. evaluate() grades an answer with the LLM judge (POST /evals/answer)
+ * and its answer. ask() adds a pending turn, sends the question with the
+ * earlier answered turns (so follow-ups can be rewritten by the API) to
+ * POST /query and fills the turn with the answer, sources, usage and
+ * pipeline trace, or the error. evaluate() grades an answer with the LLM judge (POST /evals/answer)
  * and stores the scores on the turn. openSource() remembers which source of
  * which turn the source panel shows.
  */
 
 // Imports
 import { useAsk, useEvaluateAnswer } from '@/api/queries'
+import { buildHistory } from './history'
 import { ChatContext } from './useChat'
 import { useState } from 'react'
 
@@ -30,16 +32,19 @@ export function ChatProvider({ children }) {
   }
 
   // Ask a question and fill in the answer when it arrives
-  async function ask(question, topK = null) {
+  async function ask(question) {
+
+    // Earlier answered turns, taken before the new turn is added
+    const history = buildHistory(turns)
 
     // Show the question immediately
     const id = crypto.randomUUID()
-    setTurns((current) => [...current, { id, question, topK, status: 'pending', answer: '', sources: [], usage: null, error: '', evaluation: null }])
+    setTurns((current) => [...current, { id, question, status: 'pending', answer: '', sources: [], usage: null, trace: null, error: '', evaluation: null }])
 
     // Ask the backend, then store the result or the error
     try {
-      const result = await askMutation.mutateAsync({ question, topK })
-      updateTurn(id, { status: 'done', answer: result.answer, sources: result.sources, usage: result.usage })
+      const result = await askMutation.mutateAsync({ question, history })
+      updateTurn(id, { status: 'done', answer: result.answer, sources: result.sources, usage: result.usage, trace: result.trace })
     } catch (err) {
       updateTurn(id, { status: 'error', error: err.message })
     }
@@ -49,7 +54,8 @@ export function ChatProvider({ children }) {
   async function evaluate(turn) {
     updateTurn(turn.id, { evaluation: { status: 'pending' } })
     try {
-      const result = await evaluateMutation.mutateAsync({ question: turn.question, answer: turn.answer, contexts: turn.sources.map((source) => source.text) })
+      const question = turn.trace?.standalone_question || turn.question
+      const result = await evaluateMutation.mutateAsync({ question, answer: turn.answer, contexts: turn.sources.map((source) => source.text) })
       updateTurn(turn.id, { evaluation: { status: 'done', result } })
     } catch (err) {
       updateTurn(turn.id, { evaluation: { status: 'error', error: err.message } })
@@ -66,6 +72,7 @@ export function ChatProvider({ children }) {
   const value = {
     turns,
     busy: turns.some((turn) => turn.status === 'pending'),
+    historyTurns: buildHistory(turns).length,
     ask,
     evaluate,
     reset,

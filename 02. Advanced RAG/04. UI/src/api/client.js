@@ -153,12 +153,12 @@ export function getAnalytics() {
   return request('/analytics')
 }
 
-// POST /query: ask a question, get the answer and its sources
-export function askQuestion(question, topK = null) {
+// POST /query: ask a question with the earlier turns, get the answer, sources and pipeline trace
+export function askQuestion(question, history = []) {
   return request('/query', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question, top_k: topK }),
+    body: JSON.stringify({ question, history }),
   })
 }
 

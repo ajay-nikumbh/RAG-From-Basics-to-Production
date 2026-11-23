@@ -88,19 +88,24 @@ describe('requests', () => {
     expect(documentFileUrl('my file.pdf')).toBe('/api/documents/my%20file.pdf/file')
   })
 
-  it('askQuestion sends question and top_k as JSON', async () => {
+  it('askQuestion sends the question and the chat history as JSON', async () => {
 
     // Fake an answer
     const fetch = fakeFetch(200, { answer: 'Yes [1]', sources: [] })
     vi.stubGlobal('fetch', fetch)
 
-    // Ask with top_k 3
-    await askQuestion('What is RAG?', 3)
+    // Ask a follow-up with one earlier turn
+    const history = [{ question: 'What is RAG?', answer: 'Retrieval plus generation [1].' }]
+    await askQuestion('and how is it trained?', history)
 
-    // JSON body with snake_case top_k for FastAPI
+    // JSON body with the question and the history
     const [url, options] = fetch.mock.calls[0]
     expect(url).toBe('/api/query')
-    expect(JSON.parse(options.body)).toEqual({ question: 'What is RAG?', top_k: 3 })
+    expect(JSON.parse(options.body)).toEqual({ question: 'and how is it trained?', history })
+
+    // Without history an empty list is sent
+    await askQuestion('What is RAG?')
+    expect(JSON.parse(fetch.mock.calls[1][1].body)).toEqual({ question: 'What is RAG?', history: [] })
   })
 })
 

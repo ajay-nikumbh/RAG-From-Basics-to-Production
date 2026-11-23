@@ -2,7 +2,8 @@
  * Chat turn.
  *
  * This file draws one question and its answer. The question is a right-hand
- * bubble. The answer shows a thinking state while the request runs, then the
+ * bubble; when the API rewrote a follow-up, the standalone question it
+ * understood is shown under it. The answer shows a thinking state while the request runs, then the
  * Markdown answer with citation chips, a usage line (latency, question and
  * answer tokens, cost in rupees) with Evaluate and Copy buttons, the
  * evaluation card once the answer is graded, and the source cards (chunks
@@ -11,8 +12,8 @@
  */
 
 // Imports
+import { AlertCircle, Check, Copy, CornerDownRight, Gauge, RotateCcw, Sparkles } from 'lucide-react'
 import { formatCost, formatInr, formatMs, formatTokens, plural } from '@/lib/format'
-import { AlertCircle, Check, Copy, Gauge, RotateCcw, Sparkles } from 'lucide-react'
 import AnswerEvaluation from './AnswerEvaluation'
 import { Tooltip } from '@/components/ui/overlay'
 import { Button } from '@/components/ui/button'
@@ -24,7 +25,7 @@ import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
 // Steps shown while the answer is being prepared
-const THINKING = ['Embedding the question', 'Searching the index', 'Writing the answer']
+const THINKING = ['Rewriting the question', 'Searching and reranking', 'Writing the answer']
 
 // Animated placeholder while the request runs
 function Thinking() {
@@ -93,16 +94,23 @@ export default function ChatTurn({ turn, activeNumber, onOpen, onRetry, onEvalua
 
   // Which sources the answer cites, and which ones the judge found relevant
   const cited = citedNumbers(turn.answer)
+  const rewritten = turn.trace?.rewritten && turn.trace.standalone_question !== turn.question
   const relevant = new Set(turn.evaluation?.result?.relevant_chunks ?? [])
 
   return (
     <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
 
-      {/* Question */}
-      <div className="flex justify-end">
+      {/* Question, and how the API understood it when it was rewritten */}
+      <div className="flex flex-col items-end gap-1.5">
         <p className="max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-[14px] leading-relaxed whitespace-pre-wrap text-primary-foreground shadow-card">
           {turn.question}
         </p>
+        {rewritten && (
+          <p className="flex max-w-[85%] items-start gap-1.5 text-right text-[12px] text-muted-foreground">
+            <CornerDownRight className="mt-0.5 size-3.5 shrink-0" />
+            <span>Understood as: <span className="text-foreground/80">{turn.trace.standalone_question}</span></span>
+          </p>
+        )}
       </div>
 
       {/* Answer */}

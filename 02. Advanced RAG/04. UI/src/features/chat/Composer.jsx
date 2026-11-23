@@ -3,26 +3,26 @@
  *
  * This file is the question box at the bottom of the chat. The textarea
  * grows with its text; Enter sends and Shift+Enter adds a new line. A small
- * menu picks how many chunks to retrieve (top k), and the send button is
- * disabled while a question is running or the box is empty.
+ * label shows how many earlier turns are sent with the question, so the user
+ * knows follow-ups ("and how is it trained?") will be understood. The send
+ * button is disabled while a question is running or the box is empty. The
+ * number of chunks is no longer chosen here: the API keeps 1 to 5 chunks by
+ * reranker score.
  */
 
 // Imports
-import { ArrowUp, SlidersHorizontal } from 'lucide-react'
-import { DropdownMenu } from '@/components/ui/overlay'
+import { Tooltip } from '@/components/ui/overlay'
 import { Button } from '@/components/ui/button'
+import { ArrowUp, History } from 'lucide-react'
 import { Kbd } from '@/components/ui/misc'
+import { plural } from '@/lib/format'
 import { useState } from 'react'
 
-// Top k choices; null means the server default
-const TOP_K = [null, 3, 5, 8, 10]
+// Question box with send button and the follow-up context label
+export default function Composer({ busy, onSend, historyTurns = 0 }) {
 
-// Question box with send button and top k menu
-export default function Composer({ busy, onSend }) {
-
-  // Draft text and chosen top k
+  // Draft text
   const [text, setText] = useState('')
-  const [topK, setTopK] = useState(null)
 
   // Send the draft and clear the box
   function send() {
@@ -30,7 +30,7 @@ export default function Composer({ busy, onSend }) {
     if (!question || busy) {
       return
     }
-    onSend(question, topK)
+    onSend(question)
     setText('')
   }
 
@@ -41,12 +41,6 @@ export default function Composer({ busy, onSend }) {
       send()
     }
   }
-
-  // Menu items for the top k choice
-  const items = TOP_K.map((value) => ({
-    label: `${value === null ? 'Server default' : `Top ${value} chunks`}${value === topK ? '  (selected)' : ''}`,
-    onSelect: () => setTopK(value),
-  }))
 
   return (
     <div className="rounded-2xl border bg-card p-2 shadow-pop transition-shadow focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10">
@@ -60,16 +54,12 @@ export default function Composer({ busy, onSend }) {
         aria-label="Question"
       />
       <div className="flex items-center justify-between gap-2 px-1">
-        <DropdownMenu
-          align="start"
-          items={items}
-          trigger={
-            <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">
-              <SlidersHorizontal className="size-3.5" />
-              {topK === null ? 'Default top k' : `Top ${topK}`}
-            </Button>
-          }
-        />
+        <Tooltip content="Earlier questions and answers are sent so follow-up questions can be rewritten into standalone questions">
+          <span className="flex cursor-default items-center gap-1.5 px-2 text-[12px] text-muted-foreground">
+            <History className="size-3.5" />
+            {historyTurns === 0 ? 'New conversation' : `Follow-ups use ${plural(historyTurns, 'earlier turn')}`}
+          </span>
+        </Tooltip>
         <div className="flex items-center gap-3">
           <span className="hidden items-center gap-1 text-[11.5px] text-subtle-foreground sm:flex">
             <Kbd>Enter</Kbd> send <Kbd>Shift</Kbd><Kbd>Enter</Kbd> new line

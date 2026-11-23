@@ -70,11 +70,11 @@ export function useDeleteDocument() {
   })
 }
 
-// Ask a question; analytics refresh afterwards
+// Ask a question with the earlier turns; analytics refresh afterwards
 export function useAsk() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: ({ question, topK }) => askQuestion(question, topK),
+    mutationFn: ({ question, history }) => askQuestion(question, history),
     onSuccess: () => client.invalidateQueries({ queryKey: keys.analytics }),
   })
 }
