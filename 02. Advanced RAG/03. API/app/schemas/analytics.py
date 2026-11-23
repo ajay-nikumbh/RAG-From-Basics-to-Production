@@ -3,8 +3,9 @@ Analytics schemas.
 
 This file defines the response of GET /analytics: totals over every recorded
 query and ingestion (runs, tokens, cost, average query time), one point per
-day for the charts, the most recent runs for the activity table, and the
-USD to INR rate used to show costs in rupees.
+day for the charts, the average cost, tokens and time of each query pipeline
+stage, the most recent runs for the activity table, and the USD to INR rate
+used to show costs in rupees.
 """
 
 # Imports
@@ -52,6 +53,9 @@ class AnalyticsResponse(BaseModel):
 
     # One point per day, oldest first
     daily: list[DailyPoint]
+
+    # Average cost, tokens and time per pipeline stage of a question
+    stages: dict[str, dict] = {}
 
     # Most recent runs, newest first, as recorded (kind, tokens, cost, latency, question or file)
     recent: list[dict]

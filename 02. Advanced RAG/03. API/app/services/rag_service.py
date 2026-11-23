@@ -15,7 +15,7 @@ answers the standalone question from the kept (and compressed) chunks only.
 It returns the answer, the sources used (citations), the usage of the run
 (tokens, cost, time) and a trace of every stage: the questions at each step,
 every candidate with its similarity, reranker score and whether it was kept,
-and the time of each stage. If no chunk is kept (empty index or nothing
+and the tokens, cost and time of each stage. If no chunk is kept (empty index or nothing
 relevant), it returns the fixed not-found answer without calling the chat
 model. Like the ingestion service, it knows nothing about HTTP.
 """
@@ -25,12 +25,12 @@ from app.generation.prompts import NOT_FOUND_ANSWER, build_messages, source_labe
 from app.core.logging import get_logger, is_debug, log_detail, log_step, preview
 from app.retrieval.retriever import retrieve_candidates
 from app.compression.compressor import compress_chunks
+from app.services.usage import track_stage, track_usage
 from app.reranking.reranker import RankedChunk, rerank
 from app.vectorstore.faiss_store import SearchResult
 from app.generation.generator import generate_answer
 from app.reranking.selector import select_chunks
 from app.rewriting.rewriter import rewrite_query
-from app.services.usage import track_usage
 from app.core.config import get_settings
 from dataclasses import dataclass, field
 import time
@@ -39,6 +39,9 @@ import re
 
 # Logger for pipeline steps
 log = get_logger(__name__)
+
+# Pipeline stages in order, as named in the trace and the usage events
+STAGES = ("rewrite", "retrieve", "rerank", "compress", "generate")
 
 
 @dataclass
@@ -131,6 +134,9 @@ class Trace:
     # Milliseconds spent in each stage
     timings_ms: dict = field(default_factory=dict)
 
+    # Tokens, cost (USD and Rs) and time of each stage
+    stage_usage: dict = field(default_factory=dict)
+
 
 @dataclass
 class RagAnswer:
@@ -192,6 +198,30 @@ def log_candidates(candidates: list[TraceCandidate]) -> None:
         log_detail(log, f"#{candidate.final_rank}", f"{mark}  was #{candidate.retrieval_rank}  sim=[cyan]{candidate.similarity:.3f}[/]  score=[cyan]{score}[/]  {candidate.source}  [dim]{page}[/]")
 
 
+def stage_usage(stages: dict, usd_to_inr: float) -> dict:
+    """Usage of every stage in pipeline order, with the cost in rupees added."""
+
+    # Zero usage for a stage that did not run (for example generate on a not-found answer)
+    empty = {"embedding_tokens": 0, "prompt_tokens": 0, "completion_tokens": 0, "cost_usd": 0.0, "latency_ms": 0}
+
+    # Copy each stage and add its rupee cost
+    usage = {}
+    for name in STAGES:
+        values = dict(stages.get(name, empty))
+        values["cost_inr"] = round(values["cost_usd"] * usd_to_inr, 4)
+        usage[name] = values
+    return usage
+
+
+def log_stage_usage(usage: dict) -> None:
+    """One log line per stage: tokens in and out, rupees and time."""
+
+    # Aligned columns so stages can be compared at a glance
+    for name, values in usage.items():
+        tokens_in = values["prompt_tokens"] + values["embedding_tokens"]
+        log_detail(log, name, f"in=[cyan]{tokens_in:>5}[/]  out=[cyan]{values['completion_tokens']:>4}[/]  Rs [cyan]{values['cost_inr']:.4f}[/]  [dim]{values['latency_ms']} ms[/]")
+
+
 def answer_question(question: str, history: list[dict] | None = None, usage_kind: str = "query") -> RagAnswer:
     """Rewrite, retrieve, rerank, select and generate, and return the answer with sources and trace.
 
@@ -213,35 +243,29 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
     with track_usage(usage_kind, question=question[:300]) as meter:
 
         # Stage 1: condense and rewrite the question
-        stage = time.perf_counter()
-        with log_step(log, "rewrite") as step:
+        with track_stage(meter, "rewrite"), log_step(log, "rewrite") as step:
             rewrite = rewrite_query(question, history)
             step["reason"] = rewrite.reason
         trace.standalone_question = rewrite.standalone_question
         trace.search_query = rewrite.search_query
         trace.rewritten = rewrite.rewritten
         trace.rewrite_reason = rewrite.reason
-        trace.timings_ms["rewrite"] = elapsed_ms(stage)
         if rewrite.rewritten:
             log_detail(log, "standalone", f"\"{preview(rewrite.standalone_question, limit + 60)}\"")
             log_detail(log, "search", f"\"{preview(rewrite.search_query, limit + 60)}\"")
 
         # Stage 2: retrieve candidates with the search query
-        stage = time.perf_counter()
-        with log_step(log, "retrieve") as step:
+        with track_stage(meter, "retrieve"), log_step(log, "retrieve") as step:
             candidates = retrieve_candidates(rewrite.search_query)
             step["candidates"] = len(candidates)
             step["top_similarity"] = round(candidates[0].score, 3) if candidates else None
-        trace.timings_ms["retrieve"] = elapsed_ms(stage)
 
         # Stage 3: score the candidates against the standalone question
-        stage = time.perf_counter()
-        with log_step(log, "rerank") as step:
+        with track_stage(meter, "rerank"), log_step(log, "rerank") as step:
             outcome = rerank(rewrite.standalone_question, candidates)
             step["reason"] = outcome.reason
         trace.reranked = outcome.reranked
         trace.rerank_reason = outcome.reason
-        trace.timings_ms["rerank"] = elapsed_ms(stage)
 
         # Stage 4: keep the chunks that pass the threshold and limits
         selection = select_chunks(outcome)
@@ -249,15 +273,14 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
         log_detail(log, "select", f"kept=[cyan]{len(selection.kept)}[/] of {len(outcome.chunks)}  [dim]{selection.reason}[/]")
 
         # Stage 5 (optional): keep only the useful sentences of the kept chunks
-        stage = time.perf_counter()
-        compression = compress_chunks(rewrite.standalone_question, [chunk.result.document for chunk in selection.kept])
+        with track_stage(meter, "compress"):
+            compression = compress_chunks(rewrite.standalone_question, [chunk.result.document for chunk in selection.kept])
         sent = [selection.kept[index] for index in compression.kept_indexes]
         context = [SearchResult(document, chunk.result.score) for chunk, document in zip(sent, compression.chunks)]
         trace.compressed = compression.compressed
         trace.compression_reason = compression.reason
         trace.context_chars_before = compression.chars_before
         trace.context_chars_after = compression.chars_after
-        trace.timings_ms["compress"] = elapsed_ms(stage)
         if compression.compressed:
             log_detail(log, "compress", f"chars=[cyan]{compression.chars_before}[/] -> [cyan]{compression.chars_after}[/]  chunks={len(selection.kept)} -> {len(sent)}")
 
@@ -269,17 +292,14 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
         if not context:
             log.info(f"  [yellow]no chunks kept ({selection.reason}), returning the not-found answer[/]")
             answer = NOT_FOUND_ANSWER
-            trace.timings_ms["generate"] = 0
 
         # Stage 6: answer the standalone question from the kept chunks
         else:
-            stage = time.perf_counter()
             messages = build_messages(rewrite.standalone_question, context)
             log.debug(f"      [dim]prompt[/]\n{preview(messages[1]['content'], 20000)}")
-            with log_step(log, "generate", model=settings.azure_openai_deployment_name) as step:
+            with track_stage(meter, "generate"), log_step(log, "generate", model=settings.azure_openai_deployment_name) as step:
                 answer = generate_answer(messages)
                 step["context_chars"] = len(messages[1]["content"])
-            trace.timings_ms["generate"] = elapsed_ms(stage)
 
             # The answer and the sources it cites
             cited = sorted({int(number) for number in re.findall(r"\[(\d+)\]", answer)})
@@ -289,6 +309,11 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
         # Keep the number of sources with the saved event
         meter.details["sources"] = len(context)
         meter.details["candidates"] = len(candidates)
+
+    # Tokens, cost and time of every stage (a stage that did not run counts as zero)
+    trace.stage_usage = stage_usage(meter.stages, settings.usd_to_inr)
+    trace.timings_ms = {name: values["latency_ms"] for name, values in trace.stage_usage.items()}
+    log_stage_usage(trace.stage_usage)
 
     # Number the sources the same way as the context blocks in the prompt (text as sent)
     sources = [
@@ -308,7 +333,7 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
     # Usage of the whole run
     cost = meter.cost(settings)
     total_tokens = meter.embedding_tokens + meter.prompt_tokens + meter.completion_tokens
-    log.info(f"  [bold]{'usage':<12}[/]  tokens=[cyan]{total_tokens}[/]  cost=[cyan]${cost:.6f}[/]  inr=[cyan]Rs {cost * settings.usd_to_inr:.4f}[/]  stages={trace.timings_ms}")
+    log.info(f"  [bold]{'usage':<12}[/]  tokens=[cyan]{total_tokens}[/]  cost=[cyan]${cost:.6f}[/]  inr=[cyan]Rs {cost * settings.usd_to_inr:.4f}[/]")
     usage = Usage(
         embedding_tokens=meter.embedding_tokens,
         prompt_tokens=meter.prompt_tokens,

@@ -22,7 +22,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 ## Build Steps
 
 <table width="100%">
-<thead><tr><th><img src="../../assets/spacer.png" align="right" width="52" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="330" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="924" height="1">What it adds</th><th><img src="../../assets/spacer.png" align="right" width="92" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="53" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="333" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="933" height="1">What it adds</th><th><img src="../../assets/spacer.png" align="right" width="80" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Project base</td><td>Copy of the Naive RAG API with its own data folders, port and the new rewriting, reranking and compression packages</td><td>Done</td></tr>
 <tr><td>2</td><td>Pipeline settings</td><td>Settings to switch each stage on or off and tune it</td><td>Done</td></tr>
@@ -32,8 +32,8 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <tr><td>6</td><td>Threshold and dynamic k</td><td>Keep 1 to 5 chunks whose relevance score passes a threshold, with fallbacks</td><td>Done</td></tr>
 <tr><td>7</td><td>RAG service and query API</td><td>The full pipeline, returning the answer with a trace of every stage</td><td>Done</td></tr>
 <tr><td>8</td><td>Context compression</td><td>Optional: keep only the relevant sentences of each chunk</td><td>Done</td></tr>
-<tr><td>9</td><td>Logs, usage and cost</td><td>Every stage visible in the logs, with tokens, cost and time per stage</td><td>Next</td></tr>
-<tr><td>10</td><td>Evaluation and comparison</td><td>Same test set and judge as Naive RAG, ablation runs, and the change in every metric, cost and latency</td><td>Planned</td></tr>
+<tr><td>9</td><td>Logs, usage and cost</td><td>Every stage visible in the logs, with tokens, cost and time per stage</td><td>Done</td></tr>
+<tr><td>10</td><td>Evaluation and comparison</td><td>Same test set and judge as Naive RAG, ablation runs, and the change in every metric, cost and latency</td><td>Next</td></tr>
 </tbody>
 </table>
 
@@ -50,6 +50,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <tr><td>06</td><td><a href="docs/06.%20Threshold%20and%20Dynamic%20k.md">Threshold and Dynamic k</a></td><td>Selector rules, not-found floor, threshold tuned on the test set, chunks kept per question</td></tr>
 <tr><td>07</td><td><a href="docs/07.%20RAG%20Service%20and%20Query%20API.md">RAG Service and Query API</a></td><td>Five-stage pipeline, request with history, response with trace, not-found path, logs, live runs, evaluation runner changes</td></tr>
 <tr><td>08</td><td><a href="docs/08.%20Context%20Compression.md">Context Compression</a></td><td>Optional extractive compression by sentence numbers, the et al. bug, measured cost and time, why it stays off</td></tr>
+<tr><td>09</td><td><a href="docs/09.%20Usage%2C%20Cost%20and%20Logs%20per%20Stage.md">Usage, Cost and Logs per Stage</a></td><td>track_stage(), stage usage in trace, logs, events and analytics, measured cost per stage</td></tr>
 </tbody>
 </table>
 

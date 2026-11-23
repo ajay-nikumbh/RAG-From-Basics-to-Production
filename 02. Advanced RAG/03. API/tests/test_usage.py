@@ -3,11 +3,11 @@ Tests for usage and cost tracking.
 
 These tests run fake pipeline runs inside track_usage, add token counts the
 way the embedder and generator do, and check the saved events, the cost
-calculation and the analytics summary.
+calculation, the per-stage split and the analytics summary.
 """
 
 # Imports
-from app.services.usage import add_chat_tokens, add_embedding_tokens, read_events, summarize, track_usage
+from app.services.usage import add_chat_tokens, add_embedding_tokens, read_events, summarize, track_stage, track_usage
 from app.core.config import get_settings
 
 
@@ -83,3 +83,26 @@ def test_summarize_counts_evaluation_runs_separately():
     assert summary["totals"]["ingestions"] == 0
     assert summary["totals"]["evals"] == 1
     assert summary["daily"][0]["evals"] == 1
+
+
+def test_track_stage_splits_usage_by_stage():
+    """Each stage records only the tokens added while it ran, and the event keeps the split."""
+
+    # A query with a rerank stage and a generate stage
+    with track_usage("query", question="Q") as meter:
+        with track_stage(meter, "rerank"):
+            add_chat_tokens(2400, 33)
+        with track_stage(meter, "generate"):
+            add_chat_tokens(900, 120)
+
+    # Each stage has its own tokens and a cost
+    assert meter.stages["rerank"]["prompt_tokens"] == 2400
+    assert meter.stages["generate"]["completion_tokens"] == 120
+    assert meter.stages["rerank"]["cost_usd"] > 0
+
+    # The saved event and the summary average each stage
+    event = read_events()[-1]
+    assert event["stages"]["rerank"]["completion_tokens"] == 33
+    stages = summarize(read_events())["stages"]
+    assert stages["rerank"]["runs"] == 1
+    assert stages["generate"]["avg_tokens"] == 1020

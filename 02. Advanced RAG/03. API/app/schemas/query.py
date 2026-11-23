@@ -115,6 +115,9 @@ class TraceResponse(BaseModel):
     candidates: list[TraceCandidateResponse]
     timings_ms: dict[str, int]
 
+    # Tokens, cost (USD and Rs) and milliseconds of each stage
+    stage_usage: dict[str, dict] = {}
+
 
 class QueryResponse(BaseModel):
     """Response body of POST /query."""

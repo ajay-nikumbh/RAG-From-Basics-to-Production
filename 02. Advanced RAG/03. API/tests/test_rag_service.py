@@ -113,6 +113,10 @@ def test_trace_records_every_candidate(fakes, monkeypatch):
     # A time for every stage
     assert set(trace.timings_ms) == {"rewrite", "retrieve", "rerank", "compress", "generate"}
 
+    # Usage of every stage, with the cost in rupees
+    assert list(trace.stage_usage) == ["rewrite", "retrieve", "rerank", "compress", "generate"]
+    assert set(trace.stage_usage["rerank"]) >= {"prompt_tokens", "completion_tokens", "cost_usd", "cost_inr", "latency_ms"}
+
     # Compression is off by default, so the context is unchanged
     assert not trace.compressed and trace.compression_reason == "compression disabled"
     assert trace.context_chars_before == trace.context_chars_after
@@ -142,6 +146,10 @@ def test_nothing_relevant_skips_llm(fakes, monkeypatch):
     assert result.sources == []
     assert result.trace.selection_reason == "nothing relevant"
     assert not any(c.kept for c in result.trace.candidates)
+
+    # The generate stage did not run, so it counts as zero
+    assert result.trace.stage_usage["generate"]["prompt_tokens"] == 0
+    assert result.trace.timings_ms["generate"] == 0
 
 
 def test_empty_index_skips_llm(fakes, monkeypatch):

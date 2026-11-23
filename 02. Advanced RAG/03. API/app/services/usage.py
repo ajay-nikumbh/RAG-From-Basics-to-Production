@@ -8,8 +8,11 @@ returned by Azure OpenAI to that meter. When the run finishes, one event is
 appended to data/usage/usage.jsonl with the tokens, the cost in US dollars,
 the duration and a little context (the question or the file name).
 
-summarize() turns those events into the totals, daily series and recent list
-shown on the analytics page. Runs are of three families: questions (query),
+A query also splits its usage by pipeline stage (rewrite, retrieve, rerank,
+compress, generate) with track_stage(), so each event records the tokens,
+cost and time of every stage. summarize() turns the events into the totals,
+daily series, average cost and time per stage, and recent list shown on the
+analytics page. Runs are of three families: questions (query),
 ingestions (ingest) and evaluations (every kind starting with "eval").
 """
 
@@ -42,6 +45,9 @@ class UsageMeter:
 
     # Extra facts learned during the run, saved with the event (for example chunks)
     details: dict = field(default_factory=dict)
+
+    # Tokens, cost and time per pipeline stage, filled by track_stage()
+    stages: dict = field(default_factory=dict)
 
     def cost(self, settings: Settings) -> float:
         """Price of this run in US dollars, from the per-million-token prices."""
@@ -101,6 +107,33 @@ def track_usage(kind: str, **context):
     record_event(kind, meter, round((time.perf_counter() - start) * 1000), context)
 
 
+@contextmanager
+def track_stage(meter: UsageMeter, name: str):
+    """Record the tokens, cost and time one stage of a run adds to the meter.
+
+        with track_stage(meter, "rerank"):
+            outcome = rerank(question, candidates)
+    """
+
+    # Totals before the stage and the start time
+    settings = get_settings()
+    before = (meter.embedding_tokens, meter.prompt_tokens, meter.completion_tokens)
+    cost_before = meter.cost(settings)
+    start = time.perf_counter()
+
+    # Run the stage
+    yield
+
+    # The difference is what this stage used
+    meter.stages[name] = {
+        "embedding_tokens": meter.embedding_tokens - before[0],
+        "prompt_tokens": meter.prompt_tokens - before[1],
+        "completion_tokens": meter.completion_tokens - before[2],
+        "cost_usd": round(meter.cost(settings) - cost_before, 8),
+        "latency_ms": round((time.perf_counter() - start) * 1000),
+    }
+
+
 def record_event(kind: str, meter: UsageMeter, latency_ms: int, context: dict) -> dict:
     """Append one run to the usage file and return it."""
 
@@ -120,6 +153,10 @@ def record_event(kind: str, meter: UsageMeter, latency_ms: int, context: dict) -
         **context,
         **meter.details,
     }
+
+    # Per-stage usage, only for runs that recorded stages
+    if meter.stages:
+        event["stages"] = meter.stages
 
     # Append as one JSON line
     settings.usage_file.parent.mkdir(parents=True, exist_ok=True)
@@ -169,7 +206,20 @@ def summarize(events: list[dict], recent_limit: int = 50) -> dict:
         day[counters.get(event["kind"], "evals")] += 1
     daily = [{"date": date, **values, "cost_usd": round(values["cost_usd"], 6)} for date, values in sorted(days.items())]
 
+    # Average cost and time per stage over the questions that recorded stages, in pipeline order
+    staged = [e for e in queries if e.get("stages")]
+    stage_names = list(dict.fromkeys(name for e in staged for name in e["stages"]))
+    stages = {}
+    for name in stage_names:
+        values = [e["stages"][name] for e in staged if name in e["stages"]]
+        stages[name] = {
+            "runs": len(values),
+            "avg_cost_usd": round(sum(v["cost_usd"] for v in values) / len(values), 8),
+            "avg_tokens": round(sum(v["prompt_tokens"] + v["completion_tokens"] + v["embedding_tokens"] for v in values) / len(values)),
+            "avg_latency_ms": round(sum(v["latency_ms"] for v in values) / len(values)),
+        }
+
     # Newest runs first
     recent = list(reversed(events[-recent_limit:]))
 
-    return {"totals": totals, "daily": daily, "recent": recent}
+    return {"totals": totals, "daily": daily, "stages": stages, "recent": recent}
