@@ -1,12 +1,13 @@
 """
 Tests for the Advanced RAG settings.
 
-Checks the default values of the new stage settings and that each one can
-be changed from an environment variable, without reading real secrets.
+Checks the default values of the new stage settings, that each one can be
+changed from an environment variable without reading real secrets, and that
+override_settings() changes values only inside its block.
 """
 
 # Imports
-from app.core.config import Settings
+from app.core.config import Settings, get_settings, override_settings
 
 
 def test_stage_defaults():
@@ -41,3 +42,20 @@ def test_stage_settings_read_from_environment(monkeypatch):
     assert settings.rerank_enabled is False
     assert settings.candidate_k == 20
     assert settings.rerank_threshold == 6.5
+
+
+def test_override_settings_applies_inside_block_only():
+    """Inside the block get_settings() returns the changed copy; outside, the shared settings."""
+
+    # The shared value before
+    shared = get_settings()
+    before = shared.rerank_enabled
+
+    # Inside the block the value is changed on a copy
+    with override_settings(rerank_enabled=not before):
+        assert get_settings().rerank_enabled is (not before)
+        assert get_settings() is not shared
+
+    # After the block the shared settings are back and unchanged
+    assert get_settings() is shared
+    assert shared.rerank_enabled is before

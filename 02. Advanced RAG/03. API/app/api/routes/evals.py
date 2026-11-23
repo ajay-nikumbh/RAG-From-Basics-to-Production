@@ -5,7 +5,9 @@ This file defines the evaluation endpoints:
 
     POST /evals/answer      grade one answer with the LLM judge
     GET  /evals/testset     the built-in test cases
-    POST /evals/runs        start evaluating the pipeline on the test set
+    GET  /evals/presets     the ablation presets A to E
+    POST /evals/runs        start evaluating the pipeline on the test set,
+                            optionally with a preset
     GET  /evals/runs        every saved run, newest first, without results
     GET  /evals/runs/{id}   one run with its per-case results
 
@@ -19,8 +21,8 @@ separately from user questions.
 """
 
 # Imports
+from app.evals.runner import PRESETS, RunInProgressError, get_report, list_reports, load_testset, start_run
 from app.schemas.evals import EvalAnswerRequest, EvalAnswerResponse, EvalRunRequest, JudgeUsage, MetricResponse
-from app.evals.runner import RunInProgressError, get_report, list_reports, load_testset, start_run
 from app.core.logging import get_logger, log_detail, log_step, preview
 from fastapi import APIRouter, HTTPException, status
 from app.services.usage import track_usage
@@ -100,13 +102,21 @@ def testset() -> dict:
     return {"cases": load_testset()}
 
 
+@router.get("/evals/presets")
+def presets() -> dict:
+    """The ablation presets A to E: name, description and the settings each one changes."""
+
+    # Presets as defined in the runner
+    return {"presets": PRESETS}
+
+
 @router.post("/evals/runs", status_code=status.HTTP_202_ACCEPTED)
 def create_run(request: EvalRunRequest) -> dict:
     """Start evaluating the pipeline on the test set; returns the new run at once."""
 
     # Start the background run; only one may be active
     try:
-        report = start_run(case_ids=request.case_ids)
+        report = start_run(case_ids=request.case_ids, preset=request.preset)
     except RunInProgressError as error:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(error))
 

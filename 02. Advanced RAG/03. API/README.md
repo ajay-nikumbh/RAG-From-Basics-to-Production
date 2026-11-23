@@ -40,7 +40,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 ## Docs
 
 <table width="100%">
-<thead><tr><th><img src="../../assets/spacer.png" align="right" width="52" height="1">#</th><th><img src="../../assets/spacer.png" align="right" width="431" height="1">Doc</th><th><img src="../../assets/spacer.png" align="right" width="915" height="1">Topic</th></tr></thead>
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="50" height="1">#</th><th><img src="../../assets/spacer.png" align="right" width="458" height="1">Doc</th><th><img src="../../assets/spacer.png" align="right" width="890" height="1">Topic</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="docs/01.%20Project%20Base%20and%20Folder%20Structure.md">Project Base and Folder Structure</a></td><td>Why the API starts from Naive RAG, what changed, the new packages and the build order</td></tr>
 <tr><td>02</td><td><a href="docs/02.%20Advanced%20Pipeline%20Settings.md">Advanced Pipeline Settings</a></td><td>Stage switches and limits, why 10 candidates, threshold and chunk limits, fallback to Naive RAG</td></tr>
@@ -51,6 +51,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <tr><td>07</td><td><a href="docs/07.%20RAG%20Service%20and%20Query%20API.md">RAG Service and Query API</a></td><td>Five-stage pipeline, request with history, response with trace, not-found path, logs, live runs, evaluation runner changes</td></tr>
 <tr><td>08</td><td><a href="docs/08.%20Context%20Compression.md">Context Compression</a></td><td>Optional extractive compression by sentence numbers, the et al. bug, measured cost and time, why it stays off</td></tr>
 <tr><td>09</td><td><a href="docs/09.%20Usage%2C%20Cost%20and%20Logs%20per%20Stage.md">Usage, Cost and Logs per Stage</a></td><td>track_stage(), stage usage in trace, logs, events and analytics, measured cost per stage</td></tr>
+<tr><td>10</td><td><a href="docs/10.%20Evaluation%20Presets%20and%20Ablation%20Runs.md">Evaluation Presets and Ablation Runs</a></td><td>Presets A to E, override_settings() per run thread, presets API and report fields</td></tr>
 </tbody>
 </table>
 

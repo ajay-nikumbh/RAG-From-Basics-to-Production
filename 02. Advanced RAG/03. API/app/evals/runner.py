@@ -14,6 +14,11 @@ scores, kept chunks, time per stage), and every report records the pipeline
 settings it ran with, so runs with different stages switched on can be
 compared.
 
+A run can use a preset (A to E) that switches stages on one at a time, as
+planned in the notes (ablation). The preset changes the settings only inside
+the run's own thread, so questions asked in the chat at the same time use
+the normal settings.
+
 A run happens in a background thread, so POST /evals/runs returns at once.
 The report is saved to data/evals/<id>.json after every case, so the UI can
 poll it and show progress. Only one run can be active at a time. The summary
@@ -22,9 +27,9 @@ averages each metric, the retrieval hit rate, latency and cost.
 
 # Imports
 from app.core.logging import get_logger, log_detail, log_spacer
+from app.core.config import get_settings, override_settings
 from app.services.rag_service import answer_question
 from app.services.usage import track_usage
-from app.core.config import get_settings
 from app.evals.judge import judge_answer
 from datetime import datetime, timezone
 from dataclasses import asdict
@@ -45,6 +50,38 @@ PASS_SCORE = 0.75
 
 # Metrics averaged in the summary
 METRICS = ("faithfulness", "answer_relevance", "context_precision", "correctness")
+
+# Ablation presets: each adds one stage to the previous one
+PRESETS = {
+    "A": {
+        "name": "Naive RAG baseline",
+        "description": "No rewrite, no reranking, top 4 chunks",
+        "changes": {"rewrite_enabled": False, "rerank_enabled": False, "compression_enabled": False},
+    },
+    "B": {
+        "name": "A + rewrite",
+        "description": "Condense and rewrite, then top 4 chunks",
+        "changes": {"rewrite_enabled": True, "rerank_enabled": False, "compression_enabled": False},
+    },
+    "C": {
+        "name": "B + rerank, keep 4",
+        "description": "Rewrite, 10 candidates, rerank, always keep the best 4",
+        "changes": {
+            "rewrite_enabled": True, "rerank_enabled": True, "compression_enabled": False,
+            "rerank_threshold": 0.0, "rerank_min_best_score": 0.0, "min_chunks": 4, "max_chunks": 4,
+        },
+    },
+    "D": {
+        "name": "C + threshold and dynamic k",
+        "description": "Rewrite, rerank, keep 1 to 5 chunks scoring 6 or more (the default pipeline)",
+        "changes": {"rewrite_enabled": True, "rerank_enabled": True, "compression_enabled": False},
+    },
+    "E": {
+        "name": "D + compression",
+        "description": "The default pipeline with extractive compression",
+        "changes": {"rewrite_enabled": True, "rerank_enabled": True, "compression_enabled": True},
+    },
+}
 
 # Only one run at a time; ACTIVE holds the id of the run in progress
 RUN_LOCK = threading.Lock()
@@ -188,6 +225,15 @@ def evaluate_case(case: dict) -> dict:
 
 
 def run_evaluation(report: dict, cases: list[dict]) -> None:
+    """Evaluate every case with the run's preset settings, saving the report after each one."""
+
+    # The preset's settings apply to this thread only
+    preset = PRESETS.get(report.get("preset") or "", {})
+    with override_settings(**preset.get("changes", {})):
+        evaluate_cases(report, cases)
+
+
+def evaluate_cases(report: dict, cases: list[dict]) -> None:
     """Evaluate every case, saving the report after each one."""
 
     # Work through the cases in order; each case starts with an empty line
@@ -247,7 +293,16 @@ def pipeline_settings() -> dict:
     }
 
 
-def start_run(case_ids: list[str] | None = None) -> dict:
+def preset_pipeline(preset: str | None) -> dict:
+    """The stage settings a run with this preset (or the current settings) will use."""
+
+    # Read the settings as the run's thread will see them
+    changes = PRESETS[preset]["changes"] if preset else {}
+    with override_settings(**changes):
+        return pipeline_settings()
+
+
+def start_run(case_ids: list[str] | None = None, preset: str | None = None) -> dict:
     """Create a report and start evaluating in a background thread."""
 
     # Only one run at a time
@@ -268,7 +323,9 @@ def start_run(case_ids: list[str] | None = None) -> dict:
             "finished_at": None,
             "status": "running",
             "top_k": settings.top_k,
-            "pipeline": pipeline_settings(),
+            "preset": preset,
+            "preset_name": PRESETS[preset]["name"] if preset else "Current settings",
+            "pipeline": preset_pipeline(preset),
             "chat_model": settings.azure_openai_deployment_name,
             "embedding_model": settings.azure_openai_embedding_deployment,
             "chunk_size": settings.chunk_size,
@@ -283,6 +340,6 @@ def start_run(case_ids: list[str] | None = None) -> dict:
         ACTIVE.add(report["id"])
 
     # Evaluate in the background so the request returns at once
-    log.info(f"  eval run [bold]{report['id']}[/] started  cases={len(cases)}  pipeline={report['pipeline']}")
+    log.info(f"  eval run [bold]{report['id']}[/] started  cases={len(cases)}  preset={report['preset'] or '-'} ({report['preset_name']})")
     threading.Thread(target=run_evaluation, args=(report, cases), daemon=True).start()
     return report

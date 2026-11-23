@@ -10,6 +10,7 @@ of POST /evals/runs, which starts an evaluation of the built-in test set.
 
 # Imports
 from pydantic import BaseModel, Field
+from typing import Literal
 
 
 class EvalAnswerRequest(BaseModel):
@@ -73,3 +74,6 @@ class EvalRunRequest(BaseModel):
 
     # Test case ids to run; every case when missing
     case_ids: list[str] | None = None
+
+    # Ablation preset A to E (see GET /evals/presets); the current settings when missing
+    preset: Literal["A", "B", "C", "D", "E"] | None = None

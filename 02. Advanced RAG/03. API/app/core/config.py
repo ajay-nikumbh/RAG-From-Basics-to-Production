@@ -7,11 +7,15 @@ stage switches for rewriting, reranking, thresholds and compression, data
 folders) from environment variables and from the repository root .env file.
 
 All other files get settings through get_settings(), so values are read once
-and the same Settings object is shared everywhere.
+and the same Settings object is shared everywhere. An evaluation run can use
+override_settings() to change some values (for example switch reranking off)
+for its own thread only, without touching the shared settings.
 """
 
 # Imports
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from contextlib import contextmanager
+from contextvars import ContextVar
 from functools import lru_cache
 from pathlib import Path
 
@@ -107,10 +111,39 @@ class Settings(BaseSettings):
     evals_dir: Path = IMPLEMENTATION_DIR / "data" / "evals"
 
 
+# Settings that replace the shared ones inside one thread, used by evaluation presets
+settings_override: ContextVar[Settings | None] = ContextVar("settings_override", default=None)
+
+
 # Cached so the .env file is read only once
 @lru_cache
-def get_settings() -> Settings:
-    """Return the shared Settings object."""
+def load_settings() -> Settings:
+    """Build the shared Settings object from the environment and the .env file."""
 
     # Build settings from environment variables and the .env file
     return Settings()
+
+
+def get_settings() -> Settings:
+    """Return the settings in force: an override set by override_settings(), or the shared ones."""
+
+    # An evaluation preset can replace the settings for its own thread only
+    return settings_override.get() or load_settings()
+
+
+@contextmanager
+def override_settings(**changes):
+    """Use a copy of the shared settings with some values changed, inside this block and thread only.
+
+        with override_settings(rerank_enabled=False):
+            answer_question(...)   # runs without reranking; other requests are not affected
+    """
+
+    # A copy, so the shared settings never change
+    token = settings_override.set(load_settings().model_copy(update=changes))
+
+    # Run the block, then go back to the shared settings
+    try:
+        yield
+    finally:
+        settings_override.reset(token)

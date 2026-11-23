@@ -11,6 +11,7 @@ the saved report, the one-run-at-a-time rule and the endpoints.
 from app.services.rag_service import RagAnswer, Source, Trace, TraceCandidate, Usage
 from app.evals.judge import Judgement, Metric
 from fastapi.testclient import TestClient
+from app.core.config import get_settings
 from app.evals import runner
 from app.main import app
 import pytest
@@ -39,6 +40,7 @@ def stubbed(monkeypatch):
 
     # Every question keeps one chunk from the RAG paper, out of two candidates
     def fake_answer(question, history=None, usage_kind="query"):
+        seen.append(get_settings().rerank_enabled)
         source = Source(number=1, label="2005.11401_RAG-Lewis.pdf, page 2", score=0.6, text="RAG-Sequence and RAG-Token", source="2005.11401_RAG-Lewis.pdf", page=2, rerank_score=9.0, retrieval_rank=1)
         candidates = [
             TraceCandidate(1, 1, "2005.11401_RAG-Lewis.pdf, page 2", "2005.11401_RAG-Lewis.pdf", 2, 0.6, 9.0, kept=True, citation=1),
@@ -51,9 +53,11 @@ def stubbed(monkeypatch):
     def fake_judge(question, answer, contexts, reference=None):
         return Judgement(Metric(1.0, "ok"), Metric(1.0, "ok"), Metric(1.0, "1 of 1"), Metric(0.5, "half"), [1])
 
+    seen = []
     monkeypatch.setattr(runner, "answer_question", fake_answer)
     monkeypatch.setattr(runner, "judge_answer", fake_judge)
     monkeypatch.setattr(runner.threading, "Thread", InlineThread)
+    return seen
 
 
 def test_testset_cases_are_complete():
@@ -136,3 +140,35 @@ def test_only_one_run_at_a_time(monkeypatch):
     # The API refuses a second run
     response = TestClient(app).post("/evals/runs", json={})
     assert response.status_code == 409
+
+
+def test_preset_changes_settings_for_the_run_only(stubbed):
+    """Preset A runs every question with reranking off, and the shared settings stay unchanged."""
+
+    # Shared value before the run
+    shared_rerank = get_settings().rerank_enabled
+
+    # Run one case with preset A
+    client = TestClient(app)
+    run_id = client.post("/evals/runs", json={"case_ids": ["rag-variants"], "preset": "A"}).json()["id"]
+    report = client.get(f"/evals/runs/{run_id}").json()
+
+    # The question ran without reranking and the report records the preset
+    assert stubbed == [False]
+    assert report["preset"] == "A" and report["preset_name"] == "Naive RAG baseline"
+    assert report["pipeline"]["rerank_enabled"] is False and report["pipeline"]["rewrite_enabled"] is False
+
+    # The shared settings did not change
+    assert get_settings().rerank_enabled is shared_rerank
+
+
+def test_presets_endpoint_and_unknown_preset():
+    """GET /evals/presets lists A to E; an unknown preset gives 422."""
+
+    # Five presets, C keeps exactly four chunks
+    presets = TestClient(app).get("/evals/presets").json()["presets"]
+    assert list(presets) == ["A", "B", "C", "D", "E"]
+    assert presets["C"]["changes"]["min_chunks"] == presets["C"]["changes"]["max_chunks"] == 4
+
+    # Unknown preset rejected by the schema
+    assert TestClient(app).post("/evals/runs", json={"preset": "Z"}).status_code == 422
