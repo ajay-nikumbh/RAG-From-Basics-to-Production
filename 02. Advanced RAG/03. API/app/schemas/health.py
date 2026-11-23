@@ -39,6 +39,7 @@ class PipelineSettings(BaseModel):
     candidate_k: int
     rerank_enabled: bool
     rerank_threshold: float
+    rerank_min_best_score: float
     min_chunks: int
     max_chunks: int
     compression_enabled: bool

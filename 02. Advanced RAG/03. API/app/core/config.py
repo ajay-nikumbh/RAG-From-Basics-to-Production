@@ -70,9 +70,12 @@ class Settings(BaseSettings):
     rerank_max_tokens: int = 400
 
     # Threshold and dynamic k: keep chunks scoring at least the threshold, between min and max chunks
-    rerank_threshold: float = 5.0
+    rerank_threshold: float = 6.0
     min_chunks: int = 1
     max_chunks: int = 5
+
+    # Not-found floor: if even the best chunk scores below this, no context is sent
+    rerank_min_best_score: float = 2.0
 
     # Optional extractive context compression (off by default, evaluated separately)
     compression_enabled: bool = False

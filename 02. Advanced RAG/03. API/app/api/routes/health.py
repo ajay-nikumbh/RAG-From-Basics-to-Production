@@ -55,6 +55,7 @@ def health() -> HealthResponse:
             candidate_k=settings.candidate_k,
             rerank_enabled=settings.rerank_enabled,
             rerank_threshold=settings.rerank_threshold,
+            rerank_min_best_score=settings.rerank_min_best_score,
             min_chunks=settings.min_chunks,
             max_chunks=settings.max_chunks,
             compression_enabled=settings.compression_enabled,
