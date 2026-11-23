@@ -1,6 +1,6 @@
 # Advanced RAG API
 
-**Status:** In progress.
+**Status:** Done. The default pipeline raises context precision from 0.41 to 0.66, overall score from 0.79 to 0.87 and hit rate from 90 to 100 percent against Naive RAG, at Rs 0.048 and 2.7 s per question (doc 11).
 
 The Advanced RAG API starts from the [Naive RAG API](../../01.%20Naive%20RAG/03.%20API/) (same FastAPI structure, loaders, chunker, embeddings, FAISS, logging, cost tracking and evaluation) and adds the Advanced RAG query stages step by step, one feature per commit, each with its numbered design doc in `docs/`.
 
