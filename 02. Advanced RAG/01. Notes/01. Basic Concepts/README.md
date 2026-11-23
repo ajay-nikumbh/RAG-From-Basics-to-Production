@@ -38,7 +38,7 @@ flowchart LR
 <tr><td>10</td><td><a href="10.%20Context%20Compression%20and%20Filtering.md">Context Compression and Filtering</a></td><td>Keeping only the relevant sentences (extractive and abstractive compression, as in RECOMP); "lost in the middle"; ordering chunks</td><td>Post-retrieval</td><td>Done</td></tr>
 <tr><td>11</td><td><a href="11.%20Advanced%20RAG%20Architecture%20End%20to%20End.md">Advanced RAG Architecture End to End</a></td><td>The full pipeline, step by step, with a worked example</td><td>All</td><td>Done</td></tr>
 <tr><td>12</td><td><a href="12.%20Evaluating%20Advanced%20RAG.md">Evaluating Advanced RAG</a></td><td>Comparing against the Naive RAG baseline fairly; which metrics should move</td><td>Evaluation</td><td>Done</td></tr>
-<tr><td>13</td><td>Cost and Latency Trade-offs</td><td>What each extra stage costs, and how to keep it affordable</td><td>Operations</td><td>Planned</td></tr>
+<tr><td>13</td><td><a href="13.%20Cost%20and%20Latency%20Trade-offs.md">Cost and Latency Trade-offs</a></td><td>What each extra stage costs, and how to keep it affordable</td><td>Operations</td><td>Done</td></tr>
 <tr><td>14</td><td>Limitations of Advanced RAG</td><td>What it still cannot do and which architectures come next</td><td>Overview</td><td>Planned</td></tr>
 <tr><td>15</td><td>Glossary</td><td>Every term used in these notes</td><td>Reference</td><td>Planned</td></tr>
 </tbody>
