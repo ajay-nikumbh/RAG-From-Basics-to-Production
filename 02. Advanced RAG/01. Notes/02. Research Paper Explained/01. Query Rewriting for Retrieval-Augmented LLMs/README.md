@@ -24,7 +24,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="52" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="340" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="915" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="91" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
-<tr><td>02</td><td>Introduction</td><td>1 Introduction</td><td>Planned</td></tr>
+<tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
 <tr><td>03</td><td>Related Work</td><td>2.1 Retrieval Augmentation, 2.2 Cooperation with Black-box LLMs</td><td>Planned</td></tr>
 <tr><td>04</td><td>Methodology</td><td>3.1 Rewrite-Retrieve-Read, 3.2 Trainable Scheme (rewriter warm-up, reinforcement learning)</td><td>Planned</td></tr>
 <tr><td>05</td><td>Implementation</td><td>4 Implementation (rewriter, retriever, reader)</td><td>Planned</td></tr>
