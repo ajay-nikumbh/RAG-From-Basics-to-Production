@@ -27,7 +27,7 @@ function pipelineSteps(pipeline) {
     { icon: FileInput, name: 'Load', detail: 'PDF pages, Excel sheets, Word, Markdown, text' },
     { icon: Scissors, name: 'Chunk', detail: pipeline ? `${pipeline.chunk_size} characters, ${pipeline.chunk_overlap} overlap` : '-' },
     { icon: Boxes, name: 'Embed', detail: pipeline ? `${pipeline.embedding_model}, ${pipeline.embedding_dimensions} dims` : '-' },
-    { icon: Database, name: 'Store', detail: pipeline ? `FAISS inner product, top ${pipeline.top_k} at query time` : '-' },
+    { icon: Database, name: 'Store', detail: pipeline ? `FAISS inner product; ${pipeline.rerank_enabled ? `${pipeline.candidate_k} candidates reranked per question` : `top ${pipeline.top_k} per question`}` : '-' },
   ]
 }
 

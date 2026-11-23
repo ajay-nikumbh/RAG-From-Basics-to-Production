@@ -93,7 +93,7 @@ Read in this order, the same structure as Naive RAG.
 <tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>In progress</td></tr>
 <tr><td>2</td><td><a href="02.%20Papers/">02. Papers</a></td><td>The research papers as PDFs</td><td>Done</td></tr>
 <tr><td>3</td><td><a href="03.%20API/">03. API</a></td><td>FastAPI implementation built on the Naive RAG API, with numbered design docs</td><td>Done</td></tr>
-<tr><td>4</td><td><a href="04.%20UI/">04. UI</a></td><td>React UI built on the Naive RAG UI, showing rewrites and reranking</td><td>In progress</td></tr>
+<tr><td>4</td><td><a href="04.%20UI/">04. UI</a></td><td>React UI built on the Naive RAG UI, showing rewrites and reranking</td><td>Done</td></tr>
 </tbody>
 </table>
 

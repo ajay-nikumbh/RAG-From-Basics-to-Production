@@ -12,7 +12,9 @@
  *     again on the Chat page
  *   - Today: spend in rupees, questions and tokens for the current day with
  *     a 7-day cost sparkline, linking to Analytics
- *   - the models in use, the API status and the theme toggle
+ *   - the models and Advanced RAG stage settings in use (rewrite, rerank
+ *     candidates, kept chunks and threshold), the API status and the theme
+ *     toggle
  *
  * On small screens it becomes a compact top bar with icon links only.
  */
@@ -268,6 +270,11 @@ export default function Sidebar() {
           <div className="hidden space-y-1 text-[11px] text-muted-foreground md:block">
             <p className="flex justify-between gap-2"><span>Chat</span><span className="truncate font-mono text-foreground/80">{pipeline.chat_model}</span></p>
             <p className="flex justify-between gap-2"><span>Embed</span><span className="truncate font-mono text-foreground/80" title={pipeline.embedding_model}>{pipeline.embedding_model}</span></p>
+            <p className="flex justify-between gap-2"><span>Rewrite</span><span className="font-mono text-foreground/80">{pipeline.rewrite_enabled ? 'on' : 'off'}</span></p>
+            <p className="flex justify-between gap-2">
+              <span>Rerank</span>
+              <span className="font-mono text-foreground/80">{pipeline.rerank_enabled ? `${pipeline.candidate_k}, keep ${pipeline.min_chunks}-${pipeline.max_chunks} >= ${pipeline.rerank_threshold}` : 'off'}</span>
+            </p>
           </div>
         )}
         <div className="flex items-center justify-between gap-3">
