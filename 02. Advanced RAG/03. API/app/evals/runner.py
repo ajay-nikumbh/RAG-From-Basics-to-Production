@@ -5,8 +5,14 @@ This file evaluates the whole Advanced RAG pipeline against the built-in test
 set (testset.json) and saves a report. For every test case it:
 
     1. asks the question through the normal query pipeline
-    2. checks retrieval: was the expected file among the retrieved chunks?
+    2. checks retrieval: was the expected file among the candidates, and
+       among the chunks kept for the answer?
     3. grades the answer with the LLM judge, using the reference answer
+
+Every result also keeps the pipeline trace (rewritten question, candidate
+scores, kept chunks, time per stage), and every report records the pipeline
+settings it ran with, so runs with different stages switched on can be
+compared.
 
 A run happens in a background thread, so POST /evals/runs returns at once.
 The report is saved to data/evals/<id>.json after every case, so the UI can
@@ -116,6 +122,7 @@ def summarize_results(results: list[dict]) -> dict:
 
     # Retrieval is only checked for cases with an expected file
     hits = [result["retrieval_hit"] for result in done if result["retrieval_hit"] is not None]
+    candidate_hits = [result["candidate_hit"] for result in done if result.get("candidate_hit") is not None]
 
     # Costs of answering and grading, in US dollars and rupees
     cost = sum(result["answer_cost_usd"] + result["judge_cost_usd"] for result in done)
@@ -125,6 +132,7 @@ def summarize_results(results: list[dict]) -> dict:
         **{name: mean(result["metrics"][name]["score"] if result["metrics"].get(name) else None for result in done) for name in METRICS},
         "overall": mean(result["overall"] for result in done),
         "retrieval_hit_rate": round(sum(hits) / len(hits), 3) if hits else None,
+        "candidate_hit_rate": round(sum(candidate_hits) / len(candidate_hits), 3) if candidate_hits else None,
         "passed": sum(1 for result in done if (result["overall"] or 0) >= PASS_SCORE),
         "failed_cases": len(results) - len(done),
         "avg_latency_ms": round(sum(result["latency_ms"] for result in done) / len(done)) if done else 0,
@@ -133,16 +141,18 @@ def summarize_results(results: list[dict]) -> dict:
     }
 
 
-def evaluate_case(case: dict, top_k: int | None) -> dict:
+def evaluate_case(case: dict) -> dict:
     """Answer one test case, check retrieval and grade the answer."""
 
     # Step 1: ask the question through the normal pipeline, recorded as an evaluation question
-    rag = answer_question(case["question"], top_k=top_k, usage_kind="eval_query")
+    rag = answer_question(case["question"], usage_kind="eval_query")
     sources = [source.source for source in rag.sources]
+    candidate_sources = [candidate.source for candidate in rag.trace.candidates]
 
-    # Step 2: retrieval hit when the expected file is among the retrieved chunks
+    # Step 2: retrieval hits when the expected file is among the kept chunks and among the candidates
     expected = case.get("expected_source")
     hit = (expected in sources) if expected else None
+    candidate_hit = (expected in candidate_sources) if expected else None
 
     # Step 3: grade the answer against the retrieved context and the reference
     with track_usage("eval_judge", question=case["question"][:300]) as meter:
@@ -156,7 +166,7 @@ def evaluate_case(case: dict, top_k: int | None) -> dict:
         "expected_source": expected,
         "answer": rag.answer,
         "sources": [
-            {"number": s.number, "label": s.label, "source": s.source, "page": s.page, "score": s.score}
+            {"number": s.number, "label": s.label, "source": s.source, "page": s.page, "score": s.score, "rerank_score": s.rerank_score}
             for s in rag.sources
         ],
         "metrics": {
@@ -168,6 +178,8 @@ def evaluate_case(case: dict, top_k: int | None) -> dict:
         "relevant_chunks": judgement.relevant_chunks,
         "overall": judgement.overall(),
         "retrieval_hit": hit,
+        "candidate_hit": candidate_hit,
+        "trace": asdict(rag.trace),
         "latency_ms": rag.usage.latency_ms,
         "answer_cost_usd": rag.usage.cost_usd,
         "judge_cost_usd": round(judge_cost, 6),
@@ -185,7 +197,7 @@ def run_evaluation(report: dict, cases: list[dict]) -> None:
 
             # One failing case is recorded and the run continues
             try:
-                result = evaluate_case(case, report["top_k"])
+                result = evaluate_case(case)
             except Exception as error:
                 result = {"id": case["id"], "question": case["question"], "error": str(error)}
                 log.warning(f"  case [bold]{case['id']}[/] failed: {error}")
@@ -218,7 +230,24 @@ def run_evaluation(report: dict, cases: list[dict]) -> None:
         log.info(f"  eval run [bold]{report['id']}[/] {report['status']}  overall={report['summary'].get('overall')}")
 
 
-def start_run(top_k: int | None = None, case_ids: list[str] | None = None) -> dict:
+def pipeline_settings() -> dict:
+    """The stage settings a run uses, saved with the report."""
+
+    # Switches and limits of every Advanced RAG stage
+    settings = get_settings()
+    return {
+        "rewrite_enabled": settings.rewrite_enabled,
+        "candidate_k": settings.candidate_k,
+        "rerank_enabled": settings.rerank_enabled,
+        "rerank_threshold": settings.rerank_threshold,
+        "rerank_min_best_score": settings.rerank_min_best_score,
+        "min_chunks": settings.min_chunks,
+        "max_chunks": settings.max_chunks,
+        "compression_enabled": settings.compression_enabled,
+    }
+
+
+def start_run(case_ids: list[str] | None = None) -> dict:
     """Create a report and start evaluating in a background thread."""
 
     # Only one run at a time
@@ -238,7 +267,8 @@ def start_run(top_k: int | None = None, case_ids: list[str] | None = None) -> di
             "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "finished_at": None,
             "status": "running",
-            "top_k": top_k or settings.top_k,
+            "top_k": settings.top_k,
+            "pipeline": pipeline_settings(),
             "chat_model": settings.azure_openai_deployment_name,
             "embedding_model": settings.azure_openai_embedding_deployment,
             "chunk_size": settings.chunk_size,
@@ -253,6 +283,6 @@ def start_run(top_k: int | None = None, case_ids: list[str] | None = None) -> di
         ACTIVE.add(report["id"])
 
     # Evaluate in the background so the request returns at once
-    log.info(f"  eval run [bold]{report['id']}[/] started  cases={len(cases)}  top_k={report['top_k']}")
+    log.info(f"  eval run [bold]{report['id']}[/] started  cases={len(cases)}  pipeline={report['pipeline']}")
     threading.Thread(target=run_evaluation, args=(report, cases), daemon=True).start()
     return report

@@ -71,8 +71,5 @@ class EvalAnswerResponse(BaseModel):
 class EvalRunRequest(BaseModel):
     """Request body of POST /evals/runs."""
 
-    # Number of chunks to retrieve per question; uses TOP_K from settings when missing
-    top_k: int | None = Field(default=None, ge=1, le=20)
-
     # Test case ids to run; every case when missing
     case_ids: list[str] | None = None

@@ -106,7 +106,7 @@ def create_run(request: EvalRunRequest) -> dict:
 
     # Start the background run; only one may be active
     try:
-        report = start_run(top_k=request.top_k, case_ids=request.case_ids)
+        report = start_run(case_ids=request.case_ids)
     except RunInProgressError as error:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(error))
 

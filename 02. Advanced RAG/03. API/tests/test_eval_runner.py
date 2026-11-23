@@ -8,7 +8,7 @@ the saved report, the one-run-at-a-time rule and the endpoints.
 """
 
 # Imports
-from app.services.rag_service import RagAnswer, Source, Usage
+from app.services.rag_service import RagAnswer, Source, Trace, TraceCandidate, Usage
 from app.evals.judge import Judgement, Metric
 from fastapi.testclient import TestClient
 from app.evals import runner
@@ -37,10 +37,15 @@ class InlineThread:
 def stubbed(monkeypatch):
     """Replace the pipeline, the judge and the thread with fast stubs."""
 
-    # Every question retrieves one chunk from the RAG paper
-    def fake_answer(question, top_k=None, usage_kind="query"):
-        source = Source(number=1, label="2005.11401_RAG-Lewis.pdf, page 2", score=0.6, text="RAG-Sequence and RAG-Token", source="2005.11401_RAG-Lewis.pdf", page=2)
-        return RagAnswer(answer="RAG-Sequence and RAG-Token [1].", sources=[source], usage=Usage(cost_usd=0.0002, latency_ms=1500))
+    # Every question keeps one chunk from the RAG paper, out of two candidates
+    def fake_answer(question, history=None, usage_kind="query"):
+        source = Source(number=1, label="2005.11401_RAG-Lewis.pdf, page 2", score=0.6, text="RAG-Sequence and RAG-Token", source="2005.11401_RAG-Lewis.pdf", page=2, rerank_score=9.0, retrieval_rank=1)
+        candidates = [
+            TraceCandidate(1, 1, "2005.11401_RAG-Lewis.pdf, page 2", "2005.11401_RAG-Lewis.pdf", 2, 0.6, 9.0, kept=True, citation=1),
+            TraceCandidate(2, 2, "hr_policy.md", "hr_policy.md", None, 0.3, 0.0, kept=False),
+        ]
+        trace = Trace(original_question=question, standalone_question=question, search_query=question, candidates=candidates)
+        return RagAnswer(answer="RAG-Sequence and RAG-Token [1].", sources=[source], usage=Usage(cost_usd=0.0002, latency_ms=1500), trace=trace)
 
     # The judge gives fixed scores
     def fake_judge(question, answer, contexts, reference=None):
@@ -67,15 +72,18 @@ def test_evaluate_case_checks_retrieval_and_grades(stubbed):
     """A case result has the retrieval hit, metrics, overall score and costs."""
 
     # Expected file retrieved
-    result = runner.evaluate_case({"id": "x", "question": "Q?", "reference": "R", "expected_source": "2005.11401_RAG-Lewis.pdf"}, top_k=4)
+    result = runner.evaluate_case({"id": "x", "question": "Q?", "reference": "R", "expected_source": "2005.11401_RAG-Lewis.pdf"})
     assert result["retrieval_hit"] is True
+    assert result["candidate_hit"] is True
+    assert result["trace"]["candidates"][0]["kept"] is True
     assert result["metrics"]["correctness"]["score"] == 0.5
     assert result["overall"] == 0.875
     assert result["answer_cost_usd"] == 0.0002
 
-    # Other file expected, and no expected file
-    assert runner.evaluate_case({"id": "y", "question": "Q?", "expected_source": "hr_policy.md"}, 4)["retrieval_hit"] is False
-    assert runner.evaluate_case({"id": "z", "question": "Q?", "expected_source": None}, 4)["retrieval_hit"] is None
+    # HR file was a candidate but not kept; no expected file gives None
+    other = runner.evaluate_case({"id": "y", "question": "Q?", "expected_source": "hr_policy.md"})
+    assert other["retrieval_hit"] is False and other["candidate_hit"] is True
+    assert runner.evaluate_case({"id": "z", "question": "Q?", "expected_source": None})["retrieval_hit"] is None
 
 
 def test_summary_averages_and_skips_failed_cases():
@@ -110,6 +118,8 @@ def test_run_saves_report_and_endpoints_return_it(stubbed):
     assert report["completed"] == 2
     assert [result["id"] for result in report["results"]] == ["rag-variants", "hr-sick-days"]
     assert report["summary"]["retrieval_hit_rate"] == 0.5
+    assert report["summary"]["candidate_hit_rate"] == 1.0
+    assert report["pipeline"]["rerank_enabled"] in (True, False)
 
     # The list holds the run without results; unknown ids are 404
     runs = client.get("/evals/runs").json()["runs"]

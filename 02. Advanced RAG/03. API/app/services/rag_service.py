@@ -1,22 +1,32 @@
 """
 RAG service (online query pipeline).
 
-This file runs the full RAG query pipeline for one question:
+This file runs the full Advanced RAG query pipeline for one question:
 
-    retrieve top-k chunks -> build the grounded prompt -> generate the answer
+    rewrite -> retrieve candidates -> rerank -> select chunks -> generate
 
-It returns the answer together with the sources used, so the caller can show
-citations, and the usage of the run: tokens, cost and duration. If nothing
-is indexed (no chunks retrieved), it returns the fixed not-found answer
-without calling the chat model. Like the ingestion service, it knows nothing
-about HTTP.
+The rewriter turns the question (and the recent chat turns) into a
+standalone question and a search query. The search query finds the
+candidate chunks, the reranker scores them against the standalone question,
+and the selector keeps the best few. The generator answers the standalone
+question from the kept chunks only.
+
+It returns the answer, the sources used (citations), the usage of the run
+(tokens, cost, time) and a trace of every stage: the questions at each step,
+every candidate with its similarity, reranker score and whether it was kept,
+and the time of each stage. If no chunk is kept (empty index or nothing
+relevant), it returns the fixed not-found answer without calling the chat
+model. Like the ingestion service, it knows nothing about HTTP.
 """
 
 # Imports
 from app.generation.prompts import NOT_FOUND_ANSWER, build_messages, source_label
 from app.core.logging import get_logger, is_debug, log_detail, log_step, preview
+from app.retrieval.retriever import retrieve_candidates
+from app.reranking.reranker import RankedChunk, rerank
 from app.generation.generator import generate_answer
-from app.retrieval.retriever import retrieve
+from app.reranking.selector import select_chunks
+from app.rewriting.rewriter import rewrite_query
 from app.services.usage import track_usage
 from app.core.config import get_settings
 from dataclasses import dataclass, field
@@ -30,7 +40,7 @@ log = get_logger(__name__)
 
 @dataclass
 class Source:
-    """One retrieved chunk shown to the user as a citation."""
+    """One kept chunk shown to the user as a citation."""
 
     # Citation number used in the answer, for example 1 for [1]
     number: int
@@ -38,7 +48,7 @@ class Source:
     # Short label, for example "report.pdf, page 3"
     label: str
 
-    # Cosine similarity between the question and the chunk
+    # Cosine similarity between the search query and the chunk
     score: float
 
     # The chunk text sent to the model
@@ -48,12 +58,16 @@ class Source:
     source: str = ""
     page: int | None = None
 
+    # Reranker score (0 to 10) and position before reranking
+    rerank_score: float | None = None
+    retrieval_rank: int | None = None
+
 
 @dataclass
 class Usage:
     """Tokens, cost and time of one query."""
 
-    # Tokens used by the question embedding and the chat model
+    # Tokens used by the query embedding and the chat model (rewrite, rerank, answer)
     embedding_tokens: int = 0
     prompt_tokens: int = 0
     completion_tokens: int = 0
@@ -65,104 +79,216 @@ class Usage:
 
 
 @dataclass
-class RagAnswer:
-    """The answer, the sources it was generated from and the usage of the run."""
+class TraceCandidate:
+    """One retrieved candidate and what happened to it."""
 
-    # Answer text from the chat model
+    # Position before and after reranking (1 = best)
+    retrieval_rank: int
+    final_rank: int
+
+    # Where the chunk comes from
+    label: str
+    source: str
+    page: int | None
+
+    # Cosine similarity and reranker score (None when not reranked)
+    similarity: float
+    rerank_score: float | None
+
+    # Sent to the generator, and its citation number when sent
+    kept: bool
+    citation: int | None = None
+
+
+@dataclass
+class Trace:
+    """What every stage of the pipeline did for one question."""
+
+    # The question at each step
+    original_question: str = ""
+    standalone_question: str = ""
+    search_query: str = ""
+
+    # Whether each model stage ran, and why or why not
+    rewritten: bool = False
+    rewrite_reason: str = ""
+    reranked: bool = False
+    rerank_reason: str = ""
+    selection_reason: str = ""
+
+    # Every candidate, in final order
+    candidates: list[TraceCandidate] = field(default_factory=list)
+
+    # Milliseconds spent in each stage
+    timings_ms: dict = field(default_factory=dict)
+
+
+@dataclass
+class RagAnswer:
+    """The answer, the sources it was generated from, the usage and the trace of the run."""
+
+    # Answer text from the chat model (or the fixed not-found answer)
     answer: str
 
-    # Retrieved chunks in citation order
+    # Kept chunks in citation order
     sources: list[Source]
 
     # Tokens, cost and time
     usage: Usage = field(default_factory=Usage)
 
+    # What each stage did
+    trace: Trace = field(default_factory=Trace)
 
-def answer_question(question: str, top_k: int | None = None, usage_kind: str = "query") -> RagAnswer:
-    """Retrieve context for the question, generate a grounded answer and return it with sources.
 
-    usage_kind names the recorded run: "query" for user questions, "eval_query"
-    when an evaluation run asks the question, so evaluations are counted apart.
+def elapsed_ms(start: float) -> int:
+    """Milliseconds since start."""
+
+    # perf_counter is in seconds
+    return round((time.perf_counter() - start) * 1000)
+
+
+def build_trace_candidates(chunks: list[RankedChunk], kept_count: int) -> list[TraceCandidate]:
+    """Describe every candidate in final order; the first kept_count were sent."""
+
+    # One entry per candidate, citation numbers for the kept ones
+    candidates = []
+    for final_rank, chunk in enumerate(chunks, start=1):
+        meta = chunk.result.document.metadata
+        kept = final_rank <= kept_count
+        candidates.append(TraceCandidate(
+            retrieval_rank=chunk.retrieval_rank,
+            final_rank=final_rank,
+            label=source_label(meta),
+            source=meta.get("source", ""),
+            page=meta.get("page"),
+            similarity=round(chunk.result.score, 4),
+            rerank_score=chunk.rerank_score,
+            kept=kept,
+            citation=final_rank if kept else None,
+        ))
+    return candidates
+
+
+def log_candidates(candidates: list[TraceCandidate]) -> None:
+    """One log line per candidate: new rank, old rank, similarity, score, kept mark, file and page."""
+
+    # Kept chunks are marked with "keep", the others are dimmed
+    for candidate in candidates:
+        score = "-" if candidate.rerank_score is None else f"{candidate.rerank_score:.0f}"
+        mark = "[green]keep[/]" if candidate.kept else "[dim]drop[/]"
+        page = f"p.{candidate.page}" if candidate.page else "-"
+        log_detail(log, f"#{candidate.final_rank}", f"{mark}  was #{candidate.retrieval_rank}  sim=[cyan]{candidate.similarity:.3f}[/]  score=[cyan]{score}[/]  {candidate.source}  [dim]{page}[/]")
+
+
+def answer_question(question: str, history: list[dict] | None = None, usage_kind: str = "query") -> RagAnswer:
+    """Rewrite, retrieve, rerank, select and generate, and return the answer with sources and trace.
+
+    history holds earlier turns as {"question": ..., "answer": ...}, oldest
+    first. usage_kind names the recorded run: "query" for user questions,
+    "eval_query" when an evaluation run asks the question.
     """
 
-    # Read the shared settings and start the clock
+    # Read the shared settings, start the clock and an empty trace
     settings = get_settings()
     start = time.perf_counter()
-
-    # Detail lines are longer at DEBUG level
+    trace = Trace(original_question=question)
     limit = 300 if is_debug(log) else 64
 
     # The question being answered
-    log.info(f"  [bold]{'question':<12}[/]  \"{preview(question, 120)}\"  [dim]kind={usage_kind}[/]")
+    log.info(f"  [bold]{'question':<12}[/]  \"{preview(question, 120)}\"  [dim]kind={usage_kind}  history={len(history or [])}[/]")
 
     # Measure tokens, cost and time of this query
     with track_usage(usage_kind, question=question[:300]) as meter:
 
-        # Step 1: find the most similar chunks
-        with log_step(log, "retrieve", top_k=top_k or settings.top_k) as step:
-            results = retrieve(question, top_k=top_k)
-            step["results"] = len(results)
-            step["top_score"] = round(results[0].score, 3) if results else None
-            step["tokens"] = meter.embedding_tokens
+        # Stage 1: condense and rewrite the question
+        stage = time.perf_counter()
+        with log_step(log, "rewrite") as step:
+            rewrite = rewrite_query(question, history)
+            step["reason"] = rewrite.reason
+        trace.standalone_question = rewrite.standalone_question
+        trace.search_query = rewrite.search_query
+        trace.rewritten = rewrite.rewritten
+        trace.rewrite_reason = rewrite.reason
+        trace.timings_ms["rewrite"] = elapsed_ms(stage)
+        if rewrite.rewritten:
+            log_detail(log, "standalone", f"\"{preview(rewrite.standalone_question, limit + 60)}\"")
+            log_detail(log, "search", f"\"{preview(rewrite.search_query, limit + 60)}\"")
 
-        # One line per retrieved chunk: rank, score, file, page and the start of the text
-        for rank, result in enumerate(results, start=1):
-            meta = result.document.metadata
-            page = f"p.{meta['page']}" if "page" in meta else "-"
-            log_detail(log, f"#{rank}", f"[cyan]{result.score:.3f}[/]  {meta.get('source', '?')}  [dim]{page}[/]  \"{preview(result.document.text, limit)}\"")
+        # Stage 2: retrieve candidates with the search query
+        stage = time.perf_counter()
+        with log_step(log, "retrieve") as step:
+            candidates = retrieve_candidates(rewrite.search_query)
+            step["candidates"] = len(candidates)
+            step["top_similarity"] = round(candidates[0].score, 3) if candidates else None
+        trace.timings_ms["retrieve"] = elapsed_ms(stage)
 
-        # Nothing indexed: answer without calling the chat model
-        if not results:
-            log.info("  [yellow]no chunks retrieved, returning the not-found answer[/]")
-            return RagAnswer(answer=NOT_FOUND_ANSWER, sources=[])
+        # Stage 3: score the candidates against the standalone question
+        stage = time.perf_counter()
+        with log_step(log, "rerank") as step:
+            outcome = rerank(rewrite.standalone_question, candidates)
+            step["reason"] = outcome.reason
+        trace.reranked = outcome.reranked
+        trace.rerank_reason = outcome.reason
+        trace.timings_ms["rerank"] = elapsed_ms(stage)
 
-        # Step 2: build the grounded prompt
-        with log_step(log, "prompt") as step:
-            messages = build_messages(question, results)
-            step["context_chars"] = len(messages[1]["content"])
-            step["messages"] = len(messages)
+        # Stage 4: keep the chunks that pass the threshold and limits
+        selection = select_chunks(outcome)
+        trace.selection_reason = selection.reason
+        trace.candidates = build_trace_candidates(outcome.chunks, len(selection.kept))
+        log_detail(log, "select", f"kept=[cyan]{len(selection.kept)}[/] of {len(outcome.chunks)}  [dim]{selection.reason}[/]")
+        log_candidates(trace.candidates)
 
-        # Full prompt only at DEBUG level, because it is long
-        log.debug(f"      [dim]prompt[/]\n{preview(messages[1]['content'], 20000)}")
+        # Nothing to answer from: fixed answer without calling the chat model
+        if not selection.kept:
+            log.info(f"  [yellow]no chunks kept ({selection.reason}), returning the not-found answer[/]")
+            answer = NOT_FOUND_ANSWER
+            trace.timings_ms["generate"] = 0
 
-        # Step 3: ask the chat model
-        with log_step(log, "generate", model=settings.azure_openai_deployment_name) as step:
-            answer = generate_answer(messages)
-            step["tokens_in"] = meter.prompt_tokens
-            step["tokens_out"] = meter.completion_tokens
-            step["cost"] = f"${meter.cost(settings):.6f}"
+        # Stage 5: answer the standalone question from the kept chunks
+        else:
+            stage = time.perf_counter()
+            messages = build_messages(rewrite.standalone_question, [chunk.result for chunk in selection.kept])
+            log.debug(f"      [dim]prompt[/]\n{preview(messages[1]['content'], 20000)}")
+            with log_step(log, "generate", model=settings.azure_openai_deployment_name) as step:
+                answer = generate_answer(messages)
+                step["context_chars"] = len(messages[1]["content"])
+            trace.timings_ms["generate"] = elapsed_ms(stage)
 
-        # The answer and the sources it cites
-        cited = sorted({int(number) for number in re.findall(r"\[(\d+)\]", answer)})
-        log_detail(log, "answer", f"\"{preview(answer, limit + 60)}\"")
-        log_detail(log, "cited", f"{cited or 'none'}  [dim]of {len(results)} retrieved[/]")
+            # The answer and the sources it cites
+            cited = sorted({int(number) for number in re.findall(r"\[(\d+)\]", answer)})
+            log_detail(log, "answer", f"\"{preview(answer, limit + 60)}\"")
+            log_detail(log, "cited", f"{cited or 'none'}  [dim]of {len(selection.kept)} kept[/]")
 
         # Keep the number of sources with the saved event
-        meter.details["sources"] = len(results)
+        meter.details["sources"] = len(selection.kept)
+        meter.details["candidates"] = len(candidates)
 
     # Number the sources the same way as the context blocks in the prompt
     sources = [
         Source(
             number=number,
-            label=source_label(result.document.metadata),
-            score=round(result.score, 4),
-            text=result.document.text,
-            source=result.document.metadata.get("source", ""),
-            page=result.document.metadata.get("page"),
+            label=source_label(chunk.result.document.metadata),
+            score=round(chunk.result.score, 4),
+            text=chunk.result.document.text,
+            source=chunk.result.document.metadata.get("source", ""),
+            page=chunk.result.document.metadata.get("page"),
+            rerank_score=chunk.rerank_score,
+            retrieval_rank=chunk.retrieval_rank,
         )
-        for number, result in enumerate(results, start=1)
+        for number, chunk in enumerate(selection.kept, start=1)
     ]
 
     # Usage of the whole run
+    cost = meter.cost(settings)
     total_tokens = meter.embedding_tokens + meter.prompt_tokens + meter.completion_tokens
-    log.info(f"  [bold]{'usage':<12}[/]  tokens=[cyan]{total_tokens}[/]  cost=[cyan]${meter.cost(settings):.6f}[/]  inr=[cyan]Rs {meter.cost(settings) * settings.usd_to_inr:.4f}[/]")
+    log.info(f"  [bold]{'usage':<12}[/]  tokens=[cyan]{total_tokens}[/]  cost=[cyan]${cost:.6f}[/]  inr=[cyan]Rs {cost * settings.usd_to_inr:.4f}[/]  stages={trace.timings_ms}")
     usage = Usage(
         embedding_tokens=meter.embedding_tokens,
         prompt_tokens=meter.prompt_tokens,
         completion_tokens=meter.completion_tokens,
-        cost_usd=round(meter.cost(settings), 6),
-        cost_inr=round(meter.cost(settings) * settings.usd_to_inr, 4),
-        latency_ms=round((time.perf_counter() - start) * 1000),
+        cost_usd=round(cost, 6),
+        cost_inr=round(cost * settings.usd_to_inr, 4),
+        latency_ms=elapsed_ms(start),
     )
 
-    return RagAnswer(answer=answer, sources=sources, usage=usage)
+    return RagAnswer(answer=answer, sources=sources, usage=usage, trace=trace)

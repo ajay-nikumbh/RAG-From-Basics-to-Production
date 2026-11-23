@@ -3,11 +3,12 @@ Tests for POST /query.
 
 These tests call the real FastAPI app through TestClient with the RAG service
 replaced by a fake, so they run offline. They check a successful answer with
-sources and the automatic 422 responses for invalid input.
+sources, usage and trace, that the chat history reaches the service, and the
+automatic 422 responses for invalid input.
 """
 
 # Imports
-from app.services.rag_service import RagAnswer, Source, Usage
+from app.services.rag_service import RagAnswer, Source, Trace, TraceCandidate, Usage
 from fastapi.testclient import TestClient
 from app.api.routes import query
 from app.main import app
@@ -17,33 +18,36 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_query_returns_answer_and_sources(monkeypatch):
-    """A question returns the answer and its numbered sources."""
+def test_query_returns_answer_sources_and_trace(monkeypatch):
+    """A follow-up question returns the answer, its sources, usage and trace."""
 
     # Fake RAG service that records the arguments
     received = {}
 
-    def fake_answer_question(question, top_k=None):
-        received.update(question=question, top_k=top_k)
-        return RagAnswer(
-            answer="You get 8 sick days [1].",
-            sources=[Source(number=1, label="hr.pdf, page 4", score=0.81, text="Employees get 8 sick days.", source="hr.pdf", page=4)],
-            usage=Usage(embedding_tokens=7, prompt_tokens=300, completion_tokens=20, cost_usd=0.0001, cost_inr=0.0084, latency_ms=900),
-        )
+    def fake_answer_question(question, history=None):
+        received.update(question=question, history=history)
+        source = Source(number=1, label="hr.pdf, page 4", score=0.81, text="Employees get 8 sick days.", source="hr.pdf", page=4, rerank_score=10.0, retrieval_rank=1)
+        candidate = TraceCandidate(1, 1, "hr.pdf, page 4", "hr.pdf", 4, 0.81, 10.0, kept=True, citation=1)
+        trace = Trace("and interns?", "How many sick days do interns get?", "intern sick days", True, "rewritten", True, "reranked", "above threshold", [candidate], {"rewrite": 900, "retrieve": 300, "rerank": 950, "generate": 1200})
+        usage = Usage(embedding_tokens=7, prompt_tokens=3000, completion_tokens=80, cost_usd=0.0005, cost_inr=0.042, latency_ms=3400)
+        return RagAnswer(answer="Interns get 8 sick days [1].", sources=[source], usage=usage, trace=trace)
 
     monkeypatch.setattr(query, "answer_question", fake_answer_question)
 
-    # Ask with a custom top_k
-    response = client.post("/query", json={"question": "How many sick days?", "top_k": 2})
+    # Ask a follow-up with one earlier turn
+    history = [{"question": "How many sick days do employees get?", "answer": "8 days [1]."}]
+    response = client.post("/query", json={"question": "and interns?", "history": history})
 
-    # Answer and sources in the response, arguments passed through
+    # History passed through, answer, source scores and trace in the response
     assert response.status_code == 200
-    assert response.json() == {
-        "answer": "You get 8 sick days [1].",
-        "sources": [{"number": 1, "label": "hr.pdf, page 4", "score": 0.81, "text": "Employees get 8 sick days.", "source": "hr.pdf", "page": 4}],
-        "usage": {"embedding_tokens": 7, "prompt_tokens": 300, "completion_tokens": 20, "cost_usd": 0.0001, "cost_inr": 0.0084, "latency_ms": 900},
-    }
-    assert received == {"question": "How many sick days?", "top_k": 2}
+    assert received == {"question": "and interns?", "history": history}
+    body = response.json()
+    assert body["answer"] == "Interns get 8 sick days [1]."
+    assert body["sources"][0]["rerank_score"] == 10.0
+    assert body["trace"]["standalone_question"] == "How many sick days do interns get?"
+    assert body["trace"]["candidates"][0]["kept"] is True
+    assert body["trace"]["timings_ms"]["rerank"] == 950
+    assert body["usage"]["cost_inr"] == 0.042
 
 
 def test_query_rejects_empty_question():
@@ -53,8 +57,9 @@ def test_query_rejects_empty_question():
     assert client.post("/query", json={"question": ""}).status_code == 422
 
 
-def test_query_rejects_top_k_out_of_range():
-    """top_k above 20 gives 422."""
+def test_query_rejects_too_many_turns():
+    """More than 20 history turns gives 422."""
 
-    # 50 fails le=20
-    assert client.post("/query", json={"question": "Hi", "top_k": 50}).status_code == 422
+    # 21 turns fails max_length
+    history = [{"question": "q", "answer": "a"}] * 21
+    assert client.post("/query", json={"question": "Hi", "history": history}).status_code == 422
