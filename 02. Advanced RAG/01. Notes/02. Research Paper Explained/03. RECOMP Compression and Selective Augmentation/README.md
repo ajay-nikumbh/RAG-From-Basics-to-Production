@@ -26,7 +26,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
 <tr><td>03</td><td><a href="03.%20Problem%20Formulation.md">Problem Formulation</a></td><td>2 Problem Formulation: RECOMP</td><td>Done</td></tr>
-<tr><td>04</td><td>Learning the Compressors</td><td>3.1 Extractive Compression, 3.2 Abstractive Compression (training data by distillation)</td><td>Planned</td></tr>
+<tr><td>04</td><td><a href="04.%20Learning%20the%20Compressors.md">Learning the Compressors</a></td><td>3.1 Extractive Compression, 3.2 Abstractive Compression (training data by distillation)</td><td>Done</td></tr>
 <tr><td>05</td><td>Experimental Settings</td><td>4.1 Language Modeling, 4.2 Open-domain QA, 4.3 Baselines and Oracles</td><td>Planned</td></tr>
 <tr><td>06</td><td>Results</td><td>5 Results</td><td>Planned</td></tr>
 <tr><td>07</td><td>Analysis and Discussions</td><td>6 Analysis and Discussions</td><td>Planned</td></tr>
