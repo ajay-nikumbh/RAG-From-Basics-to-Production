@@ -24,7 +24,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="53" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="320" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="933" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="93" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
-<tr><td>02</td><td>Introduction</td><td>1 Introduction</td><td>Planned</td></tr>
+<tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
 <tr><td>03</td><td>Problem Formulation</td><td>2 Problem Formulation: RECOMP</td><td>Planned</td></tr>
 <tr><td>04</td><td>Learning the Compressors</td><td>3.1 Extractive Compression, 3.2 Abstractive Compression (training data by distillation)</td><td>Planned</td></tr>
 <tr><td>05</td><td>Experimental Settings</td><td>4.1 Language Modeling, 4.2 Open-domain QA, 4.3 Baselines and Oracles</td><td>Planned</td></tr>
