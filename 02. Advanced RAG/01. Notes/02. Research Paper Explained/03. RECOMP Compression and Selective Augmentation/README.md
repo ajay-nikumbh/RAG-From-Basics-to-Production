@@ -29,7 +29,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>04</td><td><a href="04.%20Learning%20the%20Compressors.md">Learning the Compressors</a></td><td>3.1 Extractive Compression, 3.2 Abstractive Compression (training data by distillation)</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20Experimental%20Settings.md">Experimental Settings</a></td><td>4.1 Language Modeling, 4.2 Open-domain QA, 4.3 Baselines and Oracles</td><td>Done</td></tr>
 <tr><td>06</td><td><a href="06.%20Results.md">Results</a></td><td>5 Results</td><td>Done</td></tr>
-<tr><td>07</td><td>Analysis and Discussions</td><td>6 Analysis and Discussions</td><td>Planned</td></tr>
+<tr><td>07</td><td><a href="07.%20Analysis%20and%20Discussions.md">Analysis and Discussions</a></td><td>6 Analysis and Discussions</td><td>Done</td></tr>
 <tr><td>08</td><td>Related Work</td><td>7 Related Work</td><td>Planned</td></tr>
 <tr><td>09</td><td>Conclusion and Appendix</td><td>8 Conclusion, A Appendix</td><td>Planned</td></tr>
 </tbody>
