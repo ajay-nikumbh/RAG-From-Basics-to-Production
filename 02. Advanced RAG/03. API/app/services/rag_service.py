@@ -3,13 +3,14 @@ RAG service (online query pipeline).
 
 This file runs the full Advanced RAG query pipeline for one question:
 
-    rewrite -> retrieve candidates -> rerank -> select chunks -> generate
+    rewrite -> retrieve candidates -> rerank -> select chunks -> (compress) -> generate
 
 The rewriter turns the question (and the recent chat turns) into a
 standalone question and a search query. The search query finds the
 candidate chunks, the reranker scores them against the standalone question,
-and the selector keeps the best few. The generator answers the standalone
-question from the kept chunks only.
+and the selector keeps the best few. If compression is switched on, only
+the sentences of the kept chunks that help answer are kept. The generator
+answers the standalone question from the kept (and compressed) chunks only.
 
 It returns the answer, the sources used (citations), the usage of the run
 (tokens, cost, time) and a trace of every stage: the questions at each step,
@@ -23,7 +24,9 @@ model. Like the ingestion service, it knows nothing about HTTP.
 from app.generation.prompts import NOT_FOUND_ANSWER, build_messages, source_label
 from app.core.logging import get_logger, is_debug, log_detail, log_step, preview
 from app.retrieval.retriever import retrieve_candidates
+from app.compression.compressor import compress_chunks
 from app.reranking.reranker import RankedChunk, rerank
+from app.vectorstore.faiss_store import SearchResult
 from app.generation.generator import generate_answer
 from app.reranking.selector import select_chunks
 from app.rewriting.rewriter import rewrite_query
@@ -116,6 +119,12 @@ class Trace:
     rerank_reason: str = ""
     selection_reason: str = ""
 
+    # Whether compression ran, why, and the context size before and after (characters)
+    compressed: bool = False
+    compression_reason: str = ""
+    context_chars_before: int = 0
+    context_chars_after: int = 0
+
     # Every candidate, in final order
     candidates: list[TraceCandidate] = field(default_factory=list)
 
@@ -147,14 +156,17 @@ def elapsed_ms(start: float) -> int:
     return round((time.perf_counter() - start) * 1000)
 
 
-def build_trace_candidates(chunks: list[RankedChunk], kept_count: int) -> list[TraceCandidate]:
-    """Describe every candidate in final order; the first kept_count were sent."""
+def build_trace_candidates(chunks: list[RankedChunk], sent: list[RankedChunk]) -> list[TraceCandidate]:
+    """Describe every candidate in final order, with the citation number of those sent to the generator."""
 
-    # One entry per candidate, citation numbers for the kept ones
+    # Citation number of every chunk that was sent, by object identity
+    citations = {id(chunk): number for number, chunk in enumerate(sent, start=1)}
+
+    # One entry per candidate
     candidates = []
     for final_rank, chunk in enumerate(chunks, start=1):
         meta = chunk.result.document.metadata
-        kept = final_rank <= kept_count
+        citation = citations.get(id(chunk))
         candidates.append(TraceCandidate(
             retrieval_rank=chunk.retrieval_rank,
             final_rank=final_rank,
@@ -163,8 +175,8 @@ def build_trace_candidates(chunks: list[RankedChunk], kept_count: int) -> list[T
             page=meta.get("page"),
             similarity=round(chunk.result.score, 4),
             rerank_score=chunk.rerank_score,
-            kept=kept,
-            citation=final_rank if kept else None,
+            kept=citation is not None,
+            citation=citation,
         ))
     return candidates
 
@@ -234,20 +246,35 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
         # Stage 4: keep the chunks that pass the threshold and limits
         selection = select_chunks(outcome)
         trace.selection_reason = selection.reason
-        trace.candidates = build_trace_candidates(outcome.chunks, len(selection.kept))
         log_detail(log, "select", f"kept=[cyan]{len(selection.kept)}[/] of {len(outcome.chunks)}  [dim]{selection.reason}[/]")
+
+        # Stage 5 (optional): keep only the useful sentences of the kept chunks
+        stage = time.perf_counter()
+        compression = compress_chunks(rewrite.standalone_question, [chunk.result.document for chunk in selection.kept])
+        sent = [selection.kept[index] for index in compression.kept_indexes]
+        context = [SearchResult(document, chunk.result.score) for chunk, document in zip(sent, compression.chunks)]
+        trace.compressed = compression.compressed
+        trace.compression_reason = compression.reason
+        trace.context_chars_before = compression.chars_before
+        trace.context_chars_after = compression.chars_after
+        trace.timings_ms["compress"] = elapsed_ms(stage)
+        if compression.compressed:
+            log_detail(log, "compress", f"chars=[cyan]{compression.chars_before}[/] -> [cyan]{compression.chars_after}[/]  chunks={len(selection.kept)} -> {len(sent)}")
+
+        # Every candidate with its rank, score and citation number
+        trace.candidates = build_trace_candidates(outcome.chunks, sent)
         log_candidates(trace.candidates)
 
         # Nothing to answer from: fixed answer without calling the chat model
-        if not selection.kept:
+        if not context:
             log.info(f"  [yellow]no chunks kept ({selection.reason}), returning the not-found answer[/]")
             answer = NOT_FOUND_ANSWER
             trace.timings_ms["generate"] = 0
 
-        # Stage 5: answer the standalone question from the kept chunks
+        # Stage 6: answer the standalone question from the kept chunks
         else:
             stage = time.perf_counter()
-            messages = build_messages(rewrite.standalone_question, [chunk.result for chunk in selection.kept])
+            messages = build_messages(rewrite.standalone_question, context)
             log.debug(f"      [dim]prompt[/]\n{preview(messages[1]['content'], 20000)}")
             with log_step(log, "generate", model=settings.azure_openai_deployment_name) as step:
                 answer = generate_answer(messages)
@@ -257,25 +284,25 @@ def answer_question(question: str, history: list[dict] | None = None, usage_kind
             # The answer and the sources it cites
             cited = sorted({int(number) for number in re.findall(r"\[(\d+)\]", answer)})
             log_detail(log, "answer", f"\"{preview(answer, limit + 60)}\"")
-            log_detail(log, "cited", f"{cited or 'none'}  [dim]of {len(selection.kept)} kept[/]")
+            log_detail(log, "cited", f"{cited or 'none'}  [dim]of {len(context)} sent[/]")
 
         # Keep the number of sources with the saved event
-        meter.details["sources"] = len(selection.kept)
+        meter.details["sources"] = len(context)
         meter.details["candidates"] = len(candidates)
 
-    # Number the sources the same way as the context blocks in the prompt
+    # Number the sources the same way as the context blocks in the prompt (text as sent)
     sources = [
         Source(
             number=number,
-            label=source_label(chunk.result.document.metadata),
-            score=round(chunk.result.score, 4),
-            text=chunk.result.document.text,
-            source=chunk.result.document.metadata.get("source", ""),
-            page=chunk.result.document.metadata.get("page"),
+            label=source_label(result.document.metadata),
+            score=round(result.score, 4),
+            text=result.document.text,
+            source=result.document.metadata.get("source", ""),
+            page=result.document.metadata.get("page"),
             rerank_score=chunk.rerank_score,
             retrieval_rank=chunk.retrieval_rank,
         )
-        for number, chunk in enumerate(selection.kept, start=1)
+        for number, (chunk, result) in enumerate(zip(sent, context), start=1)
     ]
 
     # Usage of the whole run

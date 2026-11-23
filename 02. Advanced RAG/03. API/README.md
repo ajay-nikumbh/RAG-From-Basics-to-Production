@@ -31,8 +31,8 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <tr><td>5</td><td>Reranker</td><td>gpt-4o-mini scores every candidate chunk for relevance to the question</td><td>Done</td></tr>
 <tr><td>6</td><td>Threshold and dynamic k</td><td>Keep 1 to 5 chunks whose relevance score passes a threshold, with fallbacks</td><td>Done</td></tr>
 <tr><td>7</td><td>RAG service and query API</td><td>The full pipeline, returning the answer with a trace of every stage</td><td>Done</td></tr>
-<tr><td>8</td><td>Context compression</td><td>Optional: keep only the relevant sentences of each chunk</td><td>Next</td></tr>
-<tr><td>9</td><td>Logs, usage and cost</td><td>Every stage visible in the logs, with tokens, cost and time per stage</td><td>Planned</td></tr>
+<tr><td>8</td><td>Context compression</td><td>Optional: keep only the relevant sentences of each chunk</td><td>Done</td></tr>
+<tr><td>9</td><td>Logs, usage and cost</td><td>Every stage visible in the logs, with tokens, cost and time per stage</td><td>Next</td></tr>
 <tr><td>10</td><td>Evaluation and comparison</td><td>Same test set and judge as Naive RAG, ablation runs, and the change in every metric, cost and latency</td><td>Planned</td></tr>
 </tbody>
 </table>
@@ -49,6 +49,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <tr><td>05</td><td><a href="docs/05.%20LLM%20Reranker.md">LLM Reranker</a></td><td>gpt-4o-mini as relevance judge, rubric, one batched call, plain list reply, live MRR, latency and cost</td></tr>
 <tr><td>06</td><td><a href="docs/06.%20Threshold%20and%20Dynamic%20k.md">Threshold and Dynamic k</a></td><td>Selector rules, not-found floor, threshold tuned on the test set, chunks kept per question</td></tr>
 <tr><td>07</td><td><a href="docs/07.%20RAG%20Service%20and%20Query%20API.md">RAG Service and Query API</a></td><td>Five-stage pipeline, request with history, response with trace, not-found path, logs, live runs, evaluation runner changes</td></tr>
+<tr><td>08</td><td><a href="docs/08.%20Context%20Compression.md">Context Compression</a></td><td>Optional extractive compression by sentence numbers, the et al. bug, measured cost and time, why it stays off</td></tr>
 </tbody>
 </table>
 

@@ -105,6 +105,12 @@ class TraceResponse(BaseModel):
     rerank_reason: str
     selection_reason: str
 
+    # Whether compression ran, why, and the context size before and after (characters)
+    compressed: bool = False
+    compression_reason: str = ""
+    context_chars_before: int = 0
+    context_chars_after: int = 0
+
     # Every candidate in final order, and milliseconds per stage
     candidates: list[TraceCandidateResponse]
     timings_ms: dict[str, int]

@@ -28,7 +28,18 @@ def test_query_returns_answer_sources_and_trace(monkeypatch):
         received.update(question=question, history=history)
         source = Source(number=1, label="hr.pdf, page 4", score=0.81, text="Employees get 8 sick days.", source="hr.pdf", page=4, rerank_score=10.0, retrieval_rank=1)
         candidate = TraceCandidate(1, 1, "hr.pdf, page 4", "hr.pdf", 4, 0.81, 10.0, kept=True, citation=1)
-        trace = Trace("and interns?", "How many sick days do interns get?", "intern sick days", True, "rewritten", True, "reranked", "above threshold", [candidate], {"rewrite": 900, "retrieve": 300, "rerank": 950, "generate": 1200})
+        trace = Trace(
+            original_question="and interns?",
+            standalone_question="How many sick days do interns get?",
+            search_query="intern sick days",
+            rewritten=True,
+            rewrite_reason="rewritten",
+            reranked=True,
+            rerank_reason="reranked",
+            selection_reason="above threshold",
+            candidates=[candidate],
+            timings_ms={"rewrite": 900, "retrieve": 300, "rerank": 950, "compress": 0, "generate": 1200},
+        )
         usage = Usage(embedding_tokens=7, prompt_tokens=3000, completion_tokens=80, cost_usd=0.0005, cost_inr=0.042, latency_ms=3400)
         return RagAnswer(answer="Interns get 8 sick days [1].", sources=[source], usage=usage, trace=trace)
 

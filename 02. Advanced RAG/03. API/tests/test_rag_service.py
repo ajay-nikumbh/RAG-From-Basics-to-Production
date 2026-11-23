@@ -10,6 +10,7 @@ called when no chunk is kept.
 
 # Imports
 from app.reranking.reranker import RankedChunk, RerankOutcome
+from app.compression.compressor import CompressionOutcome
 from app.vectorstore.faiss_store import SearchResult
 from app.generation.prompts import NOT_FOUND_ANSWER
 from app.rewriting.rewriter import RewriteResult
@@ -110,7 +111,11 @@ def test_trace_records_every_candidate(fakes, monkeypatch):
     ]
 
     # A time for every stage
-    assert set(trace.timings_ms) == {"rewrite", "retrieve", "rerank", "generate"}
+    assert set(trace.timings_ms) == {"rewrite", "retrieve", "rerank", "compress", "generate"}
+
+    # Compression is off by default, so the context is unchanged
+    assert not trace.compressed and trace.compression_reason == "compression disabled"
+    assert trace.context_chars_before == trace.context_chars_after
 
 
 def test_nothing_relevant_skips_llm(fakes, monkeypatch):
@@ -153,3 +158,31 @@ def test_empty_index_skips_llm(fakes, monkeypatch):
     # Fixed answer and reason
     assert result.answer == NOT_FOUND_ANSWER
     assert result.trace.selection_reason == "no candidates"
+
+
+def test_compression_shortens_sources_and_renumbers(fakes, monkeypatch):
+    """With compression on, sources hold the compressed text and dropped chunks are not cited."""
+
+    # Keep two chunks above the threshold
+    def two_kept_rerank(question, results):
+        chunks = [RankedChunk(results[1], 2, 9.0), RankedChunk(results[0], 1, 7.0), RankedChunk(results[2], 3, 0.0)]
+        return RerankOutcome(chunks, reranked=True, reason="reranked")
+
+    # Compressor drops the first kept chunk and shortens the second
+    def fake_compress(question, documents):
+        shorter = Document("Table 2", documents[1].metadata)
+        return CompressionOutcome([shorter], [1], True, "compressed", 60, 7)
+
+    monkeypatch.setattr(rag_service, "rerank", two_kept_rerank)
+    monkeypatch.setattr(rag_service, "compress_chunks", fake_compress)
+    monkeypatch.setattr(rag_service, "generate_answer", lambda messages: "See [1].")
+
+    # Ask the question
+    result = rag_service.answer_question("how does it work?")
+
+    # One source with the compressed text, from the second kept chunk
+    assert [(s.number, s.text, s.retrieval_rank) for s in result.sources] == [(1, "Table 2", 1)]
+    assert result.trace.compressed and result.trace.context_chars_after == 7
+
+    # The first kept chunk is marked as not sent
+    assert [(c.retrieval_rank, c.kept, c.citation) for c in result.trace.candidates] == [(2, False, None), (1, True, 1), (3, False, None)]
