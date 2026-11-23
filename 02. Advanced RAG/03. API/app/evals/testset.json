@@ -1,0 +1,68 @@
+[
+  {
+    "id": "rag-variants",
+    "question": "What are the two RAG model variants proposed by Lewis et al.?",
+    "reference": "RAG-Sequence, which uses the same retrieved document to generate the whole answer, and RAG-Token, which can use a different retrieved document for each generated token.",
+    "expected_source": "2005.11401_RAG-Lewis.pdf"
+  },
+  {
+    "id": "rag-components",
+    "question": "Which retriever and generator does the original RAG model combine?",
+    "reference": "A Dense Passage Retriever (DPR, a BERT bi-encoder) over a Wikipedia index as non-parametric memory, and a pre-trained BART-large sequence-to-sequence model as the generator.",
+    "expected_source": "2005.11401_RAG-Lewis.pdf"
+  },
+  {
+    "id": "rag-corpus",
+    "question": "What document collection does RAG retrieve from?",
+    "reference": "A dense vector index of Wikipedia (the December 2018 dump split into 100-word passages, about 21 million documents), searched with maximum inner product search using FAISS.",
+    "expected_source": "2005.11401_RAG-Lewis.pdf"
+  },
+  {
+    "id": "selfrag-reflection",
+    "question": "What are reflection tokens in Self-RAG?",
+    "reference": "Special tokens the model generates to control and critique itself: a Retrieve token decides whether to retrieve, and critique tokens judge whether retrieved passages are relevant, whether the output is supported by them, and how useful the output is.",
+    "expected_source": "2310.11511_Self-RAG.pdf"
+  },
+  {
+    "id": "selfrag-when",
+    "question": "How does Self-RAG decide when to retrieve?",
+    "reference": "The model itself predicts a Retrieve reflection token and retrieves passages on demand only when that token says retrieval is needed, instead of always retrieving a fixed number of passages.",
+    "expected_source": "2310.11511_Self-RAG.pdf"
+  },
+  {
+    "id": "crag-evaluator",
+    "question": "What does the retrieval evaluator in Corrective RAG do?",
+    "reference": "A lightweight retrieval evaluator scores how relevant the retrieved documents are to the query and, based on its confidence, triggers one of three actions: Correct, Incorrect or Ambiguous.",
+    "expected_source": "2401.15884_Corrective-RAG.pdf"
+  },
+  {
+    "id": "crag-incorrect",
+    "question": "What does CRAG do when the retrieved documents are judged incorrect?",
+    "reference": "It discards the retrieved documents and turns to large-scale web search to find better knowledge.",
+    "expected_source": "2401.15884_Corrective-RAG.pdf"
+  },
+  {
+    "id": "adaptive-routing",
+    "question": "How does Adaptive-RAG decide which retrieval strategy to use for a query?",
+    "reference": "A small classifier predicts the complexity of each query and routes it to no retrieval for simple queries, single-step retrieval for moderate ones, or multi-step iterative retrieval for complex ones.",
+    "expected_source": "2403.14403_Adaptive-RAG.pdf"
+  },
+  {
+    "id": "hr-sick-days",
+    "question": "How many sick days do employees get per year?",
+    "reference": "8 sick days per year; a doctor's note is needed after 2 days of sick leave.",
+    "expected_source": "hr_policy.md"
+  },
+  {
+    "id": "hr-new-joiner-leave",
+    "question": "How much paid leave do new joiners get in their first year?",
+    "reference": "12 days of paid leave, which must be approved by the line manager.",
+    "expected_source": "hr_policy.md"
+  },
+  {
+    "id": "out-of-scope",
+    "question": "Who won the FIFA World Cup in 2018?",
+    "reference": "The documents do not contain this information, so the system should say it could not find the answer.",
+    "expected_source": null
+  }
+]

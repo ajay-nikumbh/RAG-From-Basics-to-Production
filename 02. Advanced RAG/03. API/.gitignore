@@ -1,0 +1,7 @@
+# Uploaded files, the FAISS index, usage records and evaluation reports are local data, not source code
+data/uploads/*
+data/index/*
+data/usage/*
+data/evals/*
+!data/uploads/.gitkeep
+!data/index/.gitkeep

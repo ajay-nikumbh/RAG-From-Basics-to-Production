@@ -1,27 +1,50 @@
-# Advanced RAG Implementation
+# Advanced RAG API
 
-**Status:** Planned. Built after the notes.
+**Status:** In progress.
 
-The Advanced RAG API will start from the [Naive RAG API](../../01.%20Naive%20RAG/03.%20API/) (same FastAPI structure, loaders, chunker, embeddings, FAISS, logging, cost tracking and evaluation) and add the Advanced RAG stages step by step, one feature per commit, each with its numbered design doc in `docs/`.
+The Advanced RAG API starts from the [Naive RAG API](../../01.%20Naive%20RAG/03.%20API/) (same FastAPI structure, loaders, chunker, embeddings, FAISS, logging, cost tracking and evaluation) and adds the Advanced RAG query stages step by step, one feature per commit, each with its numbered design doc in `docs/`.
 
-## Planned steps
+The stack stays the same: FastAPI, Azure OpenAI (gpt-4o-mini for answers, rewriting and reranking; text-embedding-3-small for embeddings), FAISS, secrets in the repository root `.env`.
+
+## Run
+
+```bash
+cd "02. Advanced RAG/03. API"
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/uvicorn app.main:app --reload --port 8001
+```
+
+API docs: http://127.0.0.1:8001/docs. Tests: `.venv/bin/python -m pytest -q`.
+
+Port 8001 lets the Naive RAG API keep running on 8000 for side by side comparison.
+
+## Build Steps
 
 <table width="100%">
-<thead><tr><th><img src="../../assets/spacer.png" align="right" width="56" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="364" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="980" height="1">What it adds</th></tr></thead>
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="52" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="330" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="924" height="1">What it adds</th><th><img src="../../assets/spacer.png" align="right" width="92" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>1</td><td>Project base</td><td>Copy of the Naive RAG API as the starting point, own data folders and settings</td></tr>
-<tr><td>2</td><td>Query rewriter</td><td>LLM rewrite of the question before retrieval, logged and returned with the answer</td></tr>
-<tr><td>3</td><td>Conversational rewriting</td><td>Follow-up questions rewritten into standalone questions using the chat history</td></tr>
-<tr><td>4</td><td>Candidate retrieval</td><td>Retrieve a larger candidate set (for example 20) for the reranker</td></tr>
-<tr><td>5</td><td>Reranker</td><td>Cross-encoder reranking of the candidates</td></tr>
-<tr><td>6</td><td>Threshold and top n</td><td>Keep the best few chunks and drop weak ones</td></tr>
-<tr><td>7</td><td>Context compression</td><td>Optional: keep only the relevant sentences of each chunk</td></tr>
-<tr><td>8</td><td>Pipeline settings and logs</td><td>Every stage configurable and visible in the logs (original and rewritten query, scores before and after reranking)</td></tr>
-<tr><td>9</td><td>Evaluation and comparison</td><td>Same test set and judge as Naive RAG; report the change in every metric, cost and latency</td></tr>
+<tr><td>1</td><td>Project base</td><td>Copy of the Naive RAG API with its own data folders, port and the new rewriting, reranking and compression packages</td><td>Done</td></tr>
+<tr><td>2</td><td>Pipeline settings</td><td>Settings to switch each stage on or off and tune it</td><td>Next</td></tr>
+<tr><td>3</td><td>Query rewriter</td><td>One gpt-4o-mini call that condenses follow-ups with the chat history and rewrites the question into a search query; skipped when not needed</td><td>Planned</td></tr>
+<tr><td>4</td><td>Candidate retrieval</td><td>Retrieve a larger candidate set (top N) for the reranker</td><td>Planned</td></tr>
+<tr><td>5</td><td>Reranker</td><td>gpt-4o-mini scores every candidate chunk for relevance to the question</td><td>Planned</td></tr>
+<tr><td>6</td><td>Threshold and dynamic k</td><td>Keep 1 to 5 chunks whose relevance score passes a threshold, with fallbacks</td><td>Planned</td></tr>
+<tr><td>7</td><td>RAG service and query API</td><td>The full pipeline, returning the answer with a trace of every stage</td><td>Planned</td></tr>
+<tr><td>8</td><td>Context compression</td><td>Optional: keep only the relevant sentences of each chunk</td><td>Planned</td></tr>
+<tr><td>9</td><td>Logs, usage and cost</td><td>Every stage visible in the logs, with tokens, cost and time per stage</td><td>Planned</td></tr>
+<tr><td>10</td><td>Evaluation and comparison</td><td>Same test set and judge as Naive RAG, ablation runs, and the change in every metric, cost and latency</td><td>Planned</td></tr>
 </tbody>
 </table>
 
-The stack stays the same: FastAPI, Azure OpenAI (gpt-4o-mini, text-embedding-3-small), FAISS, secrets in the repository root `.env`.
+## Docs
+
+<table width="100%">
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="52" height="1">#</th><th><img src="../../assets/spacer.png" align="right" width="431" height="1">Doc</th><th><img src="../../assets/spacer.png" align="right" width="915" height="1">Topic</th></tr></thead>
+<tbody>
+<tr><td>01</td><td><a href="docs/01.%20Project%20Base%20and%20Folder%20Structure.md">Project Base and Folder Structure</a></td><td>Why the API starts from Naive RAG, what changed, the new packages and the build order</td></tr>
+</tbody>
+</table>
 
 ## Navigation
 

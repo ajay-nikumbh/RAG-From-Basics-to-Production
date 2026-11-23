@@ -21,7 +21,7 @@ These notes go through the paper one section at a time, with one note per sectio
 ## Notes (one per paper section)
 
 <table width="100%">
-<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="53" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="320" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="933" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="93" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="53" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="323" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="942" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="80" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>

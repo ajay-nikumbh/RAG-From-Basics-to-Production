@@ -45,7 +45,7 @@ Details of the measured limitations: [Naive RAG API doc 28](../01.%20Naive%20RAG
 flowchart LR
     Q[Question] --> RW[Query rewrite<br/>pre-retrieval]
     RW --> R[Retriever<br/>top 20]
-    R --> RR[Cross-encoder<br/>reranker]
+    R --> RR[Reranker<br/>gpt-4o-mini]
     RR --> F[Keep best 3<br/>threshold]
     F --> P[Prompt]
     P --> L[LLM]
@@ -56,7 +56,7 @@ flowchart LR
 
 1. **Rewrite** the question with an LLM: make it standalone (resolve follow-ups with the chat history), clarify it and add the terms the documents are likely to use.
 2. **Retrieve** a larger candidate set (for example the top 20) with the same embedding search as Naive RAG.
-3. **Rerank** the candidates with a cross-encoder that reads the question and each chunk together and scores real relevance.
+3. **Rerank** the candidates with a reranker that reads the question and each chunk together and scores real relevance. In this implementation the reranker is gpt-4o-mini used as a relevance scorer (the same role as the cross-encoder in the notes), so the stack stays Azure OpenAI only.
 4. **Filter** to the best few chunks (for example 3) and drop chunks below a score threshold; optionally compress them to the relevant sentences.
 5. **Generate** the answer with the same grounded, cited prompt as Naive RAG.
 
@@ -77,7 +77,7 @@ flowchart LR
 
 - Query rewriter (LLM)
 - Bi-encoder retriever (embeddings and FAISS, from Naive RAG)
-- Cross-encoder reranker
+- Reranker (gpt-4o-mini as a relevance scorer, in the role of a cross-encoder)
 - Score threshold and context filter
 - Context compressor (extractive or abstractive, from RECOMP)
 - Generator and grounded prompt (from Naive RAG)
@@ -92,7 +92,7 @@ Read in this order, the same structure as Naive RAG.
 <tbody>
 <tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>In progress</td></tr>
 <tr><td>2</td><td><a href="02.%20Papers/">02. Papers</a></td><td>The research papers as PDFs</td><td>Done</td></tr>
-<tr><td>3</td><td><a href="03.%20API/">03. API</a></td><td>FastAPI implementation built on the Naive RAG API, with numbered design docs</td><td>Planned</td></tr>
+<tr><td>3</td><td><a href="03.%20API/">03. API</a></td><td>FastAPI implementation built on the Naive RAG API, with numbered design docs</td><td>In progress</td></tr>
 <tr><td>4</td><td><a href="04.%20UI/">04. UI</a></td><td>React UI built on the Naive RAG UI, showing rewrites and reranking</td><td>Planned</td></tr>
 </tbody>
 </table>
