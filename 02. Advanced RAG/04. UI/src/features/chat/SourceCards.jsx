@@ -2,7 +2,8 @@
  * Source cards.
  *
  * This file lists the retrieved chunks under an answer as compact cards:
- * number, file name, page, similarity score and the first lines of the chunk.
+ * number, file name, page, similarity score, reranker score (0 to 10) and the
+ * first lines of the chunk.
  * Cited sources come first and are marked; sources the model retrieved but
  * did not cite are dimmed. After an evaluation, chunks the judge found
  * relevant get a "Relevant" tag. Clicking a card opens it in the source panel.
@@ -50,9 +51,14 @@ export default function SourceCards({ sources, cited, relevant = new Set(), acti
             {/* Start of the chunk */}
             <p className="line-clamp-2 text-[12px] leading-relaxed text-muted-foreground">{source.text}</p>
 
-            {/* Score and cited flag */}
+            {/* Similarity, reranker score and cited flag */}
             <div className="flex items-center justify-between">
-              <ScoreBar score={source.score} />
+              <span className="flex items-center gap-2">
+                <ScoreBar score={source.score} />
+                {source.rerank_score !== null && source.rerank_score !== undefined && (
+                  <span className="rounded bg-primary-soft px-1.5 py-px font-mono text-[10.5px] font-medium text-primary">{source.rerank_score}/10</span>
+                )}
+              </span>
               <span className="flex items-center gap-1.5 text-[11px] text-subtle-foreground">
                 {relevant.has(source.number) && <span className="rounded bg-success-soft px-1.5 py-px font-medium text-success">Relevant</span>}
                 {isCited ? 'Cited' : 'Retrieved'}

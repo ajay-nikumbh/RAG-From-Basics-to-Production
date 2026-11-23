@@ -6,6 +6,8 @@
  * understood is shown under it. The answer shows a thinking state while the request runs, then the
  * Markdown answer with citation chips, a usage line (latency, question and
  * answer tokens, cost in rupees) with Evaluate and Copy buttons, the
+ * pipeline panel (question at each step, stage times and costs, every
+ * candidate before and after reranking), the
  * evaluation card once the answer is graded, and the source cards (chunks
  * the judge found relevant are marked). A failed request shows the error with
  * a retry button.
@@ -18,6 +20,7 @@ import AnswerEvaluation from './AnswerEvaluation'
 import { Tooltip } from '@/components/ui/overlay'
 import { Button } from '@/components/ui/button'
 import AnswerMarkdown from './AnswerMarkdown'
+import PipelinePanel from './PipelinePanel'
 import { citedNumbers } from './citations'
 import SourceCards from './SourceCards'
 import { motion } from 'motion/react'
@@ -134,6 +137,7 @@ export default function ChatTurn({ turn, activeNumber, onOpen, onRetry, onEvalua
             <>
               <AnswerMarkdown text={turn.answer} sources={turn.sources} activeNumber={activeNumber} onOpen={onOpen} />
               <UsageLine usage={turn.usage} answer={turn.answer} canEvaluate={!turn.evaluation && turn.sources.length > 0} onEvaluate={onEvaluate} />
+              <PipelinePanel trace={turn.trace} cited={cited} />
               {turn.evaluation && <AnswerEvaluation evaluation={turn.evaluation} onRetry={onEvaluate} />}
               {turn.sources.length > 0 && (
                 <div className="space-y-2">

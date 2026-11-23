@@ -38,8 +38,8 @@ A React app for the Advanced RAG API. It starts from the [Naive RAG UI](../../01
 <tbody>
 <tr><td>1</td><td>Project base</td><td>Copy of the Naive RAG UI pointing at the Advanced API (port 8001), served on port 5174</td><td>Done</td></tr>
 <tr><td>2</td><td>Follow-up chat</td><td>Earlier turns sent with each question so follow-ups are rewritten into standalone questions</td><td>Done</td></tr>
-<tr><td>3</td><td>Pipeline view</td><td>Rewritten question, candidates before and after reranking, kept and dropped chunks, cost and time per stage</td><td>Next</td></tr>
-<tr><td>4</td><td>Evaluation presets and comparison</td><td>Run presets A to E and compare runs metric by metric against the Naive baseline</td><td>Planned</td></tr>
+<tr><td>3</td><td>Pipeline view</td><td>Rewritten question, candidates before and after reranking, kept and dropped chunks, cost and time per stage</td><td>Done</td></tr>
+<tr><td>4</td><td>Evaluation presets and comparison</td><td>Run presets A to E and compare runs metric by metric against the Naive baseline</td><td>Next</td></tr>
 <tr><td>5</td><td>Stage analytics</td><td>Average cost and time per stage across questions</td><td>Planned</td></tr>
 <tr><td>6</td><td>Settings display and showcase</td><td>Stage settings in the sidebar, screenshots of every view</td><td>Planned</td></tr>
 </tbody>
@@ -52,6 +52,7 @@ A React app for the Advanced RAG API. It starts from the [Naive RAG UI](../../01
 <tbody>
 <tr><td>01</td><td><a href="docs/01.%20UI%20Project%20Base.md">UI Project Base</a></td><td>Why the UI starts from the Naive UI, what changed, ports for side by side running</td></tr>
 <tr><td>02</td><td><a href="docs/02.%20Follow-up%20Chat.md">Follow-up Chat</a></td><td>Earlier turns sent with each question, Understood as line, top k menu removed</td></tr>
+<tr><td>03</td><td><a href="docs/03.%20Pipeline%20Panel.md">Pipeline Panel</a></td><td>Questions at each step, time and cost per stage, all candidates before and after reranking, scores on source cards</td></tr>
 </tbody>
 </table>
 
