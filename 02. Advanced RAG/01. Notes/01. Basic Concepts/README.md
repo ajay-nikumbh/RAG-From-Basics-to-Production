@@ -26,7 +26,7 @@ flowchart LR
 <table width="100%">
 <thead><tr><th><img src="../../../assets/spacer.png" align="right" width="42" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="384" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="748" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="149" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="74" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>01</td><td>What is Advanced RAG</td><td>Definition, the three paradigms (Naive, Advanced, Modular), what is added and what stays the same</td><td>Overview</td><td>Planned</td></tr>
+<tr><td>01</td><td><a href="01.%20What%20is%20Advanced%20RAG.md">What is Advanced RAG</a></td><td>Definition, the three paradigms (Naive, Advanced, Modular), what is added and what stays the same</td><td>Overview</td><td>Done</td></tr>
 <tr><td>02</td><td>From Naive to Advanced RAG</td><td>The measured Naive RAG gaps and which Advanced RAG technique fixes each</td><td>Overview</td><td>Planned</td></tr>
 <tr><td>03</td><td>Query Rewriting</td><td>Why user questions and documents use different words; LLM rewriting; prompts; risks</td><td>Pre-retrieval</td><td>Planned</td></tr>
 <tr><td>04</td><td>Query Expansion and Multi-Query</td><td>Adding terms, generating several query variants, merging their results</td><td>Pre-retrieval</td><td>Planned</td></tr>
