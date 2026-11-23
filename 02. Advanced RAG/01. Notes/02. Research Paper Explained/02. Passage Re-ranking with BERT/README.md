@@ -24,7 +24,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="68" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="478" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="734" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="119" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
-<tr><td>02</td><td>Introduction</td><td>1 Introduction</td><td>Planned</td></tr>
+<tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
 <tr><td>03</td><td>Passage Re-ranking with BERT</td><td>2 Passage Re-ranking with BERT (the method)</td><td>Planned</td></tr>
 <tr><td>04</td><td>Experiments</td><td>3.1 MS MARCO, 3.2 TREC-CAR</td><td>Planned</td></tr>
 <tr><td>05</td><td>Results</td><td>3.3 Results</td><td>Planned</td></tr>
