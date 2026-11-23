@@ -25,7 +25,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
-<tr><td>03</td><td>Passage Re-ranking with BERT</td><td>2 Passage Re-ranking with BERT (the method)</td><td>Planned</td></tr>
+<tr><td>03</td><td><a href="03.%20Passage%20Re-ranking%20with%20BERT.md">Passage Re-ranking with BERT</a></td><td>2 Passage Re-ranking with BERT (the method)</td><td>Done</td></tr>
 <tr><td>04</td><td>Experiments</td><td>3.1 MS MARCO, 3.2 TREC-CAR</td><td>Planned</td></tr>
 <tr><td>05</td><td>Results</td><td>3.3 Results</td><td>Planned</td></tr>
 <tr><td>06</td><td>Conclusion</td><td>4 Conclusion</td><td>Planned</td></tr>
