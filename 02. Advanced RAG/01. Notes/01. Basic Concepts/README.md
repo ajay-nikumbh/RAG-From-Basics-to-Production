@@ -31,7 +31,7 @@ flowchart LR
 <tr><td>03</td><td><a href="03.%20Query%20Rewriting.md">Query Rewriting</a></td><td>Why user questions and documents use different words; LLM rewriting; prompts; risks</td><td>Pre-retrieval</td><td>Done</td></tr>
 <tr><td>04</td><td><a href="04.%20Query%20Expansion%20and%20Multi-Query.md">Query Expansion and Multi-Query</a></td><td>Adding terms, generating several query variants, merging their results</td><td>Pre-retrieval</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20Conversational%20Query%20Rewriting.md">Conversational Query Rewriting</a></td><td>Turning follow-up questions into standalone questions with the chat history</td><td>Pre-retrieval</td><td>Done</td></tr>
-<tr><td>06</td><td>Candidate Retrieval and Recall</td><td>Retrieve many, keep few; recall at k; why a bigger candidate set helps reranking</td><td>Retrieval</td><td>Planned</td></tr>
+<tr><td>06</td><td><a href="06.%20Candidate%20Retrieval%20and%20Recall.md">Candidate Retrieval and Recall</a></td><td>Retrieve many, keep few; recall at k; why a bigger candidate set helps reranking</td><td>Retrieval</td><td>Done</td></tr>
 <tr><td>07</td><td>Bi-Encoders vs Cross-Encoders</td><td>How each scores relevance, speed versus accuracy, why both are used together</td><td>Retrieval</td><td>Planned</td></tr>
 <tr><td>08</td><td>Reranking</td><td>Cross-encoder rerankers, LLM rerankers, hosted rerankers; ranking metrics (MRR, nDCG)</td><td>Post-retrieval</td><td>Planned</td></tr>
 <tr><td>09</td><td>Score Thresholds and Dynamic k</td><td>Dropping weak chunks, choosing how many chunks to keep per question</td><td>Post-retrieval</td><td>Planned</td></tr>
