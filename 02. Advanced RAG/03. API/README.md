@@ -53,6 +53,7 @@ Port 8001 lets the Naive RAG API keep running on 8000 for side by side compariso
 <tr><td>09</td><td><a href="docs/09.%20Usage%2C%20Cost%20and%20Logs%20per%20Stage.md">Usage, Cost and Logs per Stage</a></td><td>track_stage(), stage usage in trace, logs, events and analytics, measured cost per stage</td></tr>
 <tr><td>10</td><td><a href="docs/10.%20Evaluation%20Presets%20and%20Ablation%20Runs.md">Evaluation Presets and Ablation Runs</a></td><td>Presets A to E, override_settings() per run thread, presets API and report fields</td></tr>
 <tr><td>11</td><td><a href="docs/11.%20Evaluation%20Results%20and%20Comparison%20with%20Naive%20RAG.md">Evaluation Results and Comparison with Naive RAG</a></td><td>Presets A to E measured, stage effects, question by question, targets, why D is the default</td></tr>
+<tr><td>12</td><td><a href="docs/12.%20End%20to%20End%20curl%20Guide.md">End to End curl Guide</a></td><td>Every endpoint with curl and real responses: trace, follow-ups with history, out-of-scope, presets, stage analytics, errors</td></tr>
 </tbody>
 </table>
 
