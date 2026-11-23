@@ -83,6 +83,8 @@ curl -X POST http://127.0.0.1:8000/query \
   -d '{"question": "Which retriever and generator does RAG combine?"}'
 ```
 
+Every endpoint with curl, real responses and errors: [docs/29. End to End curl Guide](docs/29.%20End%20to%20End%20curl%20Guide.md).
+
 ## Tests
 
 ```bash
@@ -128,5 +130,6 @@ Reading order: start with 19 (architecture overview), then 24 to 26 (evaluation)
 <tr><td>26</td><td><a href="docs/26.%20Reading%20the%20Evaluation%20Report.md">Reading the Evaluation Report</a></td></tr>
 <tr><td>27</td><td><a href="docs/27.%20Research%20Paper%20to%20Code%20Mapping.md">Research Paper to Code Mapping</a></td></tr>
 <tr><td>28</td><td><a href="docs/28.%20Naive%20RAG%20Limitations%2C%20Lessons%20and%20Next%20Steps.md">Naive RAG Limitations, Lessons and Next Steps</a></td></tr>
+<tr><td>29</td><td><a href="docs/29.%20End%20to%20End%20curl%20Guide.md">End to End curl Guide</a></td></tr>
 </tbody>
 </table>
