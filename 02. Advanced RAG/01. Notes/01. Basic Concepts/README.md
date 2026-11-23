@@ -33,7 +33,7 @@ flowchart LR
 <tr><td>05</td><td><a href="05.%20Conversational%20Query%20Rewriting.md">Conversational Query Rewriting</a></td><td>Turning follow-up questions into standalone questions with the chat history</td><td>Pre-retrieval</td><td>Done</td></tr>
 <tr><td>06</td><td><a href="06.%20Candidate%20Retrieval%20and%20Recall.md">Candidate Retrieval and Recall</a></td><td>Retrieve many, keep few; recall at k; why a bigger candidate set helps reranking</td><td>Retrieval</td><td>Done</td></tr>
 <tr><td>07</td><td><a href="07.%20Bi-Encoders%20vs%20Cross-Encoders.md">Bi-Encoders vs Cross-Encoders</a></td><td>How each scores relevance, speed versus accuracy, why both are used together</td><td>Retrieval</td><td>Done</td></tr>
-<tr><td>08</td><td>Reranking</td><td>Cross-encoder rerankers, LLM rerankers, hosted rerankers; ranking metrics (MRR, nDCG)</td><td>Post-retrieval</td><td>Planned</td></tr>
+<tr><td>08</td><td><a href="08.%20Reranking.md">Reranking</a></td><td>Cross-encoder rerankers, LLM rerankers, hosted rerankers; ranking metrics (MRR, nDCG)</td><td>Post-retrieval</td><td>Done</td></tr>
 <tr><td>09</td><td>Score Thresholds and Dynamic k</td><td>Dropping weak chunks, choosing how many chunks to keep per question</td><td>Post-retrieval</td><td>Planned</td></tr>
 <tr><td>10</td><td>Context Compression and Filtering</td><td>Keeping only the relevant sentences (extractive and abstractive compression, as in RECOMP); "lost in the middle"; ordering chunks</td><td>Post-retrieval</td><td>Planned</td></tr>
 <tr><td>11</td><td>Advanced RAG Architecture End to End</td><td>The full pipeline, step by step, with a worked example</td><td>All</td><td>Planned</td></tr>
