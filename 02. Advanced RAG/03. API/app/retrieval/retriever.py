@@ -5,6 +5,10 @@ This file is the first step of the online query pipeline. It embeds the user
 question with the same model used for the chunks and asks the FAISS store for
 the top_k most similar chunks. The result is a list of SearchResult (chunk plus
 cosine similarity score), best first.
+
+For Advanced RAG, retrieve_candidates() asks for a larger candidate set
+(candidate_k) when reranking is on, so the reranker has more chunks to choose
+from. With reranking off it asks for top_k, exactly like Naive RAG.
 """
 
 # Imports
@@ -30,3 +34,18 @@ def retrieve(question: str, top_k: int | None = None, store: FaissStore | None =
 
     # Find the most similar chunks
     return store.search(query_vector, top_k)
+
+
+def candidate_count() -> int:
+    """Number of chunks to retrieve: candidate_k for the reranker, or top_k without it."""
+
+    # Reranking needs a wider set; without it the Naive top_k is used
+    settings = get_settings()
+    return settings.candidate_k if settings.rerank_enabled else settings.top_k
+
+
+def retrieve_candidates(search_query: str, store: FaissStore | None = None) -> list[SearchResult]:
+    """Return the candidate chunks for the search query, best first by similarity."""
+
+    # Same search as Naive RAG, only the number of results changes
+    return retrieve(search_query, top_k=candidate_count(), store=store)
