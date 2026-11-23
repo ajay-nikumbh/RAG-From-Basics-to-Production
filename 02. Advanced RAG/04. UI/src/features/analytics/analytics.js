@@ -6,8 +6,13 @@
  * the time axis never skips a day), tokenSplit() turns token totals into
  * parts with shares, and recentQueries() picks the latest questions for the
  * latency chart, oldest first. averageCost() gives the mean cost of one run of
- * a kind (question or ingestion).
+ * a kind (question or ingestion). stageAverages() orders the per-stage
+ * averages of the query pipeline (rewrite to generate) and adds each stage's
+ * share of the cost and time of an average question.
  */
+
+// Imports
+import { STAGES } from '../chat/pipeline.js'
 
 // Empty day used when no run happened that day
 const EMPTY_DAY = { cost_usd: 0, tokens: 0, queries: 0, ingestions: 0 }
@@ -63,4 +68,27 @@ export function recentQueries(recent, count = 20) {
 export function averageCost(recent, kind) {
   const runs = recent.filter((event) => event.kind === kind)
   return runs.length ? runs.reduce((sum, event) => sum + event.cost_usd, 0) / runs.length : 0
+}
+
+// Per-stage averages in pipeline order, with rupees and shares of cost and time
+export function stageAverages(stages = {}, rate = 84) {
+
+  // Only stages the API has recorded, in pipeline order
+  const known = STAGES.filter((stage) => stages[stage.name])
+  const totalCost = known.reduce((sum, stage) => sum + stages[stage.name].avg_cost_usd, 0)
+  const totalMs = known.reduce((sum, stage) => sum + stages[stage.name].avg_latency_ms, 0)
+
+  // One row per stage
+  return known.map((stage) => {
+    const values = stages[stage.name]
+    return {
+      ...stage,
+      runs: values.runs,
+      tokens: values.avg_tokens,
+      ms: values.avg_latency_ms,
+      inr: values.avg_cost_usd * rate,
+      costShare: totalCost > 0 ? values.avg_cost_usd / totalCost : 0,
+      timeShare: totalMs > 0 ? values.avg_latency_ms / totalMs : 0,
+    }
+  })
 }

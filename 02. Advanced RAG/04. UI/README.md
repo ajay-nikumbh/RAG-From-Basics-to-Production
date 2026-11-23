@@ -34,14 +34,14 @@ A React app for the Advanced RAG API. It starts from the [Naive RAG UI](../../01
 ## Build Steps
 
 <table width="100%">
-<thead><tr><th><img src="../../assets/spacer.png" align="right" width="49" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="405" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="859" height="1">What it adds</th><th><img src="../../assets/spacer.png" align="right" width="85" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="49" height="1">Step</th><th><img src="../../assets/spacer.png" align="right" width="408" height="1">Feature</th><th><img src="../../assets/spacer.png" align="right" width="867" height="1">What it adds</th><th><img src="../../assets/spacer.png" align="right" width="74" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Project base</td><td>Copy of the Naive RAG UI pointing at the Advanced API (port 8001), served on port 5174</td><td>Done</td></tr>
 <tr><td>2</td><td>Follow-up chat</td><td>Earlier turns sent with each question so follow-ups are rewritten into standalone questions</td><td>Done</td></tr>
 <tr><td>3</td><td>Pipeline view</td><td>Rewritten question, candidates before and after reranking, kept and dropped chunks, cost and time per stage</td><td>Done</td></tr>
 <tr><td>4</td><td>Evaluation presets and comparison</td><td>Run presets A to E and compare runs metric by metric against the Naive baseline</td><td>Done</td></tr>
-<tr><td>5</td><td>Stage analytics</td><td>Average cost and time per stage across questions</td><td>Next</td></tr>
-<tr><td>6</td><td>Settings display and showcase</td><td>Stage settings in the sidebar, screenshots of every view</td><td>Planned</td></tr>
+<tr><td>5</td><td>Stage analytics</td><td>Average cost and time per stage across questions</td><td>Done</td></tr>
+<tr><td>6</td><td>Settings display and showcase</td><td>Stage settings in the sidebar, screenshots of every view</td><td>Next</td></tr>
 </tbody>
 </table>
 
@@ -54,6 +54,7 @@ A React app for the Advanced RAG API. It starts from the [Naive RAG UI](../../01
 <tr><td>02</td><td><a href="docs/02.%20Follow-up%20Chat.md">Follow-up Chat</a></td><td>Earlier turns sent with each question, Understood as line, top k menu removed</td></tr>
 <tr><td>03</td><td><a href="docs/03.%20Pipeline%20Panel.md">Pipeline Panel</a></td><td>Questions at each step, time and cost per stage, all candidates before and after reranking, scores on source cards</td></tr>
 <tr><td>04</td><td><a href="docs/04.%20Evaluation%20Presets%20and%20Comparison.md">Evaluation Presets and Comparison</a></td><td>Preset menu, comparison card against the Naive baseline, preset and stages in run summary and history</td></tr>
+<tr><td>05</td><td><a href="docs/05.%20Stage%20Analytics.md">Stage Analytics</a></td><td>Cost and time per stage card on the Analytics page, stageAverages()</td></tr>
 </tbody>
 </table>
 

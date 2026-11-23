@@ -4,8 +4,8 @@
  * This file shows what the RAG pipeline costs and how it is used, from
  * GET /analytics (the backend usage meter): a row of key numbers (cost,
  * tokens, questions, ingestions, average latency), the daily activity
- * chart, the token split, the latency of recent answers and a table of
- * recent runs. The data refreshes every minute and after every question or
+ * chart, the token split, the cost and time of each pipeline stage, the
+ * latency of recent answers and a table of recent runs. The data refreshes every minute and after every question or
  * upload.
  */
 
@@ -21,6 +21,7 @@ import { averageCost } from './analytics'
 import RecentRuns from './RecentRuns'
 import DailyChart from './DailyChart'
 import TokenSplit from './TokenSplit'
+import StageCosts from './StageCosts'
 import KpiTile from './KpiTile'
 
 // Loading layout with the same shape as the page
@@ -64,7 +65,7 @@ export default function AnalyticsPage() {
               <KpiTile icon={Hash} label="Tokens" value={formatTokens(data.totals.total_tokens)} detail={`${formatTokens(data.totals.prompt_tokens + data.totals.completion_tokens)} chat, ${formatTokens(data.totals.embedding_tokens)} embedding`} />
               <KpiTile icon={MessageSquare} label="Questions" value={data.totals.queries} detail={data.totals.queries ? `${formatInr(averageCost(data.recent, 'query') * rate)} per question` : 'None yet'} />
               <KpiTile icon={FileUp} label="Ingestions" value={data.totals.ingestions} detail="Uploads embedded and stored" />
-              <KpiTile icon={Clock} label="Avg answer time" value={formatMs(data.totals.avg_query_latency_ms)} detail="Embed, search and generate" />
+              <KpiTile icon={Clock} label="Avg answer time" value={formatMs(data.totals.avg_query_latency_ms)} detail="All pipeline stages" />
             </div>
 
             {/* Activity and token split */}
@@ -72,6 +73,9 @@ export default function AnalyticsPage() {
               <div className="xl:col-span-2"><DailyChart daily={data.daily} rate={rate} /></div>
               <TokenSplit totals={data.totals} recent={data.recent} rate={rate} />
             </div>
+
+            {/* Cost and time of each pipeline stage */}
+            <StageCosts stages={data.stages} rate={rate} />
 
             {/* Latency and recent runs */}
             <LatencyChart recent={data.recent} average={data.totals.avg_query_latency_ms} rate={rate} />
