@@ -9,7 +9,7 @@
  */
 
 // Imports
-import { askQuestion, deleteDocument, evaluateAnswer, getAnalytics, getDocumentChunks, getEvalRun, getEvalTestset, getHealth, listDocuments, listEvalRuns, startEvalRun, uploadDocument } from './client.js'
+import { askQuestion, deleteDocument, evaluateAnswer, getAnalytics, getDocumentChunks, getEvalPresets, getEvalRun, getEvalTestset, getHealth, listDocuments, listEvalRuns, startEvalRun, uploadDocument } from './client.js'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 // Cache keys, in one place so invalidation never misses a typo
@@ -19,6 +19,7 @@ export const keys = {
   chunks: (source) => ['documents', source, 'chunks'],
   analytics: ['analytics'],
   testset: ['evals', 'testset'],
+  presets: ['evals', 'presets'],
   evalRuns: ['evals', 'runs'],
   evalRun: (id) => ['evals', 'runs', id],
 }
@@ -91,6 +92,11 @@ export function useEvaluateAnswer() {
 // Built-in evaluation test cases
 export function useEvalTestset() {
   return useQuery({ queryKey: keys.testset, queryFn: getEvalTestset })
+}
+
+// Ablation presets A to E; they only change with the API code, so they are cached for the session
+export function useEvalPresets() {
+  return useQuery({ queryKey: keys.presets, queryFn: getEvalPresets, staleTime: Infinity })
 }
 
 // Saved evaluation runs; polled every 3 seconds while one is running

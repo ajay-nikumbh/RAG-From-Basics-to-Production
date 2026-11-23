@@ -186,11 +186,16 @@ export function getEvalRun(id) {
   return request(`/evals/runs/${encodeURIComponent(id)}`)
 }
 
-// POST /evals/runs: start evaluating the pipeline on the test set
-export function startEvalRun({ topK = null, caseIds = null } = {}) {
+// GET /evals/presets: the ablation presets A to E
+export function getEvalPresets() {
+  return request('/evals/presets')
+}
+
+// POST /evals/runs: start evaluating the pipeline on the test set, optionally with a preset
+export function startEvalRun({ preset = null, caseIds = null } = {}) {
   return request('/evals/runs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ top_k: topK, case_ids: caseIds }),
+    body: JSON.stringify({ preset, case_ids: caseIds }),
   })
 }

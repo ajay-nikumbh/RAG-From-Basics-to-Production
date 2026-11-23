@@ -4,8 +4,8 @@
  * The list of saved evaluation runs, newest first, in the right column of
  * the Evals page. A small bar chart on top shows the overall score of the
  * last runs, oldest to newest, scaled from 0.5 to 1, so a change in quality is visible at a
- * glance. Each run shows when it ran, its status, settings, overall score and
- * cost; clicking one opens its report.
+ * glance. Each run shows its preset (A to E, or current settings), when it
+ * ran, its status, overall score and cost; clicking one opens its report.
  */
 
 // Imports
@@ -14,6 +14,7 @@ import { formatInr, timeAgo } from '@/lib/format'
 import { Tooltip } from '@/components/ui/overlay'
 import { Spinner } from '@/components/ui/misc'
 import { ScoreBadge } from './ScoreParts'
+import { presetLabel } from './compare'
 import { formatScore } from './scores'
 import { cn } from '@/lib/utils'
 
@@ -60,10 +61,13 @@ export default function RunHistory({ runs, selectedId, onSelect }) {
                   selectedId === run.id ? 'bg-primary-soft ring-1 ring-primary/30' : 'hover:bg-accent',
                 )}
               >
+                <span className={cn('grid size-6 shrink-0 place-items-center rounded-md font-mono text-[11px] font-semibold', run.preset ? 'bg-primary-soft text-primary' : 'bg-muted text-muted-foreground')}>
+                  {run.preset ?? '-'}
+                </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[12.5px] font-medium">{timeAgo(run.created_at)}</p>
+                  <p className="truncate text-[12.5px] font-medium">{presetLabel(run.preset)}</p>
                   <p className="truncate text-[11.5px] text-subtle-foreground">
-                    {run.completed}/{run.total} cases - top {run.top_k} - {formatInr(run.summary.cost_inr)}
+                    {timeAgo(run.created_at)} - {run.completed}/{run.total} cases - {formatInr(run.summary.cost_inr)}
                   </p>
                 </div>
                 {run.status === 'running' ? <Spinner className="text-primary" /> : <ScoreBadge score={run.summary.overall} />}

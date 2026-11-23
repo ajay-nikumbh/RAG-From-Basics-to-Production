@@ -2,8 +2,9 @@
  * Run summary.
  *
  * The headline of one evaluation run: the overall score as a gauge, the four
- * metric averages, the retrieval hit rate, passed cases, average answer time
- * and cost, plus the settings the run used. While the run is in progress a
+ * metric averages, the hit rates (expected file sent, and among the
+ * candidates), passed cases, average answer time and cost, plus the preset
+ * and stage settings the run used. While the run is in progress a
  * progress bar shows how many cases are done.
  */
 
@@ -12,6 +13,7 @@ import { formatInr, formatMs, timeAgo } from '@/lib/format'
 import { Card, CardContent } from '@/components/ui/card'
 import { MetricRow, ScoreRing } from './ScoreParts'
 import { Spinner } from '@/components/ui/misc'
+import { presetLabel } from './compare'
 import { METRICS } from './scores'
 
 // Small labelled number
@@ -32,7 +34,9 @@ export default function RunSummary({ run }) {
   const { summary } = run
   const running = run.status === 'running'
   const progress = run.total ? run.completed / run.total : 0
-  const hitRate = summary.retrieval_hit_rate === null ? '-' : `${Math.round(summary.retrieval_hit_rate * 100)}%`
+  const percent = (value) => (value === null || value === undefined ? '-' : `${Math.round(value * 100)}%`)
+  const pipeline = run.pipeline ?? {}
+  const stages = [pipeline.rewrite_enabled && 'rewrite', pipeline.rerank_enabled && `rerank ${pipeline.candidate_k}`, pipeline.compression_enabled && 'compress'].filter(Boolean).join(' + ') || 'top 4 only'
 
   return (
     <Card>
@@ -43,7 +47,10 @@ export default function RunSummary({ run }) {
           <div>
             <p className="text-sm font-semibold">Run <span className="font-mono text-[13px]">{run.id}</span></p>
             <p className="mt-0.5 text-[12px] text-muted-foreground">
-              {timeAgo(run.created_at)} - {run.chat_model} - top {run.top_k} - chunks {run.chunk_size}/{run.chunk_overlap}
+              {run.preset ? `Preset ${run.preset}: ` : ''}{presetLabel(run.preset)} - {timeAgo(run.created_at)}
+            </p>
+            <p className="text-[11.5px] text-subtle-foreground">
+              {run.chat_model} - {stages}{pipeline.rerank_enabled ? ` - threshold ${pipeline.rerank_threshold}, keep ${pipeline.min_chunks} to ${pipeline.max_chunks}` : ''} - chunks {run.chunk_size}/{run.chunk_overlap}
             </p>
           </div>
           {running && (
@@ -77,9 +84,10 @@ export default function RunSummary({ run }) {
         </div>
 
         {/* Retrieval, time and cost */}
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          <Fact label="Retrieval hit rate" value={hitRate} detail="Expected file retrieved" />
-          <Fact label="Avg answer time" value={formatMs(summary.avg_latency_ms)} detail="Embed, search, generate" />
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+          <Fact label="Hit rate" value={percent(summary.retrieval_hit_rate)} detail="Expected file sent" />
+          <Fact label="Candidate hit rate" value={percent(summary.candidate_hit_rate)} detail="Among the candidates" />
+          <Fact label="Avg answer time" value={formatMs(summary.avg_latency_ms)} detail="All stages" />
           <Fact label="Run cost" value={formatInr(summary.cost_inr)} detail="Answers plus judge" />
           <Fact label="Errors" value={summary.failed_cases} detail={summary.failed_cases ? 'See the table' : 'All cases finished'} />
         </div>
