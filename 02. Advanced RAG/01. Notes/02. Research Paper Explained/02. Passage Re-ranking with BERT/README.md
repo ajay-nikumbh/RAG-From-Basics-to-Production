@@ -21,14 +21,14 @@ These notes go through the paper one section at a time, with one note per sectio
 ## Notes (one per paper section)
 
 <table width="100%">
-<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="68" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="478" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="734" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="119" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="69" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="483" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="743" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="103" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
 <tr><td>03</td><td><a href="03.%20Passage%20Re-ranking%20with%20BERT.md">Passage Re-ranking with BERT</a></td><td>2 Passage Re-ranking with BERT (the method)</td><td>Done</td></tr>
 <tr><td>04</td><td><a href="04.%20Experiments.md">Experiments</a></td><td>3.1 MS MARCO, 3.2 TREC-CAR</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20Results.md">Results</a></td><td>3.3 Results</td><td>Done</td></tr>
-<tr><td>06</td><td>Conclusion</td><td>4 Conclusion</td><td>Planned</td></tr>
+<tr><td>06</td><td><a href="06.%20Conclusion.md">Conclusion</a></td><td>4 Conclusion</td><td>Done</td></tr>
 </tbody>
 </table>
 
