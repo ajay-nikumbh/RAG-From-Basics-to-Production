@@ -79,6 +79,7 @@ flowchart LR
 - Bi-encoder retriever (embeddings and FAISS, from Naive RAG)
 - Cross-encoder reranker
 - Score threshold and context filter
+- Context compressor (extractive or abstractive, from RECOMP)
 - Generator and grounded prompt (from Naive RAG)
 - Evaluation on the same test set as Naive RAG
 
@@ -89,7 +90,7 @@ Read in this order, the same structure as Naive RAG.
 <table width="100%">
 <thead><tr><th><img src="../assets/spacer.png" align="right" width="61" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="153" height="1">Folder</th><th><img src="../assets/spacer.png" align="right" width="1076" height="1">What it holds</th><th><img src="../assets/spacer.png" align="right" width="107" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, both papers explained section by section, interview preparation</td><td>Next</td></tr>
+<tr><td>1</td><td><a href="01.%20Notes/">01. Notes</a></td><td>Basic concepts of Advanced RAG, the three papers explained section by section, interview preparation</td><td>Next</td></tr>
 <tr><td>2</td><td><a href="02.%20Papers/">02. Papers</a></td><td>The research papers as PDFs</td><td>Done</td></tr>
 <tr><td>3</td><td><a href="03.%20API/">03. API</a></td><td>FastAPI implementation built on the Naive RAG API, with numbered design docs</td><td>Planned</td></tr>
 <tr><td>4</td><td><a href="04.%20UI/">04. UI</a></td><td>React UI built on the Naive RAG UI, showing rewrites and reranking</td><td>Planned</td></tr>
@@ -99,10 +100,11 @@ Read in this order, the same structure as Naive RAG.
 ## Research Papers
 
 <table width="100%">
-<thead><tr><th><img src="../assets/spacer.png" align="right" width="47" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="729" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="47" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="335" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="119" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="119" height="1">Local copy</th></tr></thead>
+<thead><tr><th><img src="../assets/spacer.png" align="right" width="44" height="1">#</th><th><img src="../assets/spacer.png" align="right" width="777" height="1">Paper</th><th><img src="../assets/spacer.png" align="right" width="44" height="1">Year</th><th><img src="../assets/spacer.png" align="right" width="311" height="1">Venue / Org</th><th><img src="../assets/spacer.png" align="right" width="111" height="1">arXiv</th><th><img src="../assets/spacer.png" align="right" width="111" height="1">Local copy</th></tr></thead>
 <tbody>
 <tr><td>1</td><td>Query Rewriting for Retrieval-Augmented Large Language Models</td><td>2023</td><td>EMNLP 2023 (SJTU, Microsoft)</td><td><a href="https://arxiv.org/abs/2305.14283">2305.14283</a></td><td><a href="02.%20Papers/2305.14283_Query-Rewriting.pdf">PDF</a></td></tr>
 <tr><td>2</td><td>Passage Re-ranking with BERT</td><td>2019</td><td>arXiv (NYU)</td><td><a href="https://arxiv.org/abs/1901.04085">1901.04085</a></td><td><a href="02.%20Papers/1901.04085_BERT-Reranker.pdf">PDF</a></td></tr>
+<tr><td>3</td><td>RECOMP: Improving Retrieval-Augmented LMs with Compression and Selective Augmentation</td><td>2023</td><td>ICLR 2024 (UT Austin, UW)</td><td><a href="https://arxiv.org/abs/2310.04408">2310.04408</a></td><td><a href="02.%20Papers/2310.04408_RECOMP-Compression.pdf">PDF</a></td></tr>
 </tbody>
 </table>
 

@@ -35,7 +35,7 @@ flowchart LR
 <tr><td>07</td><td>Bi-Encoders vs Cross-Encoders</td><td>How each scores relevance, speed versus accuracy, why both are used together</td><td>Retrieval</td><td>Planned</td></tr>
 <tr><td>08</td><td>Reranking</td><td>Cross-encoder rerankers, LLM rerankers, hosted rerankers; ranking metrics (MRR, nDCG)</td><td>Post-retrieval</td><td>Planned</td></tr>
 <tr><td>09</td><td>Score Thresholds and Dynamic k</td><td>Dropping weak chunks, choosing how many chunks to keep per question</td><td>Post-retrieval</td><td>Planned</td></tr>
-<tr><td>10</td><td>Context Compression and Filtering</td><td>Keeping only the relevant sentences; "lost in the middle"; ordering chunks</td><td>Post-retrieval</td><td>Planned</td></tr>
+<tr><td>10</td><td>Context Compression and Filtering</td><td>Keeping only the relevant sentences (extractive and abstractive compression, as in RECOMP); "lost in the middle"; ordering chunks</td><td>Post-retrieval</td><td>Planned</td></tr>
 <tr><td>11</td><td>Advanced RAG Architecture End to End</td><td>The full pipeline, step by step, with a worked example</td><td>All</td><td>Planned</td></tr>
 <tr><td>12</td><td>Evaluating Advanced RAG</td><td>Comparing against the Naive RAG baseline fairly; which metrics should move</td><td>Evaluation</td><td>Planned</td></tr>
 <tr><td>13</td><td>Cost and Latency Trade-offs</td><td>What each extra stage costs, and how to keep it affordable</td><td>Operations</td><td>Planned</td></tr>

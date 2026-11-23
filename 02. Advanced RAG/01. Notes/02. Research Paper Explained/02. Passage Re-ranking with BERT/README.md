@@ -34,4 +34,4 @@ These notes go through the paper one section at a time, with one note per sectio
 
 ## Navigation
 
-Previous paper: [Query Rewriting for Retrieval-Augmented LLMs](../01.%20Query%20Rewriting%20for%20Retrieval-Augmented%20LLMs/) | [Research Paper Explained](../README.md)
+Previous paper: [Query Rewriting for Retrieval-Augmented LLMs](../01.%20Query%20Rewriting%20for%20Retrieval-Augmented%20LLMs/) | [Research Paper Explained](../README.md) | Next paper: [RECOMP Compression and Selective Augmentation](../03.%20RECOMP%20Compression%20and%20Selective%20Augmentation/)
