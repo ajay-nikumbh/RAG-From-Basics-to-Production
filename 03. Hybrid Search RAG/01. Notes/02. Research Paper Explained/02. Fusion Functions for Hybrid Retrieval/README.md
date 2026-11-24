@@ -23,7 +23,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="60" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="547" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="684" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="106" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
-<tr><td>02</td><td>Introduction</td><td>1 Introduction</td><td>Planned</td></tr>
+<tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
 <tr><td>03</td><td>Related Work</td><td>2 Related Work</td><td>Planned</td></tr>
 <tr><td>04</td><td>Setup</td><td>3.1 Notation, 3.2 Empirical Setup (Table 1)</td><td>Planned</td></tr>
 <tr><td>05</td><td>Suitability of Convex Combination</td><td>4, 4.1 (Figures 1 and 2)</td><td>Planned</td></tr>
