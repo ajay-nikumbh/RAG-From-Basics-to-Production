@@ -20,7 +20,7 @@ These notes go through the paper one section at a time, with one note per sectio
 ## Notes (one per paper section)
 
 <table width="100%">
-<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="60" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="547" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="684" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="106" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="61" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="553" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="692" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="92" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction.md">Introduction</a></td><td>1 Introduction</td><td>Done</td></tr>
@@ -31,7 +31,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>07</td><td><a href="07.%20RRF%20and%20the%20Effect%20of%20Its%20Parameters.md">RRF and the Effect of Its Parameters</a></td><td>5, 5.1 (Table 2, Figures 5 to 8, Table 3)</td><td>Done</td></tr>
 <tr><td>08</td><td><a href="08.%20Effect%20of%20Lipschitz%20Continuity.md">Effect of Lipschitz Continuity</a></td><td>5.2 (Figures 9 and 10, Table 4)</td><td>Done</td></tr>
 <tr><td>09</td><td><a href="09.%20Discussion.md">Discussion</a></td><td>6 Discussion (Figures 11 and 12)</td><td>Done</td></tr>
-<tr><td>10</td><td>Conclusion and Appendices</td><td>7 Conclusion, Appendices A to D</td><td>Planned</td></tr>
+<tr><td>10</td><td><a href="10.%20Conclusion%20and%20Appendices.md">Conclusion and Appendices</a></td><td>7 Conclusion, Appendices A to D</td><td>Done</td></tr>
 </tbody>
 </table>
 
