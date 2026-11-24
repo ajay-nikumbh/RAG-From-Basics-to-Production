@@ -48,4 +48,4 @@ flowchart LR
 
 ## Navigation
 
-[Research Paper Explained](../README.md) | Next paper: [An Analysis of Fusion Functions for Hybrid Retrieval](../README.md)
+[Research Paper Explained](../README.md) | Next paper: [An Analysis of Fusion Functions for Hybrid Retrieval](../02.%20Fusion%20Functions%20for%20Hybrid%20Retrieval/)
