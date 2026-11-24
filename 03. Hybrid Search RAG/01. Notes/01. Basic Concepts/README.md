@@ -27,9 +27,9 @@ flowchart LR
 <table width="100%">
 <thead><tr><th><img src="../../../assets/spacer.png" align="right" width="40" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="450" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="700" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="140" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="70" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>01</td><td>What is Hybrid Search RAG</td><td>Definition, the two retrievers, fusion, where it sits among the 22 architectures</td><td>Overview</td><td>Planned</td></tr>
-<tr><td>02</td><td>From Advanced RAG to Hybrid Search</td><td>Which Advanced RAG failures are retrieval failures, and why a second retriever helps</td><td>Overview</td><td>Planned</td></tr>
-<tr><td>03</td><td>Sparse Retrieval and BM25</td><td>Inverted index, term frequency, inverse document frequency, length normalisation, the BM25 formula with a worked example</td><td>Retrieval</td><td>Planned</td></tr>
+<tr><td>01</td><td><a href="01.%20What%20is%20Hybrid%20Search%20RAG.md">What is Hybrid Search RAG</a></td><td>Definition, the two retrievers, fusion, where it sits among the 22 architectures</td><td>Overview</td><td>Done</td></tr>
+<tr><td>02</td><td><a href="02.%20From%20Advanced%20RAG%20to%20Hybrid%20Search.md">From Advanced RAG to Hybrid Search</a></td><td>Which Advanced RAG failures are retrieval failures, and why a second retriever helps</td><td>Overview</td><td>Done</td></tr>
+<tr><td>03</td><td><a href="03.%20Sparse%20Retrieval%20and%20BM25.md">Sparse Retrieval and BM25</a></td><td>Inverted index, term frequency, inverse document frequency, length normalisation, the BM25 formula with a worked example</td><td>Retrieval</td><td>Done</td></tr>
 <tr><td>04</td><td>Text Analysis for Keyword Search</td><td>Tokenising, lower-casing, stop words, stemming, numbers and codes, n-grams</td><td>Indexing</td><td>Planned</td></tr>
 <tr><td>05</td><td>Dense Retrieval Strengths and Blind Spots</td><td>What embeddings capture well and where they fail: rare terms, exact numbers, names, negation</td><td>Retrieval</td><td>Planned</td></tr>
 <tr><td>06</td><td>Sparse vs Dense: When Each Wins</td><td>Side by side on real question types, why they are complementary</td><td>Retrieval</td><td>Planned</td></tr>
