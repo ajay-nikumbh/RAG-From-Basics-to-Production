@@ -2,7 +2,7 @@
 
 **Category:** Retrieval Optimization  
 **Core idea:** Run keyword search (BM25) and vector search over the same chunks, fuse the two ranked lists, then rerank and generate as in Advanced RAG.  
-**Status:** In progress. Basic concept notes 01 to 09 done; notes 10 to 15 next.
+**Status:** In progress. Basic concept notes 01 to 12 done; notes 13 to 15 next.
 
 ## Table of Contents
 
