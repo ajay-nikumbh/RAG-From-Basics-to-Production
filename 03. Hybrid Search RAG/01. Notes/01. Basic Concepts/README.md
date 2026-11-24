@@ -25,7 +25,7 @@ flowchart LR
 ## Reading order
 
 <table width="100%">
-<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="40" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="450" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="700" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="140" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="70" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="40" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="453" height="1">Note</th><th><img src="../../../assets/spacer.png" align="right" width="705" height="1">What you will learn</th><th><img src="../../../assets/spacer.png" align="right" width="141" height="1">Pipeline stage</th><th><img src="../../../assets/spacer.png" align="right" width="60" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20What%20is%20Hybrid%20Search%20RAG.md">What is Hybrid Search RAG</a></td><td>Definition, the two retrievers, fusion, where it sits among the 22 architectures</td><td>Overview</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20From%20Advanced%20RAG%20to%20Hybrid%20Search.md">From Advanced RAG to Hybrid Search</a></td><td>Which Advanced RAG failures are retrieval failures, and why a second retriever helps</td><td>Overview</td><td>Done</td></tr>
@@ -41,7 +41,7 @@ flowchart LR
 <tr><td>12</td><td><a href="12.%20Hybrid%20Search%20RAG%20Architecture%20End%20to%20End.md">Hybrid Search RAG Architecture End to End</a></td><td>The full pipeline, data flow, trace fields, latency and cost budget</td><td>Overview</td><td>Done</td></tr>
 <tr><td>13</td><td><a href="13.%20Evaluating%20Hybrid%20Search.md">Evaluating Hybrid Search</a></td><td>Recall of each retriever, overlap, fusion gain, chunk-level hit rate, ablation plan</td><td>Evaluation</td><td>Done</td></tr>
 <tr><td>14</td><td><a href="14.%20Cost%20Latency%20and%20Limitations.md">Cost, Latency and Limitations</a></td><td>Index size and updates, query time, where hybrid search does not help</td><td>Overview</td><td>Done</td></tr>
-<tr><td>15</td><td>Glossary</td><td>Every term used in these notes in one table</td><td>Reference</td><td>Planned</td></tr>
+<tr><td>15</td><td><a href="15.%20Glossary.md">Glossary</a></td><td>Every term used in these notes in one table</td><td>Reference</td><td>Done</td></tr>
 </tbody>
 </table>
 
