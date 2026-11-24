@@ -39,7 +39,7 @@ flowchart LR
 <tr><td>10</td><td><a href="10.%20Weighted%20Score%20Fusion%20and%20Alpha%20Tuning.md">Weighted Score Fusion and Alpha Tuning</a></td><td>Convex combination of normalised scores, choosing alpha on a test set</td><td>Fusion</td><td>Done</td></tr>
 <tr><td>11</td><td><a href="11.%20Hybrid%20Search%20Plus%20Reranking.md">Hybrid Search Plus Reranking</a></td><td>Why fusion and reranking work together, candidate counts, deduplication</td><td>Post-retrieval</td><td>Done</td></tr>
 <tr><td>12</td><td><a href="12.%20Hybrid%20Search%20RAG%20Architecture%20End%20to%20End.md">Hybrid Search RAG Architecture End to End</a></td><td>The full pipeline, data flow, trace fields, latency and cost budget</td><td>Overview</td><td>Done</td></tr>
-<tr><td>13</td><td>Evaluating Hybrid Search</td><td>Recall of each retriever, overlap, fusion gain, chunk-level hit rate, ablation plan</td><td>Evaluation</td><td>Planned</td></tr>
+<tr><td>13</td><td><a href="13.%20Evaluating%20Hybrid%20Search.md">Evaluating Hybrid Search</a></td><td>Recall of each retriever, overlap, fusion gain, chunk-level hit rate, ablation plan</td><td>Evaluation</td><td>Done</td></tr>
 <tr><td>14</td><td>Cost, Latency and Limitations</td><td>Index size and updates, query time, where hybrid search does not help</td><td>Overview</td><td>Planned</td></tr>
 <tr><td>15</td><td>Glossary</td><td>Every term used in these notes in one table</td><td>Reference</td><td>Planned</td></tr>
 </tbody>
