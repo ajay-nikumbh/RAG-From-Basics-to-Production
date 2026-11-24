@@ -20,7 +20,7 @@ These notes go through the paper one section at a time, with one note per sectio
 ## Notes (one per paper section)
 
 <table width="100%">
-<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="50" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="369" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="890" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="89" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="51" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="372" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="899" height="1">Paper section</th><th><img src="../../../../assets/spacer.png" align="right" width="77" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction%20and%20Related%20Work.md">Introduction and Related Work</a></td><td>I Introduction, II Related Work (Table I)</td><td>Done</td></tr>
@@ -28,7 +28,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>04</td><td><a href="04.%20Retriever%20Evaluation.md">Retriever Evaluation</a></td><td>IV Experimentation for Retriever Evaluation (Figures 2 to 5)</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20Retriever%20Benchmarking.md">Retriever Benchmarking</a></td><td>IV.A Retriever Benchmarking, IV.B Summary (Figures 6 to 8, Tables II and III)</td><td>Done</td></tr>
 <tr><td>06</td><td><a href="06.%20RAG%20Experimentation.md">RAG Experimentation</a></td><td>V RAG Experimentation (Tables IV and V)</td><td>Done</td></tr>
-<tr><td>07</td><td>Discussion and Conclusion</td><td>VI Discussion, VII Conclusion (Table VI)</td><td>Planned</td></tr>
+<tr><td>07</td><td><a href="07.%20Discussion%20and%20Conclusion.md">Discussion and Conclusion</a></td><td>VI Discussion, VII Conclusion (Table VI)</td><td>Done</td></tr>
 </tbody>
 </table>
 
