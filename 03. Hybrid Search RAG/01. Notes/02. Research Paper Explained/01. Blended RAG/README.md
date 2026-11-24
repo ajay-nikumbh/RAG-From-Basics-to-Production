@@ -24,7 +24,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20Introduction%20and%20Related%20Work.md">Introduction and Related Work</a></td><td>I Introduction, II Related Work (Table I)</td><td>Done</td></tr>
-<tr><td>03</td><td>Blended Retrievers</td><td>III Blended Retrievers (Figure 1)</td><td>Planned</td></tr>
+<tr><td>03</td><td><a href="03.%20Blended%20Retrievers.md">Blended Retrievers</a></td><td>III Blended Retrievers (Figure 1)</td><td>Done</td></tr>
 <tr><td>04</td><td>Retriever Evaluation</td><td>IV Experimentation for Retriever Evaluation (Figures 2 to 5)</td><td>Planned</td></tr>
 <tr><td>05</td><td>Retriever Benchmarking</td><td>IV.A Retriever Benchmarking, IV.B Summary (Figures 6 to 8, Tables II and III)</td><td>Planned</td></tr>
 <tr><td>06</td><td>RAG Experimentation</td><td>V RAG Experimentation (Tables IV and V)</td><td>Planned</td></tr>
