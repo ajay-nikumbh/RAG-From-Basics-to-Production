@@ -29,7 +29,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>05</td><td><a href="05.%20Suitability%20of%20Convex%20Combination.md">Suitability of Convex Combination</a></td><td>4, 4.1 (Figures 1 and 2)</td><td>Done</td></tr>
 <tr><td>06</td><td><a href="06.%20Role%20of%20Normalization.md">Role of Normalization</a></td><td>4.2 (Lemma 4.2, Theorem 4.5, Figures 3 and 4)</td><td>Done</td></tr>
 <tr><td>07</td><td><a href="07.%20RRF%20and%20the%20Effect%20of%20Its%20Parameters.md">RRF and the Effect of Its Parameters</a></td><td>5, 5.1 (Table 2, Figures 5 to 8, Table 3)</td><td>Done</td></tr>
-<tr><td>08</td><td>Effect of Lipschitz Continuity</td><td>5.2 (Figures 9 and 10, Table 4)</td><td>Planned</td></tr>
+<tr><td>08</td><td><a href="08.%20Effect%20of%20Lipschitz%20Continuity.md">Effect of Lipschitz Continuity</a></td><td>5.2 (Figures 9 and 10, Table 4)</td><td>Done</td></tr>
 <tr><td>09</td><td>Discussion</td><td>6 Discussion (Figures 11 and 12)</td><td>Planned</td></tr>
 <tr><td>10</td><td>Conclusion and Appendices</td><td>7 Conclusion, Appendices A to D</td><td>Planned</td></tr>
 </tbody>
