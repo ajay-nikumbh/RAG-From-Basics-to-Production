@@ -27,7 +27,7 @@ These notes go through the paper one section at a time, with one note per sectio
 <tr><td>03</td><td><a href="03.%20Related%20Work.md">Related Work</a></td><td>2 Related Work</td><td>Done</td></tr>
 <tr><td>04</td><td><a href="04.%20Setup.md">Setup</a></td><td>3.1 Notation, 3.2 Empirical Setup (Table 1)</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20Suitability%20of%20Convex%20Combination.md">Suitability of Convex Combination</a></td><td>4, 4.1 (Figures 1 and 2)</td><td>Done</td></tr>
-<tr><td>06</td><td>Role of Normalization</td><td>4.2 (Lemma 4.2, Theorem 4.5, Figures 3 and 4)</td><td>Planned</td></tr>
+<tr><td>06</td><td><a href="06.%20Role%20of%20Normalization.md">Role of Normalization</a></td><td>4.2 (Lemma 4.2, Theorem 4.5, Figures 3 and 4)</td><td>Done</td></tr>
 <tr><td>07</td><td>RRF and the Effect of Its Parameters</td><td>5, 5.1 (Table 2, Figures 5 to 8, Table 3)</td><td>Planned</td></tr>
 <tr><td>08</td><td>Effect of Lipschitz Continuity</td><td>5.2 (Figures 9 and 10, Table 4)</td><td>Planned</td></tr>
 <tr><td>09</td><td>Discussion</td><td>6 Discussion (Figures 11 and 12)</td><td>Planned</td></tr>
