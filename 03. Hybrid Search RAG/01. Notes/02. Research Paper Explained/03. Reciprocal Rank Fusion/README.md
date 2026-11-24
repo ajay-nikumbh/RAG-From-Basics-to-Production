@@ -24,7 +24,7 @@ These notes go through the paper one part at a time. The paper is a two-page SIG
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20The%20RRF%20Formula.md">The RRF Formula</a></td><td>1, first part (the formula and why k = 60)</td><td>Done</td></tr>
-<tr><td>03</td><td>Condorcet Fuse and CombMNZ</td><td>1, the two baselines</td><td>Planned</td></tr>
+<tr><td>03</td><td><a href="03.%20Condorcet%20Fuse%20and%20CombMNZ.md">Condorcet Fuse and CombMNZ</a></td><td>1, the two baselines</td><td>Done</td></tr>
 <tr><td>04</td><td>Pilot Experiments and the Choice of k</td><td>1, pilot runs (Table 1)</td><td>Planned</td></tr>
 <tr><td>05</td><td>TREC Experiments and Significance</td><td>1, TREC runs and sign test (Table 2)</td><td>Planned</td></tr>
 <tr><td>06</td><td>LETOR 3 Meta-Learner</td><td>1, LETOR 3 experiment (Table 3)</td><td>Planned</td></tr>
