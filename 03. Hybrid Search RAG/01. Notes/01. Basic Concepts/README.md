@@ -36,7 +36,7 @@ flowchart LR
 <tr><td>07</td><td><a href="07.%20Learned%20Sparse%20Retrieval%20SPLADE.md">Learned Sparse Retrieval (SPLADE)</a></td><td>Sparse vectors learned by a model, term expansion, trade-offs against BM25 and dense</td><td>Retrieval</td><td>Done</td></tr>
 <tr><td>08</td><td><a href="08.%20Why%20Retrieval%20Scores%20Cannot%20Be%20Added%20Directly.md">Why Retrieval Scores Cannot Be Added Directly</a></td><td>Score ranges and distributions, min-max and z-score normalisation</td><td>Fusion</td><td>Done</td></tr>
 <tr><td>09</td><td><a href="09.%20Reciprocal%20Rank%20Fusion.md">Reciprocal Rank Fusion</a></td><td>The RRF formula, the constant 60, worked example, strengths and weaknesses</td><td>Fusion</td><td>Done</td></tr>
-<tr><td>10</td><td>Weighted Score Fusion and Alpha Tuning</td><td>Convex combination of normalised scores, choosing alpha on a test set</td><td>Fusion</td><td>Planned</td></tr>
+<tr><td>10</td><td><a href="10.%20Weighted%20Score%20Fusion%20and%20Alpha%20Tuning.md">Weighted Score Fusion and Alpha Tuning</a></td><td>Convex combination of normalised scores, choosing alpha on a test set</td><td>Fusion</td><td>Done</td></tr>
 <tr><td>11</td><td>Hybrid Search Plus Reranking</td><td>Why fusion and reranking work together, candidate counts, deduplication</td><td>Post-retrieval</td><td>Planned</td></tr>
 <tr><td>12</td><td>Hybrid Search RAG Architecture End to End</td><td>The full pipeline, data flow, trace fields, latency and cost budget</td><td>Overview</td><td>Planned</td></tr>
 <tr><td>13</td><td>Evaluating Hybrid Search</td><td>Recall of each retriever, overlap, fusion gain, chunk-level hit rate, ablation plan</td><td>Evaluation</td><td>Planned</td></tr>
