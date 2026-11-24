@@ -27,7 +27,7 @@ These notes go through the paper one part at a time. The paper is a two-page SIG
 <tr><td>03</td><td><a href="03.%20Condorcet%20Fuse%20and%20CombMNZ.md">Condorcet Fuse and CombMNZ</a></td><td>1, the two baselines</td><td>Done</td></tr>
 <tr><td>04</td><td><a href="04.%20Pilot%20Experiments%20and%20the%20Choice%20of%20k.md">Pilot Experiments and the Choice of k</a></td><td>1, pilot runs (Table 1)</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20TREC%20Experiments%20and%20Significance.md">TREC Experiments and Significance</a></td><td>1, TREC runs and sign test (Table 2)</td><td>Done</td></tr>
-<tr><td>06</td><td>LETOR 3 Meta-Learner</td><td>1, LETOR 3 experiment (Table 3)</td><td>Planned</td></tr>
+<tr><td>06</td><td><a href="06.%20LETOR%203%20Meta-Learner.md">LETOR 3 Meta-Learner</a></td><td>1, LETOR 3 experiment (Table 3)</td><td>Done</td></tr>
 <tr><td>07</td><td>Discussion and Conclusion</td><td>2 Discussion</td><td>Planned</td></tr>
 </tbody>
 </table>
