@@ -48,4 +48,4 @@ flowchart LR
 
 ## Navigation
 
-Previous paper: [Blended RAG](../01.%20Blended%20RAG/) | [Research Paper Explained](../README.md) | Next paper: [Reciprocal Rank Fusion](../README.md)
+Previous paper: [Blended RAG](../01.%20Blended%20RAG/) | [Research Paper Explained](../README.md) | Next paper: [Reciprocal Rank Fusion](../03.%20Reciprocal%20Rank%20Fusion/)

@@ -5,15 +5,15 @@ The three papers behind Hybrid Search RAG, explained section by section: every i
 ## The papers
 
 <table width="100%">
-<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="40" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="547" height="1">Paper</th><th><img src="../../../assets/spacer.png" align="right" width="187" height="1">Role in hybrid search</th><th><img src="../../../assets/spacer.png" align="right" width="547" height="1">Core idea</th><th><img src="../../../assets/spacer.png" align="right" width="86" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../assets/spacer.png" align="right" width="40" height="1">#</th><th><img src="../../../assets/spacer.png" align="right" width="563" height="1">Paper</th><th><img src="../../../assets/spacer.png" align="right" width="193" height="1">Role in hybrid search</th><th><img src="../../../assets/spacer.png" align="right" width="563" height="1">Core idea</th><th><img src="../../../assets/spacer.png" align="right" width="48" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>1</td><td><a href="01.%20Blended%20RAG/">Blended RAG: Improving RAG Accuracy with Semantic Search and Hybrid Query-Based Retrievers (Sawarkar, Mangal, Solanki, IBM 2024)</a></td><td>Hybrid retrieval for RAG</td><td>Combine keyword (BM25), dense vector and sparse encoder indexes with different query types, and measure the effect on retrieval and RAG accuracy</td><td>Done</td></tr>
 <tr><td>2</td><td><a href="02.%20Fusion%20Functions%20for%20Hybrid%20Retrieval/">An Analysis of Fusion Functions for Hybrid Retrieval (Bruch, Gai, Ingber, 2022)</a></td><td>How to fuse</td><td>Compare convex combination of normalised scores with Reciprocal Rank Fusion, in and out of domain, and how sensitive each is to its parameters</td><td>Done</td></tr>
-<tr><td>3</td><td><a href="03.%20Reciprocal%20Rank%20Fusion/">Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods (Cormack, Clarke, Buettcher, SIGIR 2009)</a></td><td>The fusion formula</td><td>Merge rankings with score = sum of 1 / (k + rank), k = 60; simple, and better than each input ranking</td><td>In progress</td></tr>
+<tr><td>3</td><td><a href="03.%20Reciprocal%20Rank%20Fusion/">Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods (Cormack, Clarke, Buettcher, SIGIR 2009)</a></td><td>The fusion formula</td><td>Merge rankings with score = sum of 1 / (k + rank), k = 60; simple, and better than each input ranking</td><td>Done</td></tr>
 </tbody>
 </table>
 
-The note list for each paper is added when its notes start, one note per paper section, as for the Advanced RAG papers.
+Each paper has its own folder with one note per paper section, as for the Advanced RAG papers.
 
 ```mermaid
 flowchart LR

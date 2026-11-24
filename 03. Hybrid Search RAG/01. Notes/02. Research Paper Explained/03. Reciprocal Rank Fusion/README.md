@@ -20,7 +20,7 @@ These notes go through the paper one part at a time. The paper is a two-page SIG
 ## Notes (one per part of the paper)
 
 <table width="100%">
-<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="62" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="575" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="653" height="1">Paper part</th><th><img src="../../../../assets/spacer.png" align="right" width="108" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../../../assets/spacer.png" align="right" width="62" height="1">#</th><th><img src="../../../../assets/spacer.png" align="right" width="582" height="1">Note</th><th><img src="../../../../assets/spacer.png" align="right" width="660" height="1">Paper part</th><th><img src="../../../../assets/spacer.png" align="right" width="94" height="1">Status</th></tr></thead>
 <tbody>
 <tr><td>01</td><td><a href="01.%20Abstract.md">Abstract</a></td><td>Abstract</td><td>Done</td></tr>
 <tr><td>02</td><td><a href="02.%20The%20RRF%20Formula.md">The RRF Formula</a></td><td>1, first part (the formula and why k = 60)</td><td>Done</td></tr>
@@ -28,7 +28,7 @@ These notes go through the paper one part at a time. The paper is a two-page SIG
 <tr><td>04</td><td><a href="04.%20Pilot%20Experiments%20and%20the%20Choice%20of%20k.md">Pilot Experiments and the Choice of k</a></td><td>1, pilot runs (Table 1)</td><td>Done</td></tr>
 <tr><td>05</td><td><a href="05.%20TREC%20Experiments%20and%20Significance.md">TREC Experiments and Significance</a></td><td>1, TREC runs and sign test (Table 2)</td><td>Done</td></tr>
 <tr><td>06</td><td><a href="06.%20LETOR%203%20Meta-Learner.md">LETOR 3 Meta-Learner</a></td><td>1, LETOR 3 experiment (Table 3)</td><td>Done</td></tr>
-<tr><td>07</td><td>Discussion and Conclusion</td><td>2 Discussion</td><td>Planned</td></tr>
+<tr><td>07</td><td><a href="07.%20Discussion%20and%20Conclusion.md">Discussion and Conclusion</a></td><td>2 Discussion</td><td>Done</td></tr>
 </tbody>
 </table>
 

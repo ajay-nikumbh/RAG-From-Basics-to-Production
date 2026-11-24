@@ -12,11 +12,11 @@ flowchart LR
 ```
 
 <table width="100%">
-<thead><tr><th><img src="../../assets/spacer.png" align="right" width="53" height="1">#</th><th><img src="../../assets/spacer.png" align="right" width="320" height="1">Folder</th><th><img src="../../assets/spacer.png" align="right" width="933" height="1">What it covers</th><th><img src="../../assets/spacer.png" align="right" width="93" height="1">Status</th></tr></thead>
+<thead><tr><th><img src="../../assets/spacer.png" align="right" width="53" height="1">#</th><th><img src="../../assets/spacer.png" align="right" width="323" height="1">Folder</th><th><img src="../../assets/spacer.png" align="right" width="942" height="1">What it covers</th><th><img src="../../assets/spacer.png" align="right" width="80" height="1">Status</th></tr></thead>
 <tbody>
-<tr><td>1</td><td><a href="01.%20Basic%20Concepts/">Basic Concepts</a></td><td>From Advanced RAG to hybrid search: BM25, text analysis, dense blind spots, sparse vs dense, learned sparse retrieval, score normalisation, RRF, weighted fusion, hybrid plus reranking, evaluation, cost</td><td>Next</td></tr>
-<tr><td>2</td><td><a href="02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Blended RAG (IBM 2024), An Analysis of Fusion Functions for Hybrid Retrieval (2022) and Reciprocal Rank Fusion (SIGIR 2009), one note per paper section, with every figure, table and equation explained</td><td>Planned</td></tr>
-<tr><td>3</td><td><a href="03.%20Interview%20Preparation/">Interview Preparation</a></td><td>Hybrid Search RAG from an interview point of view, with the results of this implementation</td><td>Planned</td></tr>
+<tr><td>1</td><td><a href="01.%20Basic%20Concepts/">Basic Concepts</a></td><td>From Advanced RAG to hybrid search: BM25, text analysis, dense blind spots, sparse vs dense, learned sparse retrieval, score normalisation, RRF, weighted fusion, hybrid plus reranking, evaluation, cost</td><td>Done</td></tr>
+<tr><td>2</td><td><a href="02.%20Research%20Paper%20Explained/">Research Paper Explained</a></td><td>Blended RAG (IBM 2024), An Analysis of Fusion Functions for Hybrid Retrieval (2022) and Reciprocal Rank Fusion (SIGIR 2009), one note per paper section, with every figure, table and equation explained</td><td>Done</td></tr>
+<tr><td>3</td><td><a href="03.%20Interview%20Preparation/">Interview Preparation</a></td><td>Hybrid Search RAG from an interview point of view, with the results of this implementation</td><td>Next</td></tr>
 </tbody>
 </table>
 
